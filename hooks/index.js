@@ -1,10 +1,2 @@
-export { useBugs } from './useBugs'
-export { useIssues } from './useIssues'
-export { useLogs } from './useLogs'
-export { useTeachings } from './useTasks
-export { useWordpress } from './useWordpress'
-export * from './useSVGs'
-export * from './useTheme'
-export * from './neo'
-export * from './wordpress'
-export * from './airtable'
+export { useTeachings } from "./useTasks";
+export * from "./useTheme";

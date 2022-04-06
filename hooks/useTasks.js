@@ -1,7 +1,5 @@
 import { ref, onMounted, computed, toRefs } from "vue";
-import { countEmpty, devmode, groupBy, isArray } from "../helpers";
 import { searchTable, getRecords } from "./airtable";
-import axios from "axios";
 
 export function useTasks() {
   const tasks = ref([]);
@@ -13,7 +11,6 @@ export function useTasks() {
 
     tasks.value = await getRecords("Tasks").catch(console.error);
 
-    devmode && console.log("tasks found", tasks);
     loading.value = false;
   });
 

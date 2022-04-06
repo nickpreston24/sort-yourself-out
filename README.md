@@ -4,11 +4,7 @@ We recommend to look at the [documentation](https://v3.nuxtjs.org).
 
 ## Setup
 
-Make sure to install the dependencies
-
-```bash
-yarn install
-```
+Follow [this template](https://github.com/danvega/nuxt3-tailwind3-starter)
 
 ## Development
 

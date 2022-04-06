@@ -10,6 +10,8 @@
     "tailwindcss": "^3.0.23"
   },
   "dependencies": {
-    "@mpreston17/flexies": "^1.1.0"
+    "@mpreston17/flexies": "^1.1.0",
+    "axios": "^0.26.1",
+    "fuzzysort": "^1.2.1"
   }
 }
