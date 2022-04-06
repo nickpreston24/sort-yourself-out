@@ -1,0 +1,15 @@
+{
+  "private": true,
+  "scripts": {
+    "dev": "nuxi dev",
+    "build": "nuxi build",
+    "start": "node .output/server/index.mjs"
+  },
+  "devDependencies": {
+    "nuxt3": "latest",
+    "tailwindcss": "^3.0.23"
+  },
+  "dependencies": {
+    "@mpreston17/flexies": "^1.1.0"
+  }
+}
