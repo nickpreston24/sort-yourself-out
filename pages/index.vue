@@ -73,7 +73,7 @@ const { tasks, createTask, patchTask, deleteTask } = useTasks();
 const task = ref({
   Name: "",
   Notes: "",
-  // Status: "Todo",
+  Status: "Todo",
   // Frequency: null,
 });
 
