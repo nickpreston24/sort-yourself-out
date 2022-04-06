@@ -66,18 +66,32 @@ export const getById = async (id, tableName = null) => {
   return formatRecords(record);
 };
 
-export const patch = async (tableName = null, data = null) => {
+export const patch = async (tableName = null, record = null) => {
   if (!tableName) throw Error(`tableName cannot be null or empty`);
 
   // soft fail
-  if (!data) return [];
+  if (!record) return [];
 
-  const url = `https://api.airtable.com/v0/${baseKey}/${tableName}`;
-  const headers = {
-    "Content-Type": "application/json",
-    Authorization: `Bearer ${apiKey}`,
+  const data = {
+    records: [
+      {
+        id: record?.id,
+        fields: record?.fields || { ...record },
+      },
+    ],
   };
-  const result = await axios.patch(url, data, headers);
+
+  const url = `https://api.airtable.com/v0/${baseKey}/${tableName}/${record.id}`;
+  let axiosConfig = {
+    headers: {
+      Authorization: "Bearer " + apiKey,
+      "Content-Type": "application/json",
+    },
+  };
+
+  console.log("url", url);
+  console.log("data", data);
+  const result = await axios.patch(url, data, axiosConfig);
 
   return formatRecords(result?.data?.records);
 };
@@ -95,7 +109,7 @@ export const create = async (tableName = null, record) => {
     ],
   };
 
-  let url = "https://api.airtable.com/v0/" + baseKey + "/" + tableName;
+  let url = `https://api.airtable.com/v0/${baseKey}/${tableName}`;
   let axiosConfig = {
     headers: {
       Authorization: "Bearer " + apiKey,
@@ -107,4 +121,18 @@ export const create = async (tableName = null, record) => {
   console.log("response?.data", response?.data);
   // TODO: return id
   return response?.data?.id;
+};
+
+export const deleteRecord = async (tableName = null, id = null) => {
+  let url = `https://api.airtable.com/v0/${baseKey}/${tableName}/${id}`;
+  console.log("url", url);
+  let axiosConfig = {
+    headers: {
+      Authorization: "Bearer " + apiKey,
+      "Content-Type": "application/json",
+    },
+  };
+  const response = await axios.delete(url, axiosConfig);
+
+  return response;
 };

@@ -3,7 +3,7 @@
     @mouseover.native="onMouseOver"
     @mouseleave.native="onMouseLeave"
     v-show="!hidden"
-    class="text-2xl duration-300 bg-pink-600 p-25 text-tahiti-100 z-1"
+    class="text-2xl duration-300 bg-black p-25 text-regal-100 z-1"
     :class="className"
     :style="{ width: sidebarWidth }"
   >
