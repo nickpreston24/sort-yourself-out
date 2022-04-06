@@ -6,7 +6,7 @@
     <organisms-sidebar />
   </div>
 </template>
-<script setup>
+<script setup lang="ts">
 import { Right } from "@mpreston17/flexies";
 import { mode } from "~~/components/organisms/sidebar/useSidebar";
 import { onMounted } from "vue";
