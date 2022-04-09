@@ -24,7 +24,7 @@
       <SidebarLink to="/tasks" icon="fas fa-gear">Tasks</SidebarLink>
       <SidebarLink to="/journal" icon="fas fa-beer">Journal</SidebarLink>
       <SidebarLink to="/about" icon="fas fa-image">About</SidebarLink>
-      <!-- <SidebarLink v-if="true" to="/sandbox" icon="fas fa-image">Sandbox</SidebarLink> -->
+      <SidebarLink v-if="true" to="/sandbox" icon="fas fa-image">Sandbox</SidebarLink>
     </span>
     <span
       class="absolute bottom-0 p-2 mb-4 ml-4 text-white transition duration-200 opacity-70"
