@@ -57,7 +57,7 @@ export const searchTable = async (tableName = null, fields = []) => {
   return raw;
 };
 
-export const getById = async (id, tableName = null) => {
+export const getById = async (tableName = null, id = null) => {
   if (!id) throw Error(`id cannot be null or zero`);
   if (!tableName) throw Error(`tableName cannot be null or empty`);
 
@@ -92,7 +92,7 @@ export const patch = async (tableName = null, record = null) => {
   //     },
   //     body: JSON.stringify({
   //       fields: {
-  //         Name: "Make your Damn Bed",
+  //         Name: "Test",
   //         Status: "Todo",
   //         Due: "2022-03-29T13:00:00.000Z",
   //         Frequency: ["Daily"],
@@ -117,10 +117,10 @@ export const patch = async (tableName = null, record = null) => {
 };
 
 export const create = async (tableName = null, record) => {
-  if (!record) return -1;
+  if (!record) throw Error(`record cannot be empty`);
   if (!tableName) throw Error(`tableName cannot be null or empty`);
 
-  console.log("record", record);
+  // console.log("record", record);
   const data = {
     records: [
       {

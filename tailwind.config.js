@@ -20,20 +20,25 @@ module.exports = {
         accent: "var(--accent)",
       },
       keyframes: {
-        // wiggle: {
-        //   '0%, 100%': { transform: 'rotate(-3deg)' },
-        //   '50%': { transform: 'rotate(3deg)' },
-        // }
+        wiggle: {
+          "0%, 100%": { transform: "rotate(-3deg)" },
+          "50%": { transform: "rotate(3deg)" },
+        },
+        "fade-out": {
+          "0%, 100%": { transform: "opacity 0" },
+        },
       },
       borderRadius: {
         "4xl": "2rem",
       },
       animation: {
-        //   'spin-slow': 'spin 3s linear infinite',
-        //   wiggle: 'wiggle 1s ease-in-out infinite'
+        "spin-slow": "spin 3s linear infinite",
+        wiggle: "wiggle 1s ease-in-out infinite",
+        "fade-out": "fade 1s ease-out",
       },
       transitionDuration: {
         0: "0ms",
+        1000: "1000ms",
         2000: "2000ms",
         3000: "3000ms",
       },
