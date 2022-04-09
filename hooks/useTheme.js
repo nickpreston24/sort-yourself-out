@@ -1,22 +1,50 @@
-import { ref, computed } from "vue";
+import { ref, computed, reactive } from "vue";
 
 const twColor = ref("tahiti");
 
 /**
  * Palletes
+ * [60-30-10% Rule](https://youtu.be/UWwNIMHFdW4):
  */
-//rounded-lg p-tiny bg-ocean-400 text-ocean-800 hover:bg-ocean-500
-const lightPallete = computed(
-  () => `border-tahiti-500 bg-tahiti-600 text-tahiti-300`
-);
+
+export const themes = reactive({
+  // Light
+  captainAmerica: {
+    60: `cocoa-bean-100`,
+    30: `crimson-500`,
+    // Actionables
+    10: `tahiti-500`,
+  },
+
+  // Dark
+  hailLobster: {
+    60: `regal-900`,
+    30: `crimson-500`,
+    // Actionables
+    10: `tahiti-500`,
+  },
+  // Reversed
+  rockLobster: {
+    60: `tahiti-500`,
+    30: ``,
+    // Actionables
+    10: `tahiti-500`,
+  },
+});
+
+export const lightPallete = computed(() => {
+  const bg = themes.hailLobster["30"];
+  return `border-tahiti-500 bg-${bg} text-tahiti-300`;
+});
 
 const lightPalleteAlt = computed(
   () => `border-tahiti-500 bg-slate-100 text-orange-500`
 );
 
-const darkPallete = computed(
-  () => `border-regal-300 bg-regal-600 text-ocean-500`
-);
+const darkPallete = computed(() => {
+  const { hailLobster } = themes;
+  return `border-${hailLobster[10]} bg-${hailLobster[30]} text-${hailLobster[60]}`;
+});
 
 const darkPalleteAlt = computed(
   () => `border-regal-300 bg-regal-500 text-ocean-300`
@@ -42,6 +70,7 @@ export const themeMap = computed(() => {
       page: `${darkPalleteAlt.value} Proxima Nova`,
       tableHeader: `${darkPalleteAlt.value}`,
       chip: `${darkPallete.value} !border-ocean-500 shadow-md shadow-ocean-400/50`,
+      lobster: `shadow-lg shadow-red`,
     },
     light: {
       headers: `${lightPallete.value}`,
@@ -58,6 +87,7 @@ export const themeMap = computed(() => {
       page: `${lightPalleteAlt.value}`,
       tableHeader: `${lightPallete.value}`,
       chip: `${lightPallete.value} shadow-md shadow-tahiti-400/50`,
+      lobster: `shadow-lg shadow-red`,
     },
   };
 });
@@ -83,6 +113,7 @@ export const page = computed(() => currentTheme.value["page"]);
 export const tableHeader = computed(() => currentTheme.value["tableHeader"]);
 export const chip = computed(() => currentTheme.value["chip"]);
 export const paragraph = computed(() => currentTheme.value["paragraph"]);
+export const lobster = computed(() => currentTheme.value["lobster"]);
 
 // Allow theme changes, but hide the current theme value
 export const setTheme = (name = "tahiti") => {

@@ -1,12 +1,30 @@
 <template>
-  <Right>
+  <Left>
     <Stack>
-      <h1 class="text-4xl text-red-500">Hail Lobster!</h1>
-      <img src="../assets/public/hail-lobster.png" class="w-32 h-auto" alt="lobster" />
+      <!-- <pre>darkmode? {{ darkMode }}</pre> -->
+      <!-- <AtomsButton @click="toggleTheme"
+        >Toggle {{ darkMode ? "Light" : "Dark" }} Mode</AtomsButton
+      > -->
+      <h1 class="m-8 text-4xl text-orange-700 lobster">Hail Lobster!</h1>
+      <img
+        src="../assets/public/hail-lobster.png"
+        class="w-32 h-auto rounded-full shadow-crimson-500/50"
+        alt="lobster"
+        :class="lobster"
+      />
     </Stack>
-  </Right>
+  </Left>
 </template>
 
 <script setup lang="ts">
-import { Right, Stack } from "@mpreston17/flexies";
+import { Right, Stack, Left } from "@mpreston17/flexies";
+import { darkMode, lobster } from "../hooks/useTheme";
+function toggleTheme() {
+  darkMode.value = !darkMode.value;
+}
 </script>
+<style scoped>
+.lobster {
+  text-shadow: 4px 6px 8px rgba(255, 0, 0, 0.5);
+}
+</style>

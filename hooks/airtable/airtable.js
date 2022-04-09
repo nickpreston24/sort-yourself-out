@@ -68,18 +68,38 @@ export const getById = async (id, tableName = null) => {
 
 export const patch = async (tableName = null, record = null) => {
   if (!tableName) throw Error(`tableName cannot be null or empty`);
+  if (!record) throw Error(`record cannot be empty`);
 
-  // soft fail
-  if (!record) return [];
-
+  console.log("record", { ...record });
   const data = {
-    records: [
-      {
-        id: record?.id,
-        fields: record?.fields || { ...record },
-      },
-    ],
+    fields: { ...record },
+
+    // records: [
+    // {
+    // id: record?.id,
+    // fields: record?.fields || { ...record },
+    // },
+    // ],
   };
+
+  // fetch(
+  //   "https://api.airtable.com/v0/appraFclZV7AFFEhr/Tasks/recSvSfqf0U3v2wdF",
+  //   {
+  //     method: "PATCH",
+  //     headers: {
+  //       Authorization: "Bearer keyl5Wo5ETa4HR4tt",
+  //       "Content-Type": "application/json",
+  //     },
+  //     body: JSON.stringify({
+  //       fields: {
+  //         Name: "Make your Damn Bed",
+  //         Status: "Todo",
+  //         Due: "2022-03-29T13:00:00.000Z",
+  //         Frequency: ["Daily"],
+  //       },
+  //     }),
+  //   }
+  // );
 
   const url = `https://api.airtable.com/v0/${baseKey}/${tableName}/${record.id}`;
   let axiosConfig = {
@@ -124,6 +144,7 @@ export const create = async (tableName = null, record) => {
 };
 
 export const deleteRecord = async (tableName = null, id = null) => {
+  if (!id) throw new Error(`id for record cannot be null!`);
   let url = `https://api.airtable.com/v0/${baseKey}/${tableName}/${id}`;
   console.log("url", url);
   let axiosConfig = {

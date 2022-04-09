@@ -1,11 +1,5 @@
-import { ref, onMounted, computed, toRefs } from "vue";
-import {
-  searchTable,
-  getRecords,
-  create,
-  patch,
-  deleteRecord,
-} from "./airtable";
+import { ref, onMounted } from "vue";
+import { getRecords, create, patch, deleteRecord } from "./airtable/airtable";
 
 export function useTasks() {
   const tasks = ref([]);
@@ -20,9 +14,7 @@ export function useTasks() {
     loading.value = false;
   });
 
-  const createTask = async (props) => {
-    return create("Tasks", props);
-  };
+  const createTask = async (props) => create("Tasks", props);
 
   const patchTask = async (props) => patch("Tasks", props);
 

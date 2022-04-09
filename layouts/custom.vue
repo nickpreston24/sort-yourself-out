@@ -1,9 +1,11 @@
 // https://v3.nuxtjs.org/docs/directory-structure/layouts/
 <template>
-  <div>
+  <div class="h-full text-white bg-regal-800">
     <lobster />
     <slot />
     <organisms-sidebar />
+
+    <footer class="text-tahiti-500">Help</footer>
   </div>
 </template>
 <script setup lang="ts">

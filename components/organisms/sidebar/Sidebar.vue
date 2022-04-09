@@ -3,7 +3,7 @@
     @mouseover.native="onMouseOver"
     @mouseleave.native="onMouseLeave"
     v-show="!hidden"
-    class="text-2xl duration-300 bg-black p-25 text-regal-100 z-1"
+    class="text-2xl duration-300 bg-regal-900/50 hover:bg-regal-900 p-25 text-regal-100 z-1"
     :class="className"
     :style="{ width: sidebarWidth }"
   >
@@ -13,7 +13,7 @@
         <div>Y</div>
         <div>O</div>
       </span>
-      <span class="" v-else>Sort Yourself Out</span>
+      <span v-else>Sort Yourself Out</span>
     </h1>
 
     <span class="mx-auto">
