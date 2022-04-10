@@ -51,7 +51,7 @@
               >
                 <img
                   class="w-20 hover:scale-110"
-                  src="../../assets/public/lobster-sticker.png"
+                  src="~/assets/public/lobster-sticker.png"
                   alt="hierarchy"
                 />
               </div>
