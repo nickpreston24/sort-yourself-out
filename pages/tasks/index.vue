@@ -1,14 +1,28 @@
 <template>
-  <NuxtLayout name="custom" class="">
-    <Stack class="flex items-center justify-center w-auto m-8">
+  <NuxtLayout name="custom">
+    <Stack class="flex items-center justify-center w-auto">
       <div class="flex items-center justify-center w-1/2">
-        <Stack v-if="false">
-          <!-- <pre>tasks?.length? {{ tasks?.length }}</pre> -->
+        <Stack v-if="true">
+          <transition
+            enter-active-class="duration-300 ease-out"
+            enter-from-class="transform scale-75 opacity-0"
+            enter-to-class="scale-100 opacity-100"
+            leave-active-class="duration-200 ease-in"
+            leave-from-class="scale-100 opacity-100"
+            leave-to-class="transform scale-75 opacity-0"
+          >
+            <div v-if="loading">
+              Lorem, ipsum dolor sit amet consectetur adipisicing elit. Repellendus quos
+              esse, nihil blanditiis quod repellat voluptate dolores culpa molestias
+              molestiae illum explicabo delectus odio, libero voluptates provident a?
+              Quis, corporis?
+            </div>
+          </transition>
 
           <typography type="h2">Add a Task</typography>
           <ul>
             <li class="p-2" v-for="(value, key, index) in task" :key="index">
-              <Label class="m-2">{{ key }}:</Label>
+              <label class="m-2">{{ key }}:</label>
               <input
                 class="p-2 m-2 bg-transparent rounded-xl"
                 type="text"
@@ -18,20 +32,35 @@
             </li>
           </ul>
           <atoms-button color="bg-tahiti-500" @click="submitTask">Submit</atoms-button>
-          <typography type="b" v-show="error">{{ error }}</typography>
+          <typography type="b" v-if="error">{{ error }}</typography>
         </Stack>
       </div>
 
       <!-- Tasks List -->
       <!-- <pre>timer? {{ timer }}</pre> -->
       <!-- <pre>delay? {{ delay }}</pre> -->
-      <div class="gap-4 overflow-auto display-block" v-for="(task, index) in tasks">
-        <transition name="fade">
+      <pre>tasks? {{ tasks?.length }}</pre>
+      <pre>tasks shown? {{ filteredTasks?.length }}</pre>
+      <div
+        class="gap-4 overflow-auto display-block"
+        v-for="(task, index) in filteredTasks"
+        :key="index"
+      >
+        <transition
+          name="fade"
+          enter-active-class="duration-300 ease-out"
+          enter-from-class="transform scale-75 opacity-0"
+          enter-to-class="scale-100 opacity-100"
+          leave-active-class="duration-200 ease-in"
+          leave-from-class="scale-100 opacity-100"
+          leave-to-class="transform scale-75 opacity-0"
+        >
           <Card
             v-show="index >= timer / delay"
             class="gap-2 rounded-lg shadow-md shadow-regal-400/90 bg-regal-900/60 border-tahiti-200"
           >
-            <!-- <template v-slot:header> -->
+            <!-- <pre>task?.id? {{ task?.id }}</pre> -->
+            <pre>{{ index }}</pre>
             <Row class="gap-12">
               <!-- Left Column -->
               <div
@@ -46,42 +75,40 @@
 
               <!-- Right column -->
               <Stack>
-                <typography v-if="task?.Name" type="h3">{{ task?.Name }}</typography>
-                <typography v-else-if="!task?.id" class="" type="b">{{
-                  "(no id!)"
-                }}</typography>
+                <typography type="h3">{{ task?.Name }}</typography>
 
                 <!-- Notes -->
-                <span class="overflow-y-auto w-120 w-128 max-h-128">
-                  <typography v-if="task?.Notes" class="">
-                    {{ task?.Notes }}
-                  </typography>
+                <span
+                  class="h-24 m-2 overflow-y-auto rounded-md p-tiny text-crimson-600 bg-regal-500 w-120 w-128 max-h-128"
+                >
+                  <!-- <pre>editing? {{ editing }}</pre> -->
+                  <textarea
+                    class="bg-regal-500 w-120 w-128 max-h-128"
+                    v-if="editing == index"
+                    v-model="task.Notes"
+                    type="text"
+                    :id="index"
+                  />
 
-                  <typography v-else class="">
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Expedita
-                    minus ipsa impedit. Accusantium enim modi voluptatum iure at vel
-                    placeat voluptatibus est, blanditiis dolores iste voluptatem esse
-                    deserunt non neque?
+                  <typography type="p" v-else>
+                    {{ task?.Notes }}
                   </typography>
                 </span>
 
                 <Row class="gap-0">
-                  <!-- <div class="w-4/5 h-1 bg-red"></div> -->
-                  <div
-                    v-for="(item, index) in task?.Points"
-                    :key="index"
-                    style="font-size: 0.75rem"
-                  >
+                  <div v-for="k in task?.Points || 0" :key="k" style="font-size: 0.75rem">
                     <star-icon
                       class="text-red"
                       height="10mm"
                       fill="#A71A23"
                       stroke="#D62338"
+                      @click="updatePoints(index, k)"
                     />
                   </div>
+
                   <div
-                    v-for="(item, index) in 5 - task?.Points"
-                    :key="index"
+                    v-for="k in 5 - (task?.Points || 5)"
+                    :key="k"
                     style="font-size: 0.75rem"
                   >
                     <star-icon
@@ -89,6 +116,7 @@
                       height="10mm"
                       fill="#777"
                       stroke="#D62338"
+                      @click="updatePoints(index, k + task?.Points)"
                     />
                   </div>
                 </Row>
@@ -99,12 +127,27 @@
             <template v-slot:footer>
               <Row>
                 <!-- Left -->
-                <span class="w-1/2"> </span>
+                <Row class="w-2/5">
+                  <AtomsChip class="">{{ task?.Status }}</AtomsChip>
+                </Row>
 
                 <!-- Right -->
                 <div>
-                  <atoms-button class="m-2" @change="toggleDone(index)"
-                    >Toggle {{ task?.Status }}</atoms-button
+                  <atoms-button
+                    v-if="editing != index"
+                    class="m-2"
+                    @click="editNotes(index)"
+                    >Edit</atoms-button
+                  >
+                  <atoms-button
+                    v-else-if="editing == index"
+                    class="m-2"
+                    @click="submitNotes(index)"
+                    >Submit</atoms-button
+                  >
+
+                  <atoms-button class="m-2" @click="complete(index)"
+                    >Complete</atoms-button
                   >
                   <atoms-button
                     @click="remove(index)"
@@ -141,8 +184,8 @@ import Typography from "~~/components/atoms/Typography.vue";
 import StarIcon from "../../components/atoms/StarIcon.vue";
 import Card from "~~/components/molecules/Card.vue";
 
-const delay = 500;
-const maxTasks = 10;
+const delay = 250;
+const maxTasks = 20;
 const duration = maxTasks * delay;
 
 const timer = ref(duration);
@@ -167,47 +210,84 @@ const initial = {
 };
 
 const task = ref({ ...initial });
+const filteredTasks = computed(() => {
+  return tasks.value.filter((t) => !!t?.Name && !!t?.Notes);
+});
 
 // const error = ref("");
 
 const picked = ref("");
 
 const visible = ref(false);
+const editing = ref(-1);
 
 async function submitTask() {
-  if (tasks?.value.find((t) => t.Name === task?.value?.Name))
-    throw new Error("Rats... this was already created");
+  if (!task?.value?.Name) {
+    error.value = "Name is a required Field";
+    return;
+  }
 
-  await createTask(task.value).then((response) => {
-    console.log("response", response);
-    tasks.value.push({ ...task.value });
+  if (filteredTasks?.value.find((t) => t.Name === task?.value?.Name)) {
+    error.value = "Rats... this was already created";
+    return;
+  }
 
-    Object.assign(tasks.value, initial);
-    // task.value = {
-    //   Name: "",
-    //   Notes: "",
-    //   Status: "Todo",
-    // };
-    // task.value.Name = "";
-  });
+  const newTask = { ...task.value };
+
+  const response = await createTask(newTask); //.then((response) => {
+  console.log("response", response);
+
+  // let created = response?.data?.records?.[0]?.fields;
+  // console.log("created", created);
+  // tasks.value.unshift({
+  //   ..
+  // });
+
+  // response?.data?.records.foreach((t) => tasks.value.unshift(t));
+
+  Object.assign(tasks.value, initial);
+  // });
 }
 
-async function toggleDone(index) {
-  // console.log("index", index);
-  let current = tasks.value[index];
-  current.Status = current?.Status !== "Todo" ? "Done" : "Todo";
-  console.log("current", current);
+function editNotes(index) {
+  editing.value = index;
+}
 
-  let fields = {
-    ...current,
-  };
-  patchTask(fields).then((response) => {
+async function submitNotes(index) {
+  let updatedTask = filteredTasks.value[index];
+  console.log("submitted notes", updatedTask?.Notes);
+
+  console.log("updatedTask", updatedTask);
+  let records = Array.from([{ ...updatedTask }]);
+  console.log("records", records);
+
+  patchTask(records).then((response) => {
+    console.log("response", response);
+  });
+
+  editNotes(-1); //reset to nothing.
+}
+
+async function complete(index) {
+  // console.log("index", index);
+  let updatedTask = filteredTasks.value[index];
+  updatedTask.Status = "Done"; //updatedTask?.Status !== "Todo" ? "Done" : "Todo";
+  console.log("current", updatedTask);
+
+  // let fields = {
+  //   ...current,
+  // };
+  console.log("updatedTask", updatedTask);
+  let records = Array.from([{ ...updatedTask }]);
+  console.log("records", records);
+
+  patchTask(records).then((response) => {
     console.log("response", response);
   });
 }
 
 async function remove(index) {
-  let current = tasks.value[index];
+  let current = filteredTasks.value[index];
   console.log("current", current);
   deleteTask(current.id).then((response) => {
     console.log("response", response);
@@ -224,14 +304,28 @@ async function onChange(e) {
   task.value[name] = value;
 }
 
-async function onSelect(index) {
-  tasks.value[index].Status = "Todo";
-}
+// async function onTextChanged(e) {
+//   // console.log("e", e);
+//   const index = e.target.id;
+//   // console.log("index", index);
+//   const target = e.target;
+//   const value = target.type === "checkbox" ? target.checked : target.value;
+//   const name = target.placeholder;
+
+//   const editedTask = filteredTasks.value[index]; //[name] = value;
+// }
 
 async function updatePoints(index, value) {
-  let currentTask = tasks.value[index];
-  currentTask.Points = value;
-  patchTask(currentTask);
+  let updatedTask = filteredTasks.value[index];
+  updatedTask.Points = value;
+
+  console.log("updatedTask", updatedTask);
+  let records = Array.from([{ ...updatedTask }]);
+  console.log("records", records);
+
+  patchTask(records).then((response) => {
+    console.log("response", response);
+  });
 }
 </script>
 

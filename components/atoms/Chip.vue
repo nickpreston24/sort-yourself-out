@@ -1,8 +1,7 @@
 <template>
   <button
     @click="close"
-    :class="chip"
-    class="inline-flex items-center font-semibold border-2 rounded-full"
+    class="inline-flex items-center font-semibold border-2 rounded-full shadow-md shadow-crimson-500/50 border-crimson-600/50 bg-crimson-600"
   >
     <Row class="m-1">
       <slot></slot>

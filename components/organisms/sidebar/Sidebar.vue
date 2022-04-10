@@ -13,14 +13,13 @@
         <div>Y</div>
         <div>O</div>
       </span>
-      <span v-else>Sort Yourself Out</span>
+      <span v-else>
+        <lobster />
+      </span>
     </h1>
 
     <span class="mx-auto">
       <SidebarLink to="/home" icon="fas fa-home">Home</SidebarLink>
-      <!-- <SidebarLink to="" icon="fas fa-image"
-        >Scribe</SidebarLink
-      > -->
       <SidebarLink to="/tasks" icon="fas fa-gear">Tasks</SidebarLink>
       <SidebarLink to="/journal" icon="fas fa-beer">Journal</SidebarLink>
       <SidebarLink to="/about" icon="fas fa-image">About</SidebarLink>
@@ -32,8 +31,8 @@
       :class="{ 'rotate-180': collapsed }"
     >
       <!-- <icon class="fas fa-angle-double-left" /> -->
-      <icon v-if="mode === 'RIGHT'" class="text-xl"> {{ ">>" }} </icon>
-      <icon v-else class="text-xl"> {{ "<<" }} </icon>
+      <i v-if="mode === 'RIGHT'" class="text-xl"> {{ ">>" }} </i>
+      <i v-else class="text-xl"> {{ "<<" }} </i>
     </span>
   </div>
 </template>

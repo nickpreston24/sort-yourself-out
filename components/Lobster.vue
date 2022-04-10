@@ -1,19 +1,15 @@
 <template>
-  <Left>
+  <div>
     <Stack>
-      <!-- <pre>darkmode? {{ darkMode }}</pre> -->
-      <!-- <AtomsButton @click="toggleTheme"
-        >Toggle {{ darkMode ? "Light" : "Dark" }} Mode</AtomsButton
-      > -->
-      <h1 class="m-8 text-4xl text-orange-700 lobster">Hail Lobster!</h1>
       <img
         src="../assets/public/hail-lobster.png"
         class="w-32 h-auto rounded-full shadow-crimson-500/50"
         alt="lobster"
         :class="lobster"
       />
+      <!-- <h1 class="m-8 text-4xl text-orange-700 lobster">Hail Lobster!</h1> -->
     </Stack>
-  </Left>
+  </div>
 </template>
 
 <script setup lang="ts">

@@ -13,19 +13,20 @@ export function useTasks(max = 10) {
 
   const createTask = async (props) =>
     create("Tasks", props).catch((err) => {
-      console.err(err);
+      console.log(err);
       error.value = err;
+      console.log("props", props);
     });
 
   const patchTask = async (props) =>
     patch("Tasks", props).catch((err) => {
-      console.err(err);
+      console.error(err);
       error.value = err;
     });
 
   const deleteTask = async (id) =>
     deleteRecord("Tasks", id).catch((err) => {
-      console.err(err);
+      console.error(err);
       error.value = err;
     });
 

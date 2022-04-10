@@ -1,18 +1,20 @@
 <template>
-  <Stack>
-    <atoms-typography type="h1">Regexer</atoms-typography>
-    <input type="text" v-model="pattern" />
-    <textarea v-model="text"> </textarea>
-    <div type="p" v-html="html"></div>
+  <NuxtLayout name="custom" class="">
+    <Stack>
+      <atoms-typography type="h1">Regexer</atoms-typography>
+      <input type="text" v-model="pattern" />
+      <textarea v-model="text"> </textarea>
+      <div type="p" v-html="html"></div>
 
-    <!-- <p>{{ matches.groups.year }}</p> -->
+      <!-- <p>{{ matches.groups.year }}</p> -->
 
-    <!-- <pre>extract? {{ extract(re, text) }}</pre> -->
-    <!-- <ul>
+      <!-- <pre>extract? {{ extract(re, text) }}</pre> -->
+      <!-- <ul>
       <li v-for="(match, index) in matches">
       </li>
     </ul> -->
-  </Stack>
+    </Stack>
+  </NuxtLayout>
 </template>
 <script setup lang="ts">
 import { ref } from "vue";

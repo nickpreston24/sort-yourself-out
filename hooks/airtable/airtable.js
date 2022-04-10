@@ -66,42 +66,59 @@ export const getById = async (tableName = null, id = null) => {
   return formatRecords(record);
 };
 
-export const patch = async (tableName = null, record = null) => {
+export const patch = async (tableName = null, records = []) => {
   if (!tableName) throw Error(`tableName cannot be null or empty`);
-  if (!record) throw Error(`record cannot be empty`);
+  // if (!record) throw Error(`record cannot be empty`);
 
-  console.log("record", { ...record });
+  console.log("records received", records);
+  // let id = record.id;
+  // console.log("id", id);
+  // console.log("record", { ...record });
+
+  let formattedRecords = records.map((r) => {
+    const { id, ...rest } = r;
+    return {
+      id,
+      fields: { ...rest },
+    };
+  });
+
+  console.log("records to patch :>> ", formattedRecords);
   const data = {
-    fields: { ...record },
-
-    // records: [
+    records: formattedRecords,
+    // [
     // {
-    // id: record?.id,
-    // fields: record?.fields || { ...record },
+    //   id: "reczhLAjJHszwLZc6",
+    //   fields: {
+    //     Name: "Make a 10 year plan!",
+    //     Status: "Todo",
+    //     Points: 5,
+    //   },
+    // },
+    // {
+    //   id: "recUT5TOy3Pd0WEW5",
+    //   fields: {
+    //     Name: "Sweet Caroline",
+    //     Notes: "good times",
+    //     Status: "Todo",
+    //     Points: 1,
+    //   },
+    // },
+    // {
+    //   id: "recqbekj0nyFEyrZq",
+    //   fields: {
+    //     Name: "Exceed Expectations",
+    //     Notes: "...",
+    //     Status: "Todo",
+    //     Points: 3,
+    //   },
     // },
     // ],
   };
 
-  // fetch(
-  //   "https://api.airtable.com/v0/appraFclZV7AFFEhr/Tasks/recSvSfqf0U3v2wdF",
-  //   {
-  //     method: "PATCH",
-  //     headers: {
-  //       Authorization: "Bearer keyl5Wo5ETa4HR4tt",
-  //       "Content-Type": "application/json",
-  //     },
-  //     body: JSON.stringify({
-  //       fields: {
-  //         Name: "Test",
-  //         Status: "Todo",
-  //         Due: "2022-03-29T13:00:00.000Z",
-  //         Frequency: ["Daily"],
-  //       },
-  //     }),
-  //   }
-  // );
+  console.log("data patch :>> ", data);
 
-  const url = `https://api.airtable.com/v0/${baseKey}/${tableName}/${record.id}`;
+  const url = `https://api.airtable.com/v0/${baseKey}/${tableName}`;
   let axiosConfig = {
     headers: {
       Authorization: "Bearer " + apiKey,
@@ -139,8 +156,7 @@ export const create = async (tableName = null, record) => {
   const response = await axios.post(url, data, axiosConfig);
 
   console.log("response?.data", response?.data);
-  // TODO: return id
-  return response?.data?.id;
+  return response;
 };
 
 export const deleteRecord = async (tableName = null, id = null) => {
