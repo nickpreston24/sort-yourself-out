@@ -1,7 +1,7 @@
 <template>
   <NuxtLayout name="custom">
     <Stack class="flex items-center justify-center w-auto">
-      <div class="flex items-center justify-center w-1/2">
+      <Row class="flex items-center justify-center w-1/2">
         <Stack v-if="true">
           <typography type="h2">Add a Task</typography>
           <ul>
@@ -15,11 +15,17 @@
               />
             </li>
           </ul>
-          <atoms-button color="bg-tahiti-500" @click="submitTask">Submit</atoms-button>
-          <atoms-button color="bg-tahiti-500" @click="reload">Reload</atoms-button>
+          <Row>
+            <atoms-button @click="submitTask">Submit</atoms-button>
+            <atoms-button @click="reload">Reload</atoms-button>
+            <atoms-button @click="clear">Clear</atoms-button>
+          </Row>
           <typography type="b" v-if="error">{{ error }}</typography>
         </Stack>
-      </div>
+        <div class="w-64 h-64 bg-yellow-500 border-2">
+          <atoms-brandon>Click ME</atoms-brandon>
+        </div>
+      </Row>
 
       <!-- Tasks List -->
       <!-- <pre>tasks? {{ tasks?.length }}</pre> -->
@@ -43,7 +49,7 @@
             class="gap-2 rounded-lg shadow-md shadow-regal-400/90 bg-regal-900/60 border-tahiti-200"
           >
             <!-- <pre>task?.id? {{ task?.id }}</pre> -->
-            <pre>{{ index }}</pre>
+            <!-- <pre>{{ index }}</pre> -->
             <Row class="gap-12">
               <!-- Left Column -->
               <div
@@ -58,7 +64,14 @@
 
               <!-- Right column -->
               <Stack>
-                <typography type="h3">{{ task?.Name }}</typography>
+                <input
+                  class="bg-regal-500 text-crimson-600"
+                  v-if="editing == index"
+                  v-model="task.Name"
+                  type="text"
+                  :id="index"
+                />
+                <typography v-else type="h3">{{ task?.Name }}</typography>
 
                 <!-- Notes -->
                 <span
@@ -202,12 +215,13 @@ const filteredTasks = computed(() => {
   return tasks.value.filter((t) => !!t?.Name);
 });
 
-// const error = ref("");
-
 const picked = ref("");
-
 const visible = ref(false);
 const editing = ref(-1);
+
+const clear = () => {
+  Object.assign(task.value, { Name: "", Notes: "", Status: "Todo", Points: 1 });
+};
 
 const reload = () => load(maxTasks);
 async function submitTask() {
@@ -221,19 +235,22 @@ async function submitTask() {
     return;
   }
 
-  const newTask = { ...task.value };
+  const newTask = { ...task.value, Points: parseInt(task.value?.Points) };
 
   const response = await createTask(newTask);
-  console.log("response", response);
+  // console.log("response", response);
 
   let record = response?.data?.records?.[0];
 
-  tasks.value.unshift({
-    ...record.fields,
-    id: record.id,
-  });
+  if (record) {
+    tasks.value.unshift({
+      ...record.fields,
+      id: record.id,
+    });
+  }
 
-  Object.assign(tasks.value, initial);
+  clear();
+  // Object.assign(task.value, initial);
 }
 
 function editNotes(index) {
@@ -248,9 +265,7 @@ async function submitNotes(index) {
   let records = Array.from([{ ...updatedTask }]);
   console.log("records", records);
 
-  patchTask(records).then((response) => {
-    console.log("response", response);
-  });
+  const response = await patchTask(records);
 
   editNotes(-1); //reset to nothing.
 }
@@ -305,9 +320,16 @@ async function updatePoints(index, value) {
   let records = Array.from([{ ...updatedTask }]);
   console.log("records", records);
 
-  patchTask(records).then((response) => {
-    console.log("response", response);
-  });
+  const response = await patchTask(records);
+}
+
+function initialState() {
+  return {
+    Name: "",
+    Notes: "",
+    Status: "Todo",
+    Points: 1,
+  };
 }
 </script>
 

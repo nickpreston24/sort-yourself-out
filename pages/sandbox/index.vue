@@ -1,24 +1,76 @@
 <template>
-  <NuxtLayout name="custom" class="">
-    <Stack>
-      <atoms-typography type="h1">Regexer</atoms-typography>
-      <input type="text" v-model="pattern" />
-      <textarea v-model="text"> </textarea>
-      <div type="p" v-html="html"></div>
+  <NuxtLayout name="custom">
+    <Row class="text-white">
+      <div class="w-64 h-64 bg-transparent border-2">
+        <atoms-typography type="h1">Regexer</atoms-typography>
+        <input type="text" class="bg-regal-800" v-model="pattern" />
+        <textarea class="bg-regal-800 text-tahiti-500" v-model="text"> </textarea>
+        <div type="p" class="bg-regal-800" v-html="html"></div>
+        <!-- <p>{{ matches.groups.year }}</p> -->
+        <!-- <pre>extract? {{ extract(re, text) }}</pre> -->
+        <!-- <ul>
+          <li v-for="(match, index) in matches">
+          </li>
+        </ul> -->
+      </div>
 
-      <!-- <p>{{ matches.groups.year }}</p> -->
+      <div class="flex flex-col items-center w-auto border-2 bg-regal-100 min-h-64">
+        <input class="bg-regal-500" v-model="headerValue" />
 
-      <!-- <pre>extract? {{ extract(re, text) }}</pre> -->
-      <!-- <ul>
-      <li v-for="(match, index) in matches">
-      </li>
-    </ul> -->
-    </Stack>
+        <atoms-shadow textShadow="#47a">
+          <h1 class="text-3xl">
+            {{ headerValue }}
+          </h1>
+        </atoms-shadow>
+        <atoms-shadow type="inset">
+          <h1 class="text-3xl">
+            {{ headerValue }}
+          </h1>
+        </atoms-shadow>
+
+        <atoms-shadow type="letterpress" textShadow="#754">
+          <h1 class="text-3xl">
+            {{ headerValue }}
+          </h1>
+        </atoms-shadow>
+        <atoms-shadow type="hard">
+          <h1 class="text-3xl">
+            {{ headerValue }}
+          </h1>
+        </atoms-shadow>
+        <atoms-shadow type="double">
+          <h1 class="text-3xl">
+            {{ headerValue }}
+          </h1>
+        </atoms-shadow>
+        <atoms-shadow class="bg-[#e6d7ab]" type="distant" textShadow="#b2a98f">
+          <h1 class="text-3xl">
+            {{ headerValue }}
+          </h1>
+        </atoms-shadow>
+        <atoms-shadow type="pop">
+          <h1 class="text-3xl">
+            {{ headerValue }}
+          </h1>
+        </atoms-shadow>
+        <atoms-shadow type="glowing">
+          <h1 class="text-3xl">
+            {{ headerValue }}
+          </h1>
+        </atoms-shadow>
+      </div>
+
+      <div class="w-64 h-64 bg-transparent border-2"></div>
+      <div class="w-64 h-64 bg-transparent border-2"></div>
+      <div class="w-64 h-64 bg-transparent border-2"></div>
+    </Row>
   </NuxtLayout>
 </template>
 <script setup lang="ts">
 import { ref } from "vue";
-import { Stack } from "@mpreston17/flexies";
+import { Stack, Row } from "@mpreston17/flexies";
+
+const headerValue = ref("");
 
 type Person = {
   first: String;
@@ -56,7 +108,8 @@ const html = computed(() => {
 div >>> p {
   font-size: 24px;
   font-weight: 300;
-  color: #000;
+  /* color: #fff; */
+  color: rgb(214 35 56 / var(--tw-text-opacity));
 }
 div >>> a {
   text-decoration: none;

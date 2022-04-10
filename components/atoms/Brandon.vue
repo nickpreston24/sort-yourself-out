@@ -6,7 +6,7 @@
     <Row class="gap-1 p-tiny">
       <div class="w-4/5 h-1 bg-red"></div>
       <div v-for="(item, index) in 5" :key="index" style="font-size: 0.75rem">
-        <i class="fa fa-star fa-xs"></i>
+        <AtomsStarIcon fill="#A71A23" stroke="#D62338" key="index" />
       </div>
       <div class="w-4/5 h-1 bg-red"></div>
     </Row>
@@ -14,23 +14,14 @@
     <Row class="gap-1 p-tiny">
       <div class="w-4/5 h-1 bg-red"></div>
       <div v-for="(item, index) in 5" :key="index" style="font-size: 0.75rem">
-        <i class="fa fa-star fa-xs"></i>
+        <AtomsStarIcon fill="#A71A23" stroke="#D62338" key="index" />
       </div>
       <div class="w-4/5 h-1 bg-red"></div>
     </Row>
     <!-- Bottom -->
   </button>
 </template>
-<script>
-import Row from "../flex/Row.vue";
-import Stack from "../flex/Stack.vue";
-import Grid from "../flex/Grid.vue";
-export default {
-  components: {
-    Row,
-    Stack,
-    Grid,
-  },
-};
+<script setup lang="ts">
+import { Row } from "@mpreston17/flexies";
 </script>
 <style></style>

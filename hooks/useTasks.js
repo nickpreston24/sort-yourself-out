@@ -12,34 +12,72 @@ export function useTasks(max = 10) {
   });
 
   const createTask = async (props) =>
-    create("Tasks", props).catch((err) => {
-      console.log(err);
-      error.value = err;
-      console.log("props", props);
-    });
+    create("Tasks", props)
+      .then((_) => (error.value = ""))
+      .catch((err) => {
+        console.log(err);
+        error.value = err;
+        // console.log("props", props);
+      });
 
   const patchTask = async (props) =>
-    patch("Tasks", props).catch((err) => {
-      console.error(err);
-      error.value = err;
-    });
+    patch("Tasks", props)
+      .then((_) => (error.value = ""))
+      .catch((err) => {
+        console.error(err);
+        error.value = err;
+      });
 
   const deleteTask = async (id) =>
-    deleteRecord("Tasks", id).catch((err) => {
-      console.error(err);
-      error.value = err;
-    });
+    deleteRecord("Tasks", id)
+      .then((_) => (error.value = ""))
+      .catch((err) => {
+        console.error(err);
+        error.value = err;
+      });
+
+  const createReward = async (props) =>
+    create("Rewards", props)
+      .then((_) => (error.value = ""))
+      .catch((err) => {
+        console.log(err);
+        error.value = err;
+        // console.log("props", props);
+      });
+
+  const patchReward = async (props) =>
+    patch("Rewards", props)
+      .then((_) => (error.value = ""))
+      .catch((err) => {
+        console.error(err);
+        error.value = err;
+      });
+
+  const deleteReward = async (id) =>
+    deleteRecord("Rewards", id)
+      .then((_) => (error.value = ""))
+      .catch((err) => {
+        console.error(err);
+        error.value = err;
+      });
 
   return {
     tasks,
     loading,
     error,
     load,
-    //api
+
+    //tasks api
 
     createTask,
     patchTask,
     deleteTask,
+
+    // rewards api
+
+    createReward,
+    deleteRecord,
+    patchReward,
   };
 
   async function load(max = 10) {
