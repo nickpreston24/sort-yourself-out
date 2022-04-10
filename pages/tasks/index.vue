@@ -3,22 +3,6 @@
     <Stack class="flex items-center justify-center w-auto">
       <div class="flex items-center justify-center w-1/2">
         <Stack v-if="true">
-          <transition
-            enter-active-class="duration-300 ease-out"
-            enter-from-class="transform scale-75 opacity-0"
-            enter-to-class="scale-100 opacity-100"
-            leave-active-class="duration-200 ease-in"
-            leave-from-class="scale-100 opacity-100"
-            leave-to-class="transform scale-75 opacity-0"
-          >
-            <div v-if="loading">
-              Lorem, ipsum dolor sit amet consectetur adipisicing elit. Repellendus quos
-              esse, nihil blanditiis quod repellat voluptate dolores culpa molestias
-              molestiae illum explicabo delectus odio, libero voluptates provident a?
-              Quis, corporis?
-            </div>
-          </transition>
-
           <typography type="h2">Add a Task</typography>
           <ul>
             <li class="p-2" v-for="(value, key, index) in task" :key="index">
@@ -32,15 +16,14 @@
             </li>
           </ul>
           <atoms-button color="bg-tahiti-500" @click="submitTask">Submit</atoms-button>
+          <atoms-button color="bg-tahiti-500" @click="reload">Reload</atoms-button>
           <typography type="b" v-if="error">{{ error }}</typography>
         </Stack>
       </div>
 
       <!-- Tasks List -->
-      <!-- <pre>timer? {{ timer }}</pre> -->
-      <!-- <pre>delay? {{ delay }}</pre> -->
-      <pre>tasks? {{ tasks?.length }}</pre>
-      <pre>tasks shown? {{ filteredTasks?.length }}</pre>
+      <!-- <pre>tasks? {{ tasks?.length }}</pre> -->
+      <!-- <pre>tasks shown? {{ filteredTasks?.length }}</pre> -->
       <div
         class="gap-4 overflow-auto display-block"
         v-for="(task, index) in filteredTasks"
@@ -128,7 +111,15 @@
               <Row>
                 <!-- Left -->
                 <Row class="w-2/5">
-                  <AtomsChip class="">{{ task?.Status }}</AtomsChip>
+                  <AtomsChip :status="task?.Status">{{ task?.Status }}</AtomsChip>
+
+                  <div
+                    class="flex items-center justify-center w-8 h-8 p-0 text-sm text-white border-2 rounded-full"
+                  >
+                    <p>
+                      {{ task?.["Subtasks"]?.Length || 0 }}
+                    </p>
+                  </div>
                 </Row>
 
                 <!-- Right -->
@@ -155,9 +146,6 @@
                   >
                     Delete
                   </atoms-button>
-                  <!-- <atoms-chip v-if="task?.Points" class="m-2">{{
-                  task?.Points
-                }}</atoms-chip> -->
                 </div>
                 <span class="w-1/6"></span>
               </Row>
@@ -179,7 +167,6 @@
 <script lang="ts" setup>
 import useTasks from "../../hooks/useTasks";
 import { Row, Stack, Center } from "@mpreston17/flexies";
-// import { paragraph, currentTheme, lightPallete } from "../../hooks/useTheme";
 import Typography from "~~/components/atoms/Typography.vue";
 import StarIcon from "../../components/atoms/StarIcon.vue";
 import Card from "~~/components/molecules/Card.vue";
@@ -198,12 +185,13 @@ setTimeout(() => {
   clearInterval(timerId);
 }, duration + delay);
 
-const { tasks, createTask, patchTask, deleteTask, error, loading } = useTasks(maxTasks);
+const { tasks, createTask, patchTask, deleteTask, load, error, loading } = useTasks(
+  maxTasks
+);
 
 const initial = {
   Name: "",
-  Notes:
-    "Lorem ipsum dolor sit amet consectetur adipisicing elit. In distinctio earum labore a, veniam laborum tenetur delectus animi consequatur molestiae dolores vitae aperiam nulla ab fugit deserunt veritatis natus eos! Lorem ipsum dolor sit, amet consectetur adipisicing elit. Reiciendis quos quibusdam culpa necessitatibus nam, accusamus dignissimos eum error. Esse sed quae aspernatur porro inventore, enim suscipit voluptas modi aperiam consequatur.",
+  Notes: "",
   Status: "Todo",
   Points: 1,
   // Frequency: null,
@@ -211,7 +199,7 @@ const initial = {
 
 const task = ref({ ...initial });
 const filteredTasks = computed(() => {
-  return tasks.value.filter((t) => !!t?.Name && !!t?.Notes);
+  return tasks.value.filter((t) => !!t?.Name);
 });
 
 // const error = ref("");
@@ -221,6 +209,7 @@ const picked = ref("");
 const visible = ref(false);
 const editing = ref(-1);
 
+const reload = () => load(maxTasks);
 async function submitTask() {
   if (!task?.value?.Name) {
     error.value = "Name is a required Field";
@@ -234,19 +223,17 @@ async function submitTask() {
 
   const newTask = { ...task.value };
 
-  const response = await createTask(newTask); //.then((response) => {
+  const response = await createTask(newTask);
   console.log("response", response);
 
-  // let created = response?.data?.records?.[0]?.fields;
-  // console.log("created", created);
-  // tasks.value.unshift({
-  //   ..
-  // });
+  let record = response?.data?.records?.[0];
 
-  // response?.data?.records.foreach((t) => tasks.value.unshift(t));
+  tasks.value.unshift({
+    ...record.fields,
+    id: record.id,
+  });
 
   Object.assign(tasks.value, initial);
-  // });
 }
 
 function editNotes(index) {
@@ -271,19 +258,14 @@ async function submitNotes(index) {
 async function complete(index) {
   // console.log("index", index);
   let updatedTask = filteredTasks.value[index];
-  updatedTask.Status = "Done"; //updatedTask?.Status !== "Todo" ? "Done" : "Todo";
+  updatedTask.Status = updatedTask?.Status === "Todo" ? "Done" : "Todo";
   console.log("current", updatedTask);
 
-  // let fields = {
-  //   ...current,
-  // };
   console.log("updatedTask", updatedTask);
   let records = Array.from([{ ...updatedTask }]);
   console.log("records", records);
 
-  patchTask(records).then((response) => {
-    console.log("response", response);
-  });
+  const response = await patchTask(records);
 }
 
 async function remove(index) {
