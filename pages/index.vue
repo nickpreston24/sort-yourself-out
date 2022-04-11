@@ -18,7 +18,6 @@
           </atoms-shadow>
         </Stack>
       </Center>
-      <p class="text-tiny">I've got a lovely bunch of coconuts...</p>
     </div>
   </NuxtLayout>
 </template>
