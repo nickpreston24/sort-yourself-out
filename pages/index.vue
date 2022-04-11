@@ -3,7 +3,12 @@
     <div class="h-screen">
       <Center>
         <Stack>
-          <atoms-shadow v-if="true" textShadow="rgb(214 35 56)" type="basic">
+          <atoms-shadow
+            class="w-128"
+            v-if="true"
+            textShadow="rgb(214 35 56)"
+            type="basic"
+          >
             <atoms-typography type="h1">{{ subject }}</atoms-typography>
           </atoms-shadow>
           <img class="w-auto max-h-64" src="~/assets/public/jordan-speaking.png" />
@@ -13,6 +18,7 @@
           </atoms-shadow>
         </Stack>
       </Center>
+      <p class="text-tiny">I've got a lovely bunch of coconuts...</p>
     </div>
   </NuxtLayout>
 </template>
