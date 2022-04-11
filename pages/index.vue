@@ -19,11 +19,17 @@
         </Stack>
       </Center>
     </div>
+    <!-- <pre>isDarkMode? {{ isDarkMode }}</pre> -->
   </NuxtLayout>
 </template>
 <script setup lang="ts">
 import { Center, Stack, Right, Left } from "@mpreston17/flexies";
 import { RNG } from "../helpers/random";
+import { preference } from "vue-preferences";
+
+const isDarkMode = computed(() => {
+  return preference("isDarkModeEnabled", { defaultValue: false, reactive: false });
+});
 
 const subjects = [
   "Sort yourself out!",

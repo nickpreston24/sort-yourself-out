@@ -48,8 +48,23 @@ export function useTasks(max = 10) {
       error.value = err;
     });
 
+  async function load(max = 10) {
+    loading.value = true;
+
+    tasks.value = await getRecords("Tasks", max).catch((err) => {
+      error.value = err;
+    });
+    rewards.value = await getRecords("Rewards", 10).catch((err) => {
+      error.value = err;
+    });
+    console.log("rewards", rewards);
+
+    loading.value = false;
+  }
+
   return {
     tasks,
+    rewards,
     loading,
     error,
     load,
@@ -63,22 +78,9 @@ export function useTasks(max = 10) {
     // rewards api
 
     createReward,
-    deleteRecord,
+    deleteReward,
     patchReward,
   };
-
-  async function load(max = 10) {
-    loading.value = true;
-
-    tasks.value = await getRecords("Tasks", max).catch((err) => {
-      error.value = err;
-    });
-    rewards.value = await getRecords("Rewards", 10).catch((err) => {
-      error.value = err;
-    });
-
-    loading.value = false;
-  }
 }
 
 export default useTasks;

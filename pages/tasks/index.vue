@@ -22,10 +22,16 @@
           </Row>
           <typography type="b" v-if="error">{{ error }}</typography>
         </Stack>
-        <!-- <div v-if="false" class="w-64 h-64 bg-yellow-500 border-2">
-          <atoms-brandon>Click ME</atoms-brandon>
-        </div> -->
       </Row>
+
+      <!-- Rewards Cards -->
+
+      <pre>rewards?.length? {{ rewards?.length }}</pre>
+      <div class="mb-10 ml-4 mr-4 bg-transparent rewards-grid">
+        <div v-for="(reward, index) in rewards">
+          <RewardsCard :reward="reward" :key="index" />
+        </div>
+      </div>
 
       <!-- Tasks Grid -->
       <div class="m-4 task-grid">
@@ -43,124 +49,127 @@
             leave-from-class="scale-100 opacity-100"
             leave-to-class="transform scale-75 opacity-0"
           >
-            <Card
-              v-show="index >= timer / delay"
-              class="gap-2 rounded-lg shadow-md shadow-regal-400/90 bg-regal-900/60 border-tahiti-200"
-            >
-              <pre class="text-tiny"> {{ index }}</pre>
-              <div class="flex flex-row items-center justify-evenly">
-                <!-- Left Column -->
+            <div class="bg-regal-800 hover:bg-regal-600">
+              <Card
+                v-show="index >= timer / delay"
+                class="gap-2 shadow-md shadow-regal-400/90 opacity-90"
+              >
+                <pre class="text-tiny"> {{ index }}</pre>
+                <div class="flex flex-row items-center justify-evenly">
+                  <!-- Left Column -->
 
-                <div class="m- 2sm:w-16 md:w-24 lg:w-32 xl:w-36">
-                  <img
-                    class="h-auto max-w-full rounded-full shadow-lg shadow-regal-300/50 hover:scale-110"
-                    src="~/assets/public/lobster-sticker.png"
-                    alt="hierarchy"
-                  />
-                </div>
+                  <div class="m- 2sm:w-16 md:w-24 lg:w-32 xl:w-36">
+                    <img
+                      class="h-auto rounded-full shadow-lg max-wbutton-full shadow-regal-300/50 hover:scale-110"
+                      src="~/assets/public/lobster-sticker.png"
+                      alt="hierarchy"
+                    />
+                  </div>
 
-                <!-- Right column -->
-                <Stack>
-                  <input
-                    class="bg-regal-500 text-crimson-600"
-                    v-if="editing == index"
-                    v-model="task.Name"
-                    type="text"
-                    :id="index"
-                  />
-                  <typography v-else type="h3">{{ task?.Name }}</typography>
-
-                  <!-- Notes -->
-                  <span
-                    class="h-24 m-2 overflow-y-auto rounded-md p-tiny text-crimson-600 bg-regal-500 sm:w-56 md:w-64 max-h-128"
-                  >
-                    <textarea
-                      class="bg-regal-500 w-120 w-128 max-h-128"
+                  <!-- Right column -->
+                  <Stack>
+                    <input
+                      class="bg-regal-500 text-crimson-600"
                       v-if="editing == index"
-                      v-model="task.Notes"
+                      v-model="task.Name"
                       type="text"
                       :id="index"
                     />
+                    <typography v-else type="h3">{{ task?.Name }}</typography>
 
-                    <typography type="p" v-else>
-                      {{ task?.Notes }}
-                    </typography>
-                  </span>
-
-                  <Row class="gap-0">
-                    <div
-                      v-for="k in task?.Points || 0"
-                      :key="k"
-                      style="font-size: 0.75rem"
+                    <!-- Notes -->
+                    <span
+                      class="h-24 m-2 overflow-y-auto rounded-md p-tiny text-crimson-600 bg-regal-500 sm:w-56 md:w-64 max-h-128"
                     >
-                      <star-icon
-                        class="text-red"
-                        height="10mm"
-                        fill="#A71A23"
-                        stroke="#D62338"
-                        @click="updatePoints(index, k)"
+                      <textarea
+                        class="bg-regal-500 w-120 w-128 max-h-128"
+                        v-if="editing == index"
+                        v-model="task.Notes"
+                        type="text"
+                        :id="index"
                       />
-                    </div>
 
-                    <div
-                      v-for="k in 5 - (task?.Points || 5)"
-                      :key="k"
-                      style="font-size: 0.75rem"
-                    >
-                      <star-icon
-                        class="text-red"
-                        height="10mm"
-                        fill="#777"
-                        stroke="#D62338"
-                        @click="updatePoints(index, k + task?.Points)"
-                      />
-                    </div>
-                  </Row>
-                </Stack>
-              </div>
-              <!-- </template> -->
+                      <typography type="p" v-else>
+                        {{ task?.Notes }}
+                      </typography>
+                    </span>
 
-              <template v-slot:footer>
-                <Flex class="flex justify-wrap">
-                  <!-- Left -->
-                  <Row class="w-2/5">
-                    <AtomsChip :status="task?.Status">{{ task?.Status }}</AtomsChip>
+                    <Row class="gap-0">
+                      <div
+                        v-for="k in task?.Points || 0"
+                        :key="k"
+                        style="font-size: 0.75rem"
+                      >
+                        <star-icon
+                          class="text-red"
+                          height="10mm"
+                          fill="#A71A23"
+                          stroke="#D62338"
+                          @click="updatePoints(index, k)"
+                        />
+                      </div>
 
-                    <div
-                      class="flex items-center justify-center w-8 h-8 p-0 text-sm text-white border-2 rounded-full"
-                    >
-                      <p>
+                      <div
+                        v-for="k in 5 - (task?.Points || 5)"
+                        :key="k"
+                        style="font-size: 0.75rem"
+                      >
+                        <star-icon
+                          class="text-red"
+                          height="10mm"
+                          fill="#777"
+                          stroke="#D62338"
+                          @click="updatePoints(index, k + task?.Points)"
+                        />
+                      </div>
+                    </Row>
+                  </Stack>
+                </div>
+                <!-- </template> -->
+
+                <template v-slot:footer>
+                  <Flex class="flex justify-wrap">
+                    <!-- Left -->
+                    <Row class="w-2/5">
+                      <AtomsChip :status="task?.Status">{{ task?.Status }}</AtomsChip>
+
+                      <div
+                        class="flex items-center justify-center w-6 h-6 p-0 text-sm text-white rounded-full"
+                      >
+                        <plus-icon fill="#A71A23" stroke="#D62338" />
+                        <!-- <p>
                         {{ task?.["Subtasks"]?.Length || 0 }}
-                      </p>
+                      </p> -->
+                      </div>
+                    </Row>
+
+                    <!-- Right -->
+                    <div class="flex flex-row justify-evenly">
+                      <atoms-button
+                        v-if="editing != index"
+                        class="m-2"
+                        @click="editNotes(index)"
+                        >Edit</atoms-button
+                      >
+                      <atoms-button
+                        v-else-if="editing == index"
+                        class="m-2"
+                        @click="submitNotes(index)"
+                        >Submit</atoms-button
+                      >
+
+                      <atoms-button class="m-2" @click="complete(index)"
+                        >Complete</atoms-button
+                      >
+                      <atoms-button @click="remove(index)" class="m-2">
+                        Delete
+                      </atoms-button>
                     </div>
-                  </Row>
-
-                  <!-- Right -->
-                  <div class="flex flex-row justify-evenly">
-                    <atoms-button
-                      v-if="editing != index"
-                      class="m-2"
-                      @click="editNotes(index)"
-                      >Edit</atoms-button
-                    >
-                    <atoms-button
-                      v-else-if="editing == index"
-                      class="m-2"
-                      @click="submitNotes(index)"
-                      >Submit</atoms-button
-                    >
-
-                    <atoms-button class="m-2" @click="complete(index)"
-                      >Complete</atoms-button
-                    >
-                    <atoms-button @click="remove(index)" class="m-2">
-                      Delete
-                    </atoms-button>
-                  </div>
-                  <span class="w-1/6"></span>
-                </Flex>
-              </template>
-            </Card>
+                    <span class="w-1/6"></span>
+                  </Flex>
+                </template>
+              </Card>
+            </div>
           </transition>
         </div>
       </div>
@@ -176,11 +185,13 @@
   </NuxtLayout>
 </template>
 <script lang="ts" setup>
-import useTasks from "../../hooks/useTasks";
+import useTasks from "~/hooks/useTasks";
 import { Row, Stack, Center } from "@mpreston17/flexies";
 import Typography from "~~/components/atoms/Typography.vue";
-import StarIcon from "../../components/atoms/StarIcon.vue";
+import StarIcon from "~~/components/atoms/StarIcon.vue";
+import PlusIcon from "~~/components/atoms/PlusIcon.vue";
 import Card from "~~/components/molecules/Card.vue";
+import RewardsCard from "./RewardsCard.vue";
 
 const delay = 250;
 const maxTasks = 20;
@@ -196,9 +207,16 @@ setTimeout(() => {
   clearInterval(timerId);
 }, duration + delay);
 
-const { tasks, createTask, patchTask, deleteTask, load, error, loading } = useTasks(
-  maxTasks
-);
+const {
+  tasks,
+  rewards,
+  createTask,
+  patchTask,
+  deleteTask,
+  load,
+  error,
+  loading,
+} = useTasks(maxTasks);
 
 const initial = {
   Name: "",
@@ -210,7 +228,7 @@ const initial = {
 
 const task = ref({ ...initial });
 const filteredTasks = computed(() => {
-  return tasks.value.filter((t) => t);
+  return tasks.value.filter((t) => t.Status !== "Done");
 });
 
 const picked = ref("");
@@ -240,16 +258,14 @@ async function submitTask() {
   //   return;
   // }
 
-  const newTask = { ...task.value, Points: parseInt(task.value?.Points) };
+  const newTask = {
+    ...task.value,
+    Points: parseInt(task.value?.Points),
+    // Start: DateTime.local().toISO(),
+    // Start: now.toISO(),
+  };
 
-  const response = await createTask(newTask).then(() => {
-    error.value = "";
-    // task.value = {
-    //   Name: "xxx",
-    //   Notes: "",
-    // };
-  });
-  // console.log("response", response);
+  const response = await createTask(newTask);
 
   let record = response?.data?.records?.[0];
 
@@ -370,9 +386,9 @@ function initialState() {
   grid-gap: 1em;
 }
 
-.layout-grid {
+.rewards-grid {
   display: grid;
-  /* grid-template-rows: 1fr 1fr; */
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   grid-gap: 1em;
 }
 

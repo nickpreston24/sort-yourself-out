@@ -62,6 +62,8 @@ Gradients work well on the 30%.
   - [ ] Add the Radial Progress bar to the Gannt chart.
         ![img](https://www.productplan.com/uploads/2019/11/Gantt-chart.png)
   - [ ] Learn tables for the Gannt chart
+- [ ] Show the top 3 Rewards in small Cards
+- [ ] Show % Done for each card w/ radial progress
 
 
 ## Nice to haves
@@ -69,3 +71,4 @@ Gradients work well on the 30%.
 - [ ] [Overlay navigation](https://www.w3schools.com/howto/howto_js_fullscreen_overlay.asp)
 - [ ] 
 - [ ] Toasts
+- [ ] Tooltips
