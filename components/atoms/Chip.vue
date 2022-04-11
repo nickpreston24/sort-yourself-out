@@ -1,7 +1,7 @@
 <template>
   <button
     @click="close"
-    class="inline-flex items-center font-semibold border-2 rounded-full shadow-md"
+    class="inline-flex items-center font-semibold border-2 rounded-full shadow-md md:text-lg sm:text-tiny"
     :class="chip"
   >
     <Row class="m-1">

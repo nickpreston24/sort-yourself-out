@@ -12,54 +12,41 @@ export function useTasks(max = 10) {
   });
 
   const createTask = async (props) =>
-    create("Tasks", props)
-      .then((_) => (error.value = ""))
-      .catch((err) => {
-        console.log(err);
-        error.value = err;
-        // console.log("props", props);
-      });
+    create("Tasks", props).catch((err) => {
+      console.log(err);
+      error.value = err;
+    });
 
   const patchTask = async (props) =>
-    patch("Tasks", props)
-      .then((_) => (error.value = ""))
-      .catch((err) => {
-        console.error(err);
-        error.value = err;
-      });
+    patch("Tasks", props).catch((err) => {
+      console.error(err);
+      error.value = err;
+    });
 
   const deleteTask = async (id) =>
-    deleteRecord("Tasks", id)
-      .then((_) => (error.value = ""))
-      .catch((err) => {
-        console.error(err);
-        error.value = err;
-      });
+    deleteRecord("Tasks", id).catch((err) => {
+      console.error(err);
+      error.value = err;
+    });
 
   const createReward = async (props) =>
-    create("Rewards", props)
-      .then((_) => (error.value = ""))
-      .catch((err) => {
-        console.log(err);
-        error.value = err;
-        // console.log("props", props);
-      });
+    create("Rewards", props).catch((err) => {
+      console.log(err);
+      error.value = err;
+      // console.log("props", props);
+    });
 
   const patchReward = async (props) =>
-    patch("Rewards", props)
-      .then((_) => (error.value = ""))
-      .catch((err) => {
-        console.error(err);
-        error.value = err;
-      });
+    patch("Rewards", props).catch((err) => {
+      console.error(err);
+      error.value = err;
+    });
 
   const deleteReward = async (id) =>
-    deleteRecord("Rewards", id)
-      .then((_) => (error.value = ""))
-      .catch((err) => {
-        console.error(err);
-        error.value = err;
-      });
+    deleteRecord("Rewards", id).catch((err) => {
+      console.error(err);
+      error.value = err;
+    });
 
   return {
     tasks,

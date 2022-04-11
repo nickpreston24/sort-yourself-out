@@ -12,7 +12,7 @@ import { mode, collapsed } from "~~/components/organisms/sidebar/useSidebar";
 import { onMounted } from "vue";
 
 onMounted(() => {
-  mode.value = "RIGHT";
+  console.log("mounted");
   setTimeout(() => {
     collapsed.value = true;
   }, 2250);

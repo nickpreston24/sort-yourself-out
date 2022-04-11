@@ -1,7 +1,7 @@
 <template>
   <NuxtLayout name="custom">
-    <Stack class="flex items-center justify-center w-auto">
-      <Row class="flex items-center justify-center w-1/2">
+    <div class="">
+      <Row class="flex items-center justify-center">
         <Stack v-if="true">
           <typography type="h2">Add a Task</typography>
           <ul>
@@ -15,159 +15,156 @@
               />
             </li>
           </ul>
-          <Row
-            >main
+          <Row>
             <atoms-button @click="submitTask">Submit</atoms-button>
             <atoms-button @click="reload">Reload</atoms-button>
             <atoms-button @click="clear">Clear</atoms-button>
           </Row>
           <typography type="b" v-if="error">{{ error }}</typography>
         </Stack>
-        <div v-if="false" class="w-64 h-64 bg-yellow-500 border-2">
+        <!-- <div v-if="false" class="w-64 h-64 bg-yellow-500 border-2">
           <atoms-brandon>Click ME</atoms-brandon>
-        </div>
+        </div> -->
       </Row>
 
-      <!-- Tasks List -->
-      <!-- <pre>tasks? {{ tasks?.length }}</pre> -->
-      <!-- <pre>tasks shown? {{ filteredTasks?.length }}</pre> -->
-      <div
-        class="gap-4 overflow-auto display-block"
-        v-for="(task, index) in filteredTasks"
-        :key="index"
-      >
-        <transition
-          name="fade"
-          enter-active-class="duration-300 ease-out"
-          enter-from-class="transform scale-75 opacity-0"
-          enter-to-class="scale-100 opacity-100"
-          leave-active-class="duration-200 ease-in"
-          leave-from-class="scale-100 opacity-100"
-          leave-to-class="transform scale-75 opacity-0"
+      <!-- Tasks Grid -->
+      <div class="m-4 task-grid">
+        <div
+          class="gap-4 overflow-auto display-block"
+          v-for="(task, index) in filteredTasks"
+          :key="index"
         >
-          <Card
-            v-show="index >= timer / delay"
-            class="gap-2 rounded-lg shadow-md shadow-regal-400/90 bg-regal-900/60 border-tahiti-200"
+          <transition
+            name="fade"
+            enter-active-class="duration-300 ease-out"
+            enter-from-class="transform scale-75 opacity-0"
+            enter-to-class="scale-100 opacity-100"
+            leave-active-class="duration-200 ease-in"
+            leave-from-class="scale-100 opacity-100"
+            leave-to-class="transform scale-75 opacity-0"
           >
-            <!-- <pre>task?.id? {{ task?.id }}</pre> -->
-            <!-- <pre>{{ index }}</pre> -->
-            <Row class="gap-12">
-              <!-- Left Column -->
-              <div
-                class="flex items-center justify-center m-2 bg-white rounded-full shadow-lg w-36 h-36 shadow-regal-300/50"
-              >
-                <img
-                  class="w-20 hover:scale-110"
-                  src="~/assets/public/lobster-sticker.png"
-                  alt="hierarchy"
-                />
-              </div>
+            <Card
+              v-show="index >= timer / delay"
+              class="gap-2 rounded-lg shadow-md shadow-regal-400/90 bg-regal-900/60 border-tahiti-200"
+            >
+              <pre class="text-tiny"> {{ index }}</pre>
+              <div class="flex flex-row items-center justify-evenly">
+                <!-- Left Column -->
 
-              <!-- Right column -->
-              <Stack>
-                <input
-                  class="bg-regal-500 text-crimson-600"
-                  v-if="editing == index"
-                  v-model="task.Name"
-                  type="text"
-                  :id="index"
-                />
-                <typography v-else type="h3">{{ task?.Name }}</typography>
+                <div class="m- 2sm:w-16 md:w-24 lg:w-32 xl:w-36">
+                  <img
+                    class="h-auto max-w-full rounded-full shadow-lg shadow-regal-300/50 hover:scale-110"
+                    src="~/assets/public/lobster-sticker.png"
+                    alt="hierarchy"
+                  />
+                </div>
 
-                <!-- Notes -->
-                <span
-                  class="h-24 m-2 overflow-y-auto rounded-md p-tiny text-crimson-600 bg-regal-500 w-120 w-128 max-h-128"
-                >
-                  <!-- <pre>editing? {{ editing }}</pre> -->
-                  <textarea
-                    class="bg-regal-500 w-120 w-128 max-h-128"
+                <!-- Right column -->
+                <Stack>
+                  <input
+                    class="bg-regal-500 text-crimson-600"
                     v-if="editing == index"
-                    v-model="task.Notes"
+                    v-model="task.Name"
                     type="text"
                     :id="index"
                   />
+                  <typography v-else type="h3">{{ task?.Name }}</typography>
 
-                  <typography type="p" v-else>
-                    {{ task?.Notes }}
-                  </typography>
-                </span>
-
-                <Row class="gap-0">
-                  <div v-for="k in task?.Points || 0" :key="k" style="font-size: 0.75rem">
-                    <star-icon
-                      class="text-red"
-                      height="10mm"
-                      fill="#A71A23"
-                      stroke="#D62338"
-                      @click="updatePoints(index, k)"
+                  <!-- Notes -->
+                  <span
+                    class="h-24 m-2 overflow-y-auto rounded-md p-tiny text-crimson-600 bg-regal-500 sm:w-56 md:w-64 max-h-128"
+                  >
+                    <textarea
+                      class="bg-regal-500 w-120 w-128 max-h-128"
+                      v-if="editing == index"
+                      v-model="task.Notes"
+                      type="text"
+                      :id="index"
                     />
+
+                    <typography type="p" v-else>
+                      {{ task?.Notes }}
+                    </typography>
+                  </span>
+
+                  <Row class="gap-0">
+                    <div
+                      v-for="k in task?.Points || 0"
+                      :key="k"
+                      style="font-size: 0.75rem"
+                    >
+                      <star-icon
+                        class="text-red"
+                        height="10mm"
+                        fill="#A71A23"
+                        stroke="#D62338"
+                        @click="updatePoints(index, k)"
+                      />
+                    </div>
+
+                    <div
+                      v-for="k in 5 - (task?.Points || 5)"
+                      :key="k"
+                      style="font-size: 0.75rem"
+                    >
+                      <star-icon
+                        class="text-red"
+                        height="10mm"
+                        fill="#777"
+                        stroke="#D62338"
+                        @click="updatePoints(index, k + task?.Points)"
+                      />
+                    </div>
+                  </Row>
+                </Stack>
+              </div>
+              <!-- </template> -->
+
+              <template v-slot:footer>
+                <Flex class="flex justify-wrap">
+                  <!-- Left -->
+                  <Row class="w-2/5">
+                    <AtomsChip :status="task?.Status">{{ task?.Status }}</AtomsChip>
+
+                    <div
+                      class="flex items-center justify-center w-8 h-8 p-0 text-sm text-white border-2 rounded-full"
+                    >
+                      <p>
+                        {{ task?.["Subtasks"]?.Length || 0 }}
+                      </p>
+                    </div>
+                  </Row>
+
+                  <!-- Right -->
+                  <div class="flex flex-row justify-evenly">
+                    <atoms-button
+                      v-if="editing != index"
+                      class="m-2"
+                      @click="editNotes(index)"
+                      >Edit</atoms-button
+                    >
+                    <atoms-button
+                      v-else-if="editing == index"
+                      class="m-2"
+                      @click="submitNotes(index)"
+                      >Submit</atoms-button
+                    >
+
+                    <atoms-button class="m-2" @click="complete(index)"
+                      >Complete</atoms-button
+                    >
+                    <atoms-button @click="remove(index)" class="m-2">
+                      Delete
+                    </atoms-button>
                   </div>
-
-                  <div
-                    v-for="k in 5 - (task?.Points || 5)"
-                    :key="k"
-                    style="font-size: 0.75rem"
-                  >
-                    <star-icon
-                      class="text-red"
-                      height="10mm"
-                      fill="#777"
-                      stroke="#D62338"
-                      @click="updatePoints(index, k + task?.Points)"
-                    />
-                  </div>
-                </Row>
-              </Stack>
-            </Row>
-            <!-- </template> -->
-
-            <template v-slot:footer>
-              <Row>
-                <!-- Left -->
-                <Row class="w-2/5">
-                  <AtomsChip :status="task?.Status">{{ task?.Status }}</AtomsChip>
-
-                  <div
-                    class="flex items-center justify-center w-8 h-8 p-0 text-sm text-white border-2 rounded-full"
-                  >
-                    <p>
-                      {{ task?.["Subtasks"]?.Length || 0 }}
-                    </p>
-                  </div>
-                </Row>
-
-                <!-- Right -->
-                <div>
-                  <atoms-button
-                    v-if="editing != index"
-                    class="m-2"
-                    @click="editNotes(index)"
-                    >Edit</atoms-button
-                  >
-                  <atoms-button
-                    v-else-if="editing == index"
-                    class="m-2"
-                    @click="submitNotes(index)"
-                    >Submit</atoms-button
-                  >
-
-                  <atoms-button class="m-2" @click="complete(index)"
-                    >Complete</atoms-button
-                  >
-                  <atoms-button
-                    @click="remove(index)"
-                    class="m-2 text-white rounded-md shadow-sm bg-tahititi bg-red shadow-red"
-                  >
-                    Delete
-                  </atoms-button>
-                </div>
-                <span class="w-1/6"></span>
-              </Row>
-            </template>
-          </Card>
-        </transition>
+                  <span class="w-1/6"></span>
+                </Flex>
+              </template>
+            </Card>
+          </transition>
+        </div>
       </div>
-    </Stack>
+    </div>
 
     <transition name="fade">
       <lobster-spinner
@@ -213,32 +210,45 @@ const initial = {
 
 const task = ref({ ...initial });
 const filteredTasks = computed(() => {
-  return tasks.value.filter((t) => !!t?.Name);
+  return tasks.value.filter((t) => t);
 });
 
 const picked = ref("");
 const visible = ref(false);
 const editing = ref(-1);
 
-const clear = () => {
-  Object.assign(task.value, { Name: "", Notes: "", Status: "Todo", Points: 1 });
-};
+// const clear = () => {
+//   // Object.assign(task.value, { Name: "", Notes: "", Status: "Todo", Points: 1 });
+//   task.value = {
+//     Name: "",
+//     Notes: "",
+//     Status: "Todo",
+//     Points: 1,
+//   };
+// };
 
 const reload = () => load(maxTasks);
+
 async function submitTask() {
   if (!task?.value?.Name) {
     error.value = "Name is a required Field";
     return;
   }
 
-  if (filteredTasks?.value.find((t) => t.Name === task?.value?.Name)) {
-    error.value = "Rats... this was already created";
-    return;
-  }
+  // if (filteredTasks?.value.find((t) => t.Name)) {
+  //   error.value = "Rats... this was already created";
+  //   return;
+  // }
 
   const newTask = { ...task.value, Points: parseInt(task.value?.Points) };
 
-  const response = await createTask(newTask);
+  const response = await createTask(newTask).then(() => {
+    error.value = "";
+    // task.value = {
+    //   Name: "xxx",
+    //   Notes: "",
+    // };
+  });
   // console.log("response", response);
 
   let record = response?.data?.records?.[0];
@@ -250,7 +260,7 @@ async function submitTask() {
     });
   }
 
-  clear();
+  // clear();
   // Object.assign(task.value, initial);
 }
 
@@ -266,7 +276,9 @@ async function submitNotes(index) {
   let records = Array.from([{ ...updatedTask }]);
   console.log("records", records);
 
-  const response = await patchTask(records);
+  const response = await patchTask(records).then((_) => {
+    error.value = "";
+  });
 
   editNotes(-1); //reset to nothing.
 }
@@ -281,18 +293,24 @@ async function complete(index) {
   let records = Array.from([{ ...updatedTask }]);
   console.log("records", records);
 
-  const response = await patchTask(records);
+  const response = await patchTask(records).then((_) => {
+    error.value = "";
+  });
 }
 
 async function remove(index) {
   let current = filteredTasks.value[index];
   console.log("current", current);
-  deleteTask(current.id).then((response) => {
-    console.log("response", response);
-    // alert("Update complete!");
-    if (response.status === 200)
-      tasks.value = tasks.value.filter((x) => x.id !== current.id);
-  });
+  deleteTask(current.id)
+    .then((response) => {
+      console.log("response", response);
+      // alert("Update complete!");
+      if (response.status === 200)
+        tasks.value = tasks.value.filter((x) => x.id !== current.id);
+    })
+    .then((_) => {
+      error.value = "";
+    });
 }
 
 async function onChange(e) {
@@ -321,7 +339,9 @@ async function updatePoints(index, value) {
   let records = Array.from([{ ...updatedTask }]);
   console.log("records", records);
 
-  const response = await patchTask(records);
+  const response = await patchTask(records).then((_) => {
+    error.value = "";
+  });
 }
 
 function initialState() {
@@ -344,6 +364,18 @@ function initialState() {
 </select> -->
 
 <style scoped>
+.task-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-gap: 1em;
+}
+
+.layout-grid {
+  display: grid;
+  /* grid-template-rows: 1fr 1fr; */
+  grid-gap: 1em;
+}
+
 /* Fade */
 .fade-enter-from,
 .fade-leave-to {

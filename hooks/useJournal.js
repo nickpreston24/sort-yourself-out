@@ -15,18 +15,31 @@ export function useJournal() {
   onMounted(async () => {
     loading.value = true;
 
-    entries.value = await getRecords("Journal", 100).catch(console.error);
+    entries.value = await getRecords("Journal", 100).catch((err) => {
+      error.value = err;
+    });
 
     loading.value = false;
   });
 
-  const createJournal = async (props) => {
-    return create("Journal", props);
+  const createJournalEntry = async (props) => {
+    return create("Journal", props).catch((err) => {
+      console.log(err);
+      error.value = err;
+    });
   };
 
-  const patchJournal = async (props) => patch("Journal", props);
+  const patchEntry = async (props) =>
+    patch("Journal", props).catch((err) => {
+      console.error(err);
+      error.value = err;
+    });
 
-  const deleteJournal = async (id) => deleteRecord("Journal", id);
+  const deleteEntry = async (id) =>
+    deleteRecord("Journal", id).catch((err) => {
+      console.error(err);
+      error.value = err;
+    });
 
   return {
     entries,
@@ -34,9 +47,9 @@ export function useJournal() {
     error,
     //api
 
-    createJournal,
-    patchJournal,
-    deleteJournal,
+    createJournalEntry,
+    patchEntry,
+    deleteEntry,
   };
 }
 

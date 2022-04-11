@@ -317,10 +317,10 @@
     semver "^7.3.5"
     tar "^6.1.11"
 
-"@mpreston17/flexies@^1.1.0":
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/@mpreston17/flexies/-/flexies-1.1.0.tgz#1396e735c66318c7a7a2f417ef83fd3a4110b16a"
-  integrity sha512-L/lBD3d+7GHrcjnIgDc6Yp+v+4G2c0x1OH5IbAoZ3HEMTqNtn313ACqG9BVEs5cBLITjHmPoEzP4thNW9zs/6g==
+"@mpreston17/flexies@^1.2.0":
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/@mpreston17/flexies/-/flexies-1.2.0.tgz#f8b43c240f609e2eb0bd349f3cfc377ed2e1f252"
+  integrity sha512-FZs6LXVMxuJghv8OL/Uhws9P6It1aQ+1s7Jo2HwtK6/aEBA+1q2ytep9hk6tMcSTufozzmlifNfE12yHqmqyFA==
 
 "@netlify/functions@^1.0.0":
   version "1.0.0"

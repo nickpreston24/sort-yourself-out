@@ -5,8 +5,7 @@
     }"
     :class="shadow"
   >
-    <pre class="text-4xl">{{ type }}</pre>
-    <!-- <slot></slot> -->
+    <slot></slot>
   </div>
 </template>
 <script setup lang="ts">

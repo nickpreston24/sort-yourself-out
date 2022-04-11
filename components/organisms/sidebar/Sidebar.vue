@@ -19,25 +19,24 @@
     </h1>
 
     <span class="mx-auto">
-      <SidebarLink to="/home" icon="fas fa-home">Home</SidebarLink>
-      <SidebarLink to="/tasks" icon="fas fa-gear">Tasks</SidebarLink>
-      <SidebarLink to="/journal" icon="fas fa-beer">Journal</SidebarLink>
-      <SidebarLink to="/about" icon="fas fa-image">About</SidebarLink>
-      <SidebarLink v-if="true" to="/sandbox" icon="fas fa-image">Sandbox</SidebarLink>
+      <SidebarLink to="/">Home</SidebarLink>
+      <SidebarLink to="/tasks">Tasks</SidebarLink>
+      <SidebarLink to="/journal">Journal</SidebarLink>
+      <SidebarLink to="/about">About</SidebarLink>
+      <SidebarLink to="/schedule">Schedule</SidebarLink>
+      <SidebarLink v-if="true" to="/sandbox">Sandbox</SidebarLink>
     </span>
     <span
       class="absolute bottom-0 p-2 mb-4 ml-4 text-white transition duration-200 opacity-70"
       @click="toggleSidebar"
       :class="{ 'rotate-180': collapsed }"
     >
-      <!-- <icon class="fas fa-angle-double-left" /> -->
       <i v-if="mode === 'RIGHT'" class="text-xl"> {{ ">>" }} </i>
       <i v-else class="text-xl"> {{ "<<" }} </i>
     </span>
   </div>
 </template>
-<script setup>
-// import { devmode } from "../../../helpers";
+<script setup lang="ts">
 import SidebarLink from "./SidebarLink.vue";
 import { collapsed, toggleSidebar, sidebarWidth, className, hidden } from "./useSidebar";
 const props = defineProps({
@@ -46,14 +45,10 @@ const props = defineProps({
 
 function onMouseLeave() {
   collapsed.value = true;
-  // setTimeout(() => {
-  // }, 1500);s
 }
 
 function onMouseOver() {
-  // setTimeout(() => {
   collapsed.value = false;
-  // }, 500);
 }
 </script>
 <style scoped>

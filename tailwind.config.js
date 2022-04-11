@@ -32,7 +32,7 @@ module.exports = {
         "4xl": "2rem",
       },
       animation: {
-        "spin-slow": "spin 3s linear infinite",
+        "spin-slow": "spin 2s linear infinite",
         wiggle: "wiggle 1s ease-in-out infinite",
         "fade-out": "fade 1s ease-out",
       },
@@ -42,12 +42,30 @@ module.exports = {
         2000: "2000ms",
         3000: "3000ms",
       },
+      gridTemplateColumns: {
+        // https://tailwindcss.com/docs/grid-template-columns
+        1: "repeat(1, minmax(0, 1fr))",
+        2: "repeat(2, minmax(0, 1fr))",
+        3: "repeat(3, minmax(0, 1fr))",
+        4: "repeat(4, minmax(0, 1fr))",
+        5: "repeat(5, minmax(0, 1fr))",
+        6: "repeat(6, minmax(0, 1fr))",
+        7: "repeat(7, minmax(0, 1fr))",
+        // Simple 16 column grid
+        16: "repeat(16, minmax(0, 1fr))",
+
+        // Complex site-specific column configuration
+        footer: "200px minmax(900px, 1fr) 100px",
+      },
     },
 
     screens: {
       sm: "480px",
+      tablet: "640px",
       md: "768px",
       lg: "976px",
+      laptop: "1024px",
+      desktop: "1280px",
       xl: "1440px",
     },
     fontSize: {

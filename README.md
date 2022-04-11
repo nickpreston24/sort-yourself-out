@@ -43,3 +43,29 @@ Dark:
 10% for accents/actionables (bright orange)
 
 Gradients work well on the 30%.
+
+# Todos
+
+## Critical
+
+- [x] Splash screen on start page
+- [ ] Set up a Twilio account for SMS
+- [x] Fix the Clear button on Tasks form.
+- [ ] Fix the input fields on tasks form.
+- [ ] Add due dates
+- [ ] Support nested Tasks
+- [ ] Support Assignments to Rewards
+- [x] Put Tasks in a Grid
+- [x] Learn CSS Grid :)
+- [x] Add a Journal Textbox
+- [x] Find or make a simple Gannt Chart
+  - [ ] Add the Radial Progress bar to the Gannt chart.
+        ![img](https://www.productplan.com/uploads/2019/11/Gantt-chart.png)
+  - [ ] Learn tables for the Gannt chart
+
+
+## Nice to haves
+
+- [ ] [Overlay navigation](https://www.w3schools.com/howto/howto_js_fullscreen_overlay.asp)
+- [ ] 
+- [ ] Toasts

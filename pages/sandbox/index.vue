@@ -59,17 +59,77 @@
           </h1>
         </atoms-shadow>
       </div>
-
-      <div class="w-64 h-64 bg-transparent border-2"></div>
-      <div class="w-64 h-64 bg-transparent border-2"></div>
-      <div class="w-64 h-64 bg-transparent border-2"></div>
     </Row>
+    <div class="bg-green-400">
+      <div class="flex items-center justify-center min-h-screen">
+        <div class="sandbox-grid">
+          <div
+            v-for="i in 15"
+            class="flex flex-col justify-center p-10 text-lg font-bold text-center text-green-500 bg-green-100 rounded-lg"
+            :key="i"
+          >
+            {{ i }}
+          </div>
+
+          <div
+            class="flex flex-col justify-center col-span-2 p-10 text-lg font-bold text-center text-green-500 bg-green-100 rounded-lg"
+          >
+            hi
+          </div>
+
+          <div
+            class="flex flex-col justify-center col-span-2 row-span-3 p-10 text-lg font-bold text-center text-green-500 bg-green-100 rounded-lg"
+          >
+            hi
+          </div>
+          <div
+            class="flex flex-col justify-center p-10 text-lg font-bold text-center text-green-500 bg-green-100 rounded-lg"
+          >
+            hi
+          </div>
+        </div>
+      </div>
+
+      <!-- tw -->
+
+      <pre>randomInt? {{ randomInt }}</pre>
+
+      <!-- <div class="grid grid-cols-3 gap-4 p-5">
+        <div
+          class="row-span-2 p-10 text-lg font-bold text-center text-green-500 bg-green-100 rounded-lg shadow-lg"
+        >
+          1
+        </div>
+        <div
+          class="p-10 text-lg font-bold text-center text-green-500 bg-green-100 rounded-lg shadow-lg"
+        >
+          2
+        </div>
+        <div
+          class="row-span-2 p-10 text-lg font-bold text-center text-green-500 bg-green-100 rounded-lg shadow-lg"
+        >
+          3
+        </div>
+        <div
+          class="p-10 text-lg font-bold text-center text-green-500 bg-green-100 rounded-lg shadow-lg"
+        >
+          4
+        </div>
+        <div
+          class="col-span-3 p-10 text-lg font-bold text-center text-green-500 bg-green-100 rounded-lg shadow-lg"
+        >
+          5
+        </div>
+      </div> -->
+    </div>
   </NuxtLayout>
 </template>
 <script setup lang="ts">
 import { ref } from "vue";
 import { Stack, Row } from "@mpreston17/flexies";
+import { RNG } from "~~/helpers/random";
 
+const randomInt = ref(RNG.Int(3));
 const headerValue = ref("");
 
 type Person = {
@@ -105,6 +165,23 @@ const html = computed(() => {
 </script>
 
 <style scoped>
+.sandbox-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.5rem;
+
+  margin-inline: auto;
+  width: min(95%, 70rem);
+}
+
+.span-2 {
+  grid-column: span 2;
+}
+
+.span-3 {
+  grid-column: span 3;
+}
+
 div >>> p {
   font-size: 24px;
   font-weight: 300;
