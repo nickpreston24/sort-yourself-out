@@ -12,22 +12,21 @@
         >
 
         <radial-progress-bar
-          :diameter="75"
-          :completed-steps="completedPrereqs"
-          :total-steps="totalEntries"
+          :diameter="85"
+          :completed-steps="completedPoints"
+          :total-steps="totalSteps"
         >
           <Typography type="b">{{ percentCompleted.toFixed() }}%</Typography>
         </radial-progress-bar>
       </Row>
       <!-- <pre>Matching Prerequisites? {{ requirements?.length }}</pre> -->
 
-      <!-- <ul>
+      <ul class="h-32 overflow-y-auto">
         <li v-for="(req, index) in requirements">
           <pre>{{ req.Name }} - {{ req.Points }} - {{ req.Status }}</pre>
         </li>
       </ul>
-
-      <pre>totalEntries? {{ totalEntries }}</pre>
+      <!-- <pre>totalSteps? {{ totalSteps }}</pre>
       <pre>completedPrereqs? {{ completedPrereqs }}</pre>
       <pre>completedPoints? {{ completedPoints }}</pre> -->
     </molecules-card>
@@ -59,10 +58,10 @@ const completedPoints = computed(() => {
     .reduce((total, next) => total + next.Points, 0);
 });
 
-const totalEntries = computed(() => requirements.value.length);
+const totalSteps = computed(() => reward.Points);
 
 const percentCompleted = computed(() => {
-  return 0;
+  return ((completedPoints.value * 1.0) / reward.Points) * 100;
 });
 
 const requirements = computed(() => {
