@@ -29,6 +29,7 @@ const subjects = [
   "Pet a cat when you're on the street",
   "Let me lead you out of chaos",
 ];
+
 const predicates = [
   "... or something approximating that...",
   "... in my estimation...",
@@ -38,6 +39,7 @@ const predicates = [
   ".. Gotcha!",
   ".. And into order!",
   "... so let's...go.",
+  "... perhaps even you could manage that...",
 ];
 
 const subject = ref("");
@@ -49,10 +51,5 @@ onMounted(() => {
   subject.value = subjects[sub.value];
   predicate.value = predicates[pred.value];
   return `${subject} ${predicate}`;
-
-  setInterval(() => {
-    Math.random;
-  }, 1500);
 });
-// const getPhrase = () => {};
 </script>
