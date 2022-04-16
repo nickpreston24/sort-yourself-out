@@ -57,16 +57,25 @@ export function useTasks(maxRecords = 10, pageSize = 10) {
   async function load(max = 10) {
     loading.value = true;
 
-    tasks.value = await getRecords("Tasks", max, _pageSize.value).catch(
-      (err) => {
-        error.value = err;
-      }
-    );
-    rewards.value = await getRecords("Rewards", 10, _pageSize.value).catch(
-      (err) => {
-        error.value = err;
-      }
-    );
+    const byStatus =
+      "sort%5B0%5D%5Bfield%5D=Name?sort%5B0%5D%5Bdirection%5D=desc";
+
+    tasks.value = await getRecords(
+      "Tasks",
+      max,
+      _pageSize.value,
+      byStatus
+    ).catch((err) => {
+      error.value = err;
+    });
+    rewards.value = await getRecords(
+      "Rewards",
+      10,
+      _pageSize.value,
+      byStatus
+    ).catch((err) => {
+      error.value = err;
+    });
 
     loading.value = false;
   }

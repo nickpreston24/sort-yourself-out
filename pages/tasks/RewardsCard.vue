@@ -7,7 +7,7 @@
           >Points: {{ completedPoints + "/" + reward?.Points }}</Typography
         >
 
-        <Typography type="p"
+        <Typography type="p" v-if="requirements?.length > 0"
           >Requirements: {{ completedPrereqs + "/" + requirements?.length }}</Typography
         >
 
@@ -21,11 +21,11 @@
       </Row>
       <!-- <pre>Matching Prerequisites? {{ requirements?.length }}</pre> -->
 
-      <ul class="h-32 overflow-y-auto">
+      <!-- <ul class="h-32 overflow-y-auto">
         <li v-for="(req, index) in requirements">
           <pre>{{ req.Name }} - {{ req.Points }} - {{ req.Status }}</pre>
         </li>
-      </ul>
+      </ul> -->
       <!-- <pre>totalSteps? {{ totalSteps }}</pre>
       <pre>completedPrereqs? {{ completedPrereqs }}</pre>
       <pre>completedPoints? {{ completedPoints }}</pre> -->
@@ -53,7 +53,7 @@ const completedPrereqs = computed(() => {
 
 // % completion of the points required for this Reward
 const completedPoints = computed(() => {
-  return requirements.value
+  return cashedIn.value
     .filter((t) => t.Status === "Done")
     .reduce((total, next) => total + next.Points, 0);
 });
@@ -66,5 +66,9 @@ const percentCompleted = computed(() => {
 
 const requirements = computed(() => {
   return tasks.value.filter((task) => reward?.Prerequisites?.includes(task.id));
+});
+
+const cashedIn = computed(() => {
+  return tasks.value.filter((task) => reward?.["Cashed-In"]?.includes(task.id));
 });
 </script>

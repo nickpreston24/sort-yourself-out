@@ -21,9 +21,14 @@ export const formatRecords = (records = []) => {
   return result;
 };
 
-export const getRecords = async (tableName, maxRecords = 10, pageSize = 10) => {
+export const getRecords = async (
+  tableName,
+  maxRecords = 10,
+  pageSize = 10,
+  sort = ""
+) => {
   const result = await axios({
-    url: `https://api.airtable.com/v0/${baseKey}/${tableName}?maxRecords=${maxRecords}&?pageSize=${pageSize}`,
+    url: `https://api.airtable.com/v0/${baseKey}/${tableName}?maxRecords=${maxRecords}?pageSize=${pageSize}?${sort}`,
     headers: {
       "Content-Type": "x-www-form-urlencoded",
       Authorization: `Bearer ${apiKey}`,

@@ -4,12 +4,22 @@
       <!-- Rewards Cards -->
 
       <!-- <pre>loading? {{ loading }}</pre> -->
+      <pre>selectedReward? {{ rewards[selectedReward] }}</pre>
       <div class="mb-10 ml-4 mr-4 bg-transparent rewards-grid">
         <div v-for="(reward, index) in rewards">
-          <RewardsCard :reward="reward" :key="index" />
+          <RewardsCard
+            :class="
+              index === selectedReward
+                ? 'border-2 border-tahiti-400'
+                : 'border-2 border-transparent'
+            "
+            :reward="reward"
+            :key="index"
+            @click="setSelectedReward(index)"
+          />
         </div>
         <atoms-button class="w-16 h-16 bg-transparent border-2 border-tahiti-500">
-          <plus-icon fill="#A71A23" stroke="#D62338" @click="startNew('reward')" />
+          <plus-icon fill="#A71A23" stroke="#D62338" @click="startNewModel('reward')" />
         </atoms-button>
       </div>
       <!-- Tasks Grid -->
@@ -143,6 +153,10 @@
                       <atoms-button @click="remove(index)" class="m-2">
                         Delete
                       </atoms-button>
+
+                      <atoms-button @click="cashIn(index)" class="m-2">
+                        $$$
+                      </atoms-button>
                     </div>
                     <span class="w-1/6"></span>
                   </Flex>
@@ -152,7 +166,7 @@
           </transition>
         </div>
         <atoms-button class="w-16 h-16 bg-transparent border-2 border-tahiti-500">
-          <plus-icon fill="#A71A23" stroke="#D62338" @click="startNew('task')" />
+          <plus-icon fill="#A71A23" stroke="#D62338" @click="startNewModel('task')" />
         </atoms-button>
       </div>
     </div>
@@ -220,6 +234,7 @@ const {
   error,
   loading,
   createReward,
+  patchReward,
 } = useTasks(maxTasks);
 
 const initialTask = {
@@ -258,11 +273,17 @@ const currentModel = computed(() => {
   else if (modelName.value === "reward") return reward;
 });
 
+const selectedReward = ref(-1);
+
 const reload = () => load(maxTasks);
 
-function startNew(model = "task") {
+function startNewModel(model = "task") {
   modelName.value = model;
   showModal.value = true;
+}
+
+function setSelectedReward(index) {
+  selectedReward.value = index;
 }
 
 function onSubmit() {
@@ -380,30 +401,26 @@ async function remove(index) {
     });
 }
 
-async function onChange(e) {
-  const target = e.target;
-  const value = target.type === "checkbox" ? target.checked : target.value;
-  const name = target.placeholder;
-  task.value[name] = value;
+async function cashIn(index) {
+  let updatedReward = rewards.value[selectedReward.value];
+  let task = filteredTasks.value[index];
+
+  const points = updatedReward.Points;
+  updatedReward?.["Cashed-In"].push(task.id);
+
+  const total = updatedReward?.["Cashed-In"]?.Length;
+
+  if (total > points) {
+    // Notify("You can't add more Tasks to this Reward")
+    return;
+  }
+
+  let records = Array.from([
+    { id: updatedReward.id, "Cashed-In": [...updatedReward?.["Cashed-In"]] },
+  ]);
+
+  await patchReward(records);
 }
-
-async function onChangeReward(e) {
-  const target = e.target;
-  const value = target.type === "checkbox" ? target.checked : target.value;
-  const name = target.placeholder;
-  reward.value[name] = value;
-}
-
-// async function onTextChanged(e) {
-//   // console.log("e", e);
-//   const index = e.target.id;
-//   // console.log("index", index);
-//   const target = e.target;
-//   const value = target.type === "checkbox" ? target.checked : target.value;
-//   const name = target.placeholder;
-
-//   const editedTask = filteredTasks.value[index]; //[name] = value;
-// }
 
 async function updatePoints(index, value) {
   let updatedTask = filteredTasks.value[index];
