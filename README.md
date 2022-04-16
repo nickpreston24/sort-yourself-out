@@ -65,10 +65,25 @@ Gradients work well on the 30%.
 - [ ] Show the top 3 Rewards in small Cards
 - [ ] Show % Done for each card w/ radial progress
 
+### Functionality
+- [ ] Find a Schedule Template similar to Airtable
+- [ ] Design a Perfect Day in your API
+- [ ] Design a Essentials in your API
+- [ ] Add a Scheduling button that sets the Frequency, "Daily", "Weekly", "Every other Month, starting 12am Tuesday", etc.
+- [ ] Airtable Pagification
+- [ ] Make the textarea larger
+- [ ] Add Modal
+- [ ] Use Modal when editing the textarea
+- [ ] A + sign for new Rewards (at the end of the grid)
+- [ ] Arrows for Pagification
+- [ ] Add a Task to a Reward
+
 
 ## Nice to haves
 
 - [ ] [Overlay navigation](https://www.w3schools.com/howto/howto_js_fullscreen_overlay.asp)
-- [ ] 
 - [ ] Toasts
 - [ ] Tooltips
+- [ ] Repeating (lobster) svg backgrounds
+
+

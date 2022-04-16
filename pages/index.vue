@@ -19,7 +19,6 @@
         </Stack>
       </Center>
     </div>
-    <!-- <pre>isDarkMode? {{ isDarkMode }}</pre> -->
   </NuxtLayout>
 </template>
 <script setup lang="ts">

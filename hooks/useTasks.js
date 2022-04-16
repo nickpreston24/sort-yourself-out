@@ -1,14 +1,20 @@
 import { ref, onMounted } from "vue";
 import { getRecords, create, patch, deleteRecord } from "./airtable/airtable";
 
-export function useTasks(max = 10) {
+export const devmode = (() => import.meta.env.NODE_ENV !== "production")();
+
+export function useTasks(maxRecords = 10, pageSize = 10) {
   const tasks = ref([]);
   const rewards = ref([]);
   const loading = ref(true);
   const error = ref(null);
 
+  const _pageSize = ref(pageSize);
+  /** If there are more records, the response will contain an offset. To fetch the next page of records, include offset in the next request's parameters. -- airtable docs */
+  const offset = ref(0);
+
   onMounted(async () => {
-    await load(max);
+    await load(maxRecords);
   });
 
   const createTask = async (props) =>
@@ -51,13 +57,16 @@ export function useTasks(max = 10) {
   async function load(max = 10) {
     loading.value = true;
 
-    tasks.value = await getRecords("Tasks", max).catch((err) => {
-      error.value = err;
-    });
-    rewards.value = await getRecords("Rewards", 10).catch((err) => {
-      error.value = err;
-    });
-    console.log("rewards", rewards);
+    tasks.value = await getRecords("Tasks", max, _pageSize.value).catch(
+      (err) => {
+        error.value = err;
+      }
+    );
+    rewards.value = await getRecords("Rewards", 10, _pageSize.value).catch(
+      (err) => {
+        error.value = err;
+      }
+    );
 
     loading.value = false;
   }

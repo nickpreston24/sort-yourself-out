@@ -1,38 +1,17 @@
 <template>
   <NuxtLayout name="custom">
     <div class="">
-      <Row class="flex items-center justify-center">
-        <Stack v-if="true">
-          <typography type="h2">Add a Task</typography>
-          <ul>
-            <li class="p-2" v-for="(value, key, index) in task" :key="index">
-              <label class="m-2">{{ key }}:</label>
-              <input
-                class="p-2 m-2 bg-transparent rounded-xl"
-                type="text"
-                v-bind:placeholder="key"
-                @input="onChange"
-              />
-            </li>
-          </ul>
-          <Row>
-            <atoms-button @click="submitTask">Submit</atoms-button>
-            <atoms-button @click="reload">Reload</atoms-button>
-            <atoms-button @click="clear">Clear</atoms-button>
-          </Row>
-          <typography type="b" v-if="error">{{ error }}</typography>
-        </Stack>
-      </Row>
-
       <!-- Rewards Cards -->
 
-      <pre>rewards?.length? {{ rewards?.length }}</pre>
+      <!-- <pre>loading? {{ loading }}</pre> -->
       <div class="mb-10 ml-4 mr-4 bg-transparent rewards-grid">
         <div v-for="(reward, index) in rewards">
           <RewardsCard :reward="reward" :key="index" />
         </div>
+        <atoms-button class="w-16 h-16 bg-transparent border-2 border-tahiti-500">
+          <plus-icon fill="#A71A23" stroke="#D62338" @click="startNew('reward')" />
+        </atoms-button>
       </div>
-
       <!-- Tasks Grid -->
       <div class="m-4 task-grid">
         <div
@@ -82,7 +61,7 @@
                       class="h-24 m-2 overflow-y-auto rounded-md p-tiny text-crimson-600 bg-regal-500 sm:w-56 md:w-64 max-h-128"
                     >
                       <textarea
-                        class="bg-regal-500 w-120 w-128 max-h-128"
+                        class="bg-regal-500 w-128 max-h-128"
                         v-if="editing == index"
                         v-model="task.Notes"
                         type="text"
@@ -172,8 +151,13 @@
             </div>
           </transition>
         </div>
+        <atoms-button class="w-16 h-16 bg-transparent border-2 border-tahiti-500">
+          <plus-icon fill="#A71A23" stroke="#D62338" @click="startNew('task')" />
+        </atoms-button>
       </div>
     </div>
+
+    <!-- <pre>showModal? {{ showModal }}</pre> -->
 
     <transition name="fade">
       <lobster-spinner
@@ -182,6 +166,21 @@
         class="fixed absolute top-0 bottom-0 left-0 right-0 z-10 w-64 h-64 m-auto"
       />
     </transition>
+    <pre>modelName? {{ modelName }}</pre>
+    <FormModal
+      class="bg-white"
+      :model="currentModel.value"
+      :onSubmit="onSubmit"
+      :title="modelName"
+    />
+
+    <!-- <FormModal
+      class="bg-white"
+      v-if="modelName === 'reward'"
+      :model="reward"
+      :onSubmit="submitReward"
+      :title="modelName"
+    /> -->
   </NuxtLayout>
 </template>
 <script lang="ts" setup>
@@ -192,6 +191,10 @@ import StarIcon from "~~/components/atoms/StarIcon.vue";
 import PlusIcon from "~~/components/atoms/PlusIcon.vue";
 import Card from "~~/components/molecules/Card.vue";
 import RewardsCard from "./RewardsCard.vue";
+// import Modal from "~~/components/molecules/Modal.vue";
+import FormModal from "~~/components/organisms/FormModal.vue";
+
+import { closeModal, showModal } from "~~/components/molecules/useModal";
 
 const delay = 250;
 const maxTasks = 20;
@@ -216,9 +219,10 @@ const {
   load,
   error,
   loading,
+  createReward,
 } = useTasks(maxTasks);
 
-const initial = {
+const initialTask = {
   Name: "",
   Notes: "",
   Status: "Todo",
@@ -226,27 +230,73 @@ const initial = {
   // Frequency: null,
 };
 
-const task = ref({ ...initial });
+const initialReward = {
+  Name: "",
+  Points: 5,
+  Notes: "",
+  // Prerequisites: [],
+};
+
+// const filters = new Map {
+//   'Show Done' : () => t=> t.Status === 'Done'
+// ...
+// }
+
+const task = ref({ ...initialTask });
+const reward = ref({ ...initialReward });
 const filteredTasks = computed(() => {
-  return tasks.value.filter((t) => t.Status !== "Done");
+  return tasks.value;
+  //.filter((t) => t.Status !== "Done");
 });
 
 const picked = ref("");
 const visible = ref(false);
 const editing = ref(-1);
-
-// const clear = () => {
-//   // Object.assign(task.value, { Name: "", Notes: "", Status: "Todo", Points: 1 });
-//   task.value = {
-//     Name: "",
-//     Notes: "",
-//     Status: "Todo",
-//     Points: 1,
-//   };
-// };
+const modelName = ref("task");
+const currentModel = computed(() => {
+  if (modelName.value === "task") return task;
+  else if (modelName.value === "reward") return reward;
+});
 
 const reload = () => load(maxTasks);
 
+function startNew(model = "task") {
+  modelName.value = model;
+  showModal.value = true;
+}
+
+function onSubmit() {
+  if (modelName.value === "task") submitTask();
+  else if (modelName.value === "reward") submitReward();
+}
+
+async function submitReward() {
+  console.log("reward", reward);
+  if (!reward?.value?.Name) {
+    error.value = "Name is a required Field";
+    return;
+  }
+
+  let newReward = {
+    ...reward.value,
+    Points: parseInt(reward.value?.Points),
+    // Start: DateTime.local().toISO(),
+    // Start: now.toISO(),
+  };
+
+  const response = await createReward(newReward);
+
+  let record = response?.data?.records?.[0];
+
+  if (record) {
+    rewards.value.push({
+      ...record.fields,
+      id: record.id,
+    });
+  }
+
+  closeModal();
+}
 async function submitTask() {
   if (!task?.value?.Name) {
     error.value = "Name is a required Field";
@@ -258,7 +308,7 @@ async function submitTask() {
   //   return;
   // }
 
-  const newTask = {
+  let newTask = {
     ...task.value,
     Points: parseInt(task.value?.Points),
     // Start: DateTime.local().toISO(),
@@ -270,14 +320,15 @@ async function submitTask() {
   let record = response?.data?.records?.[0];
 
   if (record) {
-    tasks.value.unshift({
+    tasks.value.push({
       ...record.fields,
       id: record.id,
     });
   }
 
+  closeModal();
   // clear();
-  // Object.assign(task.value, initial);
+  // Object.assign(task.value, initialTask);
 }
 
 function editNotes(index) {
@@ -336,6 +387,13 @@ async function onChange(e) {
   task.value[name] = value;
 }
 
+async function onChangeReward(e) {
+  const target = e.target;
+  const value = target.type === "checkbox" ? target.checked : target.value;
+  const name = target.placeholder;
+  reward.value[name] = value;
+}
+
 // async function onTextChanged(e) {
 //   // console.log("e", e);
 //   const index = e.target.id;
@@ -358,15 +416,6 @@ async function updatePoints(index, value) {
   const response = await patchTask(records).then((_) => {
     error.value = "";
   });
-}
-
-function initialState() {
-  return {
-    Name: "",
-    Notes: "",
-    Status: "Todo",
-    Points: 1,
-  };
 }
 </script>
 

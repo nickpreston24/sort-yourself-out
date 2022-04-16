@@ -21,14 +21,16 @@ export const formatRecords = (records = []) => {
   return result;
 };
 
-export const getRecords = async (tableName, maxRecords = 10) => {
+export const getRecords = async (tableName, maxRecords = 10, pageSize = 10) => {
   const result = await axios({
-    url: `https://api.airtable.com/v0/${baseKey}/${tableName}?maxRecords=${maxRecords}`,
+    url: `https://api.airtable.com/v0/${baseKey}/${tableName}?maxRecords=${maxRecords}&?pageSize=${pageSize}`,
     headers: {
       "Content-Type": "x-www-form-urlencoded",
       Authorization: `Bearer ${apiKey}`,
     },
   });
+
+  console.log("result", result);
 
   return formatRecords(result?.data?.records);
 };
@@ -86,34 +88,6 @@ export const patch = async (tableName = null, records = []) => {
   console.log("records to patch :>> ", formattedRecords);
   const data = {
     records: formattedRecords,
-    // [
-    // {
-    //   id: "reczhLAjJHszwLZc6",
-    //   fields: {
-    //     Name: "Make a 10 year plan!",
-    //     Status: "Todo",
-    //     Points: 5,
-    //   },
-    // },
-    // {
-    //   id: "recUT5TOy3Pd0WEW5",
-    //   fields: {
-    //     Name: "Sweet Caroline",
-    //     Notes: "good times",
-    //     Status: "Todo",
-    //     Points: 1,
-    //   },
-    // },
-    // {
-    //   id: "recqbekj0nyFEyrZq",
-    //   fields: {
-    //     Name: "Exceed Expectations",
-    //     Notes: "...",
-    //     Status: "Todo",
-    //     Points: 3,
-    //   },
-    // },
-    // ],
   };
 
   console.log("data patch :>> ", data);
