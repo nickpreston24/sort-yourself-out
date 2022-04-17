@@ -1,5 +1,5 @@
 import { ref, onMounted } from "vue";
-import { getRecords, create, patch, deleteRecord } from "./airtable/airtable";
+import { getRecords, create, patch, deleteRecord } from "../airtable/airtable";
 
 export const devmode = (() => import.meta.env.NODE_ENV !== "production")();
 

@@ -51,33 +51,50 @@ Gradients work well on the 30%.
 - [x] Splash screen on start page
 - [ ] Set up a Twilio account for SMS
 - [x] Fix the Clear button on Tasks form.
-- [ ] Fix the input fields on tasks form.
+- [x] Fix the input fields on tasks form.
 - [ ] Add due dates
 - [ ] Support nested Tasks
-- [ ] Support Assignments to Rewards
+- [x] Support Assignments to Rewards
 - [x] Put Tasks in a Grid
 - [x] Learn CSS Grid :)
 - [x] Add a Journal Textbox
-- [x] Find or make a simple Gannt Chart
-  - [ ] Add the Radial Progress bar to the Gannt chart.
-        ![img](https://www.productplan.com/uploads/2019/11/Gantt-chart.png)
-  - [ ] Learn tables for the Gannt chart
-- [ ] Show the top 3 Rewards in small Cards
-- [ ] Show % Done for each card w/ radial progress
+- [x] (*optional*) Find or make a simple Gannt Chart
+  <!-- - [ ] Add the Radial Progress bar to the Gannt chart. -->
+
+
+![img](https://www.productplan.com/uploads/2019/11/Gantt-chart.png)
+
+
+  -  Learn tables for the Gannt chart
+- [x] Show the top 3 Rewards in small Cards
+- [x] Show % Done for each card w/ radial progress
 
 ### Functionality
-- [ ] Find a Schedule Template similar to Airtable
-- [ ] Design a Perfect Day in your API
-- [ ] Design a Essentials in your API
+- [ ] (*optional*) Find a Schedule Template similar to Airtable's .
+- [ ] Make Tasks assignable to subtasks
+  - [ ] Design a 'Perfect Day' Task
+  - [ ] Design a 'Essentials' Task
 - [ ] Add a Scheduling button that sets the Frequency, "Daily", "Weekly", "Every other Month, starting 12am Tuesday", etc.
+- [ ] Make the textarea larger on hover/edit
+- [x] Add Modal
+- [x] Use Modal when editing the textarea
+- [x] A + sign for new Rewards (at the end of the grid)
 - [ ] Airtable Pagification
-- [ ] Make the textarea larger
-- [ ] Add Modal
-- [ ] Use Modal when editing the textarea
-- [ ] A + sign for new Rewards (at the end of the grid)
-- [ ] Arrows for Pagification
-- [ ] Add a Task to a Reward
-
+  - [ ] Add Arrows for Pagification
+- [x] Add a Task to a Reward
+- [x] Pomodoro timer
+- [ ] Icons needed:
+  - [ ] Trashcan
+  - [ ] Checkmark
+  - [ ] Calendar
+  - [ ] Copy
+  - [ ] Cancel / 'X'
+  - [ ] Reload/Refresh
+  - [ ] Arrows, right and left
+  - [ ] Edit
+  - [ ] Up arrow for assignment
+- [ ] Diy tooltip on hover
+- [ ] Fix: For your `/atoms` components, use the inline darkMode switcher: `:class='darkMode ? bg-regal-800 : bg-sunglo-500'`
 
 ## Nice to haves
 
@@ -85,5 +102,11 @@ Gradients work well on the 30%.
 - [ ] Toasts
 - [ ] Tooltips
 - [ ] Repeating (lobster) svg backgrounds
-
+- [ ] Expand things (say, your Task Cards on hover) slowly and smoothly by animation...think of a Flubber-like animation where a Card shrinks or grows and shows content into that space.  For example, the `<textarea>`s could warp in and out of existence...
+- [ ] [Export](https://github.com/simonw/airtable-export) Airtable contents to disk
+- [ ] AirtableField.vue -- Dynamic field, like the Typography, which provides the right component for the value, based on the airtable primitive type.  [Inspiration](https://www.airtable.com/developers/scripting/api/field)
+- [ ] Luxon for timestamps.  It seems to need to be plugged in...which was hard.
+- [ ] vue-preferences ... again, plugins don't work well right now.
+- [ ] marked for MD support
+- [ ] Funny fonts like a superhero/villain font.
 

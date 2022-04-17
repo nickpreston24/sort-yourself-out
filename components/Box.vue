@@ -14,12 +14,13 @@ const props = defineProps({
   size: { default: "sm" },
   step: { type: Number, default: 12 },
   start: { type: Number, default: 16 },
+  debug: { default: false },
 });
 
 const sizes = ["sm", "tablet", "md", "lg", "laptop", "desktop", "xl"];
 const next = (m, x, b) => m * x + b;
 const widths = makeWidthMap();
-console.log("widths", widths);
+props?.debug && console.log("widths", widths);
 
 function makeWidthMap() {
   let map = {};

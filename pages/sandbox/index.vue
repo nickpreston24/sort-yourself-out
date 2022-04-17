@@ -1,6 +1,42 @@
 <template>
-  <NuxtLayout name="custom">
-    <Row class="text-white">
+  <NuxtLayout name="custom" class="h-screen">
+    <div class="sandbox-grid">
+      <Box size="md" class="">
+        <atoms-typography type="h4">Toasts Test</atoms-typography>
+      </Box>
+
+      <Box size="md" class="">
+        <atoms-typography type="h4">Airtable Forms</atoms-typography>
+      </Box>
+
+      <Box size="md" class="">
+        <atoms-typography type="h4">Tooltip Test</atoms-typography>
+
+        <Stack>
+          <Tooltip text="Yo ho ho! this be a tooltip!">
+            <p class="!text-sunglo-300 text-tiny">
+              Lorem ipsum dolor sit, amet consectetur adipisicing elit.
+            </p>
+          </Tooltip>
+
+          <Tooltip text="Ho ho ho! I've got a machine gun!">
+            <atoms-button @click="toggleDarkMode">{{
+              darkMode ? "Light Mode" : "Dark Mode"
+            }}</atoms-button>
+          </Tooltip>
+          <Tooltip text="Click for Toast!">
+            <atoms-button>???</atoms-button>
+          </Tooltip>
+        </Stack>
+      </Box>
+
+      <div class="h-128">
+        <atoms-typography type="h4">Pomodoro Test</atoms-typography>
+        <Pomodoro />
+      </div>
+    </div>
+
+    <Row v-if="false" class="text-white">
       <div class="w-64 h-64 bg-transparent border-2">
         <atoms-typography type="h1">Regexer</atoms-typography>
         <input type="text" class="bg-regal-800" v-model="pattern" />
@@ -60,7 +96,7 @@
         </atoms-shadow>
       </div>
     </Row>
-    <div class="bg-green-400">
+    <div v-if="false" class="bg-green-400">
       <div class="flex items-center justify-center min-h-screen">
         <div class="sandbox-grid">
           <div
@@ -128,6 +164,10 @@
 import { ref } from "vue";
 import { Stack, Row } from "@mpreston17/flexies";
 import { RNG } from "~~/helpers/random";
+import Typography from "~~/components/atoms/Typography.vue";
+import Pomodoro from "~~/components/atoms/Pomodoro.vue";
+import Tooltip from "~~/components/atoms/Tooltip.vue";
+import { darkMode, toggleDarkMode } from "~~/hooks";
 
 const randomInt = ref(RNG.Int(3));
 const headerValue = ref("");

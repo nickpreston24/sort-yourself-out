@@ -31,6 +31,7 @@ const props = defineProps({
   model: { default: null },
   title: { default: null },
   onSubmit: { default: () => {} },
+  debug: { default: false },
 });
 
 // console.log("showModal", showModal);

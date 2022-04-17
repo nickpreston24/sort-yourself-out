@@ -5,7 +5,7 @@ import {
   create,
   patch,
   deleteRecord,
-} from "./airtable/airtable";
+} from "../airtable/airtable";
 
 export function useJournal() {
   const entries = ref([]);

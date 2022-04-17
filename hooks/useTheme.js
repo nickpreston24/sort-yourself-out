@@ -1,6 +1,18 @@
 import { ref, computed, reactive } from "vue";
 
-const twColor = ref("tahiti");
+export const backgrounds = {
+  tahiti: "bg-tahiti-400 hover:bg-tahiti-500",
+  lobster: "bg-crimson-400 hover:bg-crimson-500",
+  sunglo: "bg-sunglo-400 hover:bg-sunglo-500",
+};
+
+export const texts = {
+  tahiti: "text-tahiti-400 hover:text-tahiti-500",
+  lobster: "text-crimson-400 hover:text-crimson-500",
+  sunglo: "text-sunglo-400 hover:text-sunglo-500",
+};
+
+// const twColor = ref("tahiti");
 
 /**
  * Palletes
@@ -115,13 +127,12 @@ export const chip = computed(() => currentTheme.value["chip"]);
 export const paragraph = computed(() => currentTheme.value["paragraph"]);
 export const lobster = computed(() => currentTheme.value["lobster"]);
 
-// Allow theme changes, but hide the current theme value
-export const setTheme = (name = "tahiti") => {
-  twColor.value = name;
-};
+// // Allow theme changes, but hide the current theme value
+// export const setTheme = (name = "tahiti") => {
+//   twColor.value = name;
+// };
 
 // Toggle between dark and light themes
 export const toggleDarkMode = () => {
   darkMode.value = !darkMode.value;
-  console.log("darkMode?.value", darkMode?.value);
 };

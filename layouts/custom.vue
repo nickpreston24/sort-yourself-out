@@ -11,10 +11,22 @@
 import { mode, collapsed } from "~~/components/organisms/sidebar/useSidebar";
 import { onMounted } from "vue";
 
+function listener(event) {
+  // event.returnValue = "Write something"; // Notify user of refresh
+  collapsed.value = true;
+}
+
 onMounted(() => {
   console.log("mounted");
+  window?.addEventListener("beforeunload", listener);
+
   setTimeout(() => {
     collapsed.value = true;
-  }, 2250);
+  }, 2500);
+});
+
+onUnmounted(() => {
+  window?.removeEventListener("beforeunload", listener);
+  collapsed.value = true;
 });
 </script>

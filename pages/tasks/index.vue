@@ -1,10 +1,10 @@
 <template>
   <NuxtLayout name="custom">
-    <div class="">
+    <div>
       <!-- Rewards Cards -->
 
       <!-- <pre>loading? {{ loading }}</pre> -->
-      <pre>selectedReward? {{ rewards[selectedReward] }}</pre>
+      <!-- <pre>selectedReward? {{ rewards[selectedReward] }}</pre> -->
       <div class="mb-10 ml-4 mr-4 bg-transparent rewards-grid">
         <div v-for="(reward, index) in rewards">
           <RewardsCard
@@ -47,7 +47,7 @@
                 <div class="flex flex-row items-center justify-evenly">
                   <!-- Left Column -->
 
-                  <div class="m- 2sm:w-16 md:w-24 lg:w-32 xl:w-36">
+                  <div class="m-2 sm:w-8 md:w-16 lg:w-24 xl:w-32">
                     <img
                       class="h-auto rounded-full shadow-lg max-wbutton-full shadow-regal-300/50 hover:scale-110"
                       src="~/assets/public/lobster-sticker.png"
@@ -71,7 +71,7 @@
                       class="h-24 m-2 overflow-y-auto rounded-md p-tiny text-crimson-600 bg-regal-500 sm:w-56 md:w-64 max-h-128"
                     >
                       <textarea
-                        class="bg-regal-500 w-128 max-h-128"
+                        class="h-64 bg-regal-500 w-128 max-h-128"
                         v-if="editing == index"
                         v-model="task.Notes"
                         type="text"
@@ -171,8 +171,6 @@
       </div>
     </div>
 
-    <!-- <pre>showModal? {{ showModal }}</pre> -->
-
     <transition name="fade">
       <lobster-spinner
         v-if="loading"
@@ -187,22 +185,14 @@
       :onSubmit="onSubmit"
       :title="modelName"
     />
-
-    <!-- <FormModal
-      class="bg-white"
-      v-if="modelName === 'reward'"
-      :model="reward"
-      :onSubmit="submitReward"
-      :title="modelName"
-    /> -->
   </NuxtLayout>
 </template>
 <script lang="ts" setup>
 import useTasks from "~/hooks/useTasks";
 import { Row, Stack, Center } from "@mpreston17/flexies";
 import Typography from "~~/components/atoms/Typography.vue";
-import StarIcon from "~~/components/atoms/StarIcon.vue";
-import PlusIcon from "~~/components/atoms/PlusIcon.vue";
+import StarIcon from "~~/components/icons/StarIcon.vue";
+import PlusIcon from "~~/components/icons/PlusIcon.vue";
 import Card from "~~/components/molecules/Card.vue";
 import RewardsCard from "./RewardsCard.vue";
 // import Modal from "~~/components/molecules/Modal.vue";
@@ -283,7 +273,7 @@ function startNewModel(model = "task") {
 }
 
 function setSelectedReward(index) {
-  selectedReward.value = index;
+  selectedReward.value = selectedReward.value !== index ? index : -1;
 }
 
 function onSubmit() {
@@ -406,14 +396,19 @@ async function cashIn(index) {
   let task = filteredTasks.value[index];
 
   const points = updatedReward.Points;
+  if (!updatedReward?.["Cashed-In"]) updatedReward["Cashed-In"] = [];
   updatedReward?.["Cashed-In"].push(task.id);
 
-  const total = updatedReward?.["Cashed-In"]?.Length;
+  const total = updatedReward?.["Cashed-In"]?.Length + 1;
 
+  console.log("total", total);
+  console.log("points", points);
   if (total > points) {
     // Notify("You can't add more Tasks to this Reward")
     return;
   }
+
+  // TODO: check all other rewards to make sure I'm not cheating and using the same Tasks for multipe Rewards...
 
   let records = Array.from([
     { id: updatedReward.id, "Cashed-In": [...updatedReward?.["Cashed-In"]] },
