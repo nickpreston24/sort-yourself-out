@@ -30,10 +30,11 @@
         </Stack>
       </Box>
 
-      <div class="h-128">
+      <!-- TODO: Complains of CommonJS modlues or something -->
+      <!-- <div class="h-128">
         <atoms-typography type="h4">Pomodoro Test</atoms-typography>
         <Pomodoro />
-      </div>
+      </div> -->
     </div>
 
     <Row v-if="false" class="text-white">
