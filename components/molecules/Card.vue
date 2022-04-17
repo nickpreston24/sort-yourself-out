@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-regal-900 animate-fade-out">
+  <div class="animate-fade-out">
     <div :class="animation" @mouseover="isHovering = true" @mouseout="isHovering = false">
       <div class="h-1/3">
         <slot name="header"></slot>

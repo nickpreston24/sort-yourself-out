@@ -1,5 +1,7 @@
 <template>
-  <div class="bg-regal-800 hover:bg-regal-600">
+  <div
+    class="bg-regal-800 hover:bg-regal-600 from-regal-800 to-regal-700 shadow-regal-400/90 opacity-90 bg-gradient-to-l hover:bg-gradient-to-r"
+  >
     <molecules-card class="flex items-center justify-center opacity-90 roundex-lg">
       <Typography type="h4">{{ reward?.Name }}</Typography>
       <Row>

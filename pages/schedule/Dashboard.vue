@@ -44,7 +44,7 @@
 import { Stack, Row, Flex } from "@mpreston17/flexies";
 </script>
 
-<style>
+<style scoped>
 .grid {
   display: grid;
   grid-template-columns: 1fr 1fr;

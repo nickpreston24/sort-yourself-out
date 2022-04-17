@@ -1,32 +1,26 @@
 <template>
-  <div class="tooltip-box" @mouseover="onMouseOver" @mouseleave="onMouseLeave">
+  <div class="tooltip-box">
     <slot />
-    <div class="tooltip" :class="darkMode ? backgrounds.sunglo : backgrounds.tahiti">
+    <!-- <div class="tooltip" :class="darkMode ? backgrounds.sunglo : backgrounds.tahiti"> -->
+    <div class="tooltip bg-sunglo-500">
       <span class="text">
-        {{ props.text }}
+        {{ text }}
       </span>
     </div>
   </div>
 </template>
-machine gun!
 
 <script setup lang="ts">
 import { ref, defineProps } from "vue";
 import { backgrounds, darkMode } from "~~/hooks/useTheme";
-const show = ref(false);
+
 const props = defineProps({
-  text: { default: "Tooltip" },
+  text: { default: "Tooltip!" },
 });
 
-function onMouseOver() {
-  show.value = true;
-}
-
-function onMouseLeave() {
-  show.value = false;
-}
+const { text } = props;
 </script>
-<style>
+<style scoped>
 .tooltip-box {
   position: relative;
   display: inline-block;

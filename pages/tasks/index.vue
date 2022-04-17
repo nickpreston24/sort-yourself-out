@@ -38,10 +38,10 @@
             leave-from-class="scale-100 opacity-100"
             leave-to-class="transform scale-75 opacity-0"
           >
-            <div class="bg-regal-800 hover:bg-regal-600">
+            <div class="hover:bg-regal-600">
               <Card
                 v-show="index >= timer / delay"
-                class="gap-2 shadow-md shadow-regal-400/90 opacity-90"
+                class="gap-2 shadow-md from-regal-800 to-regal-700 shadow-regal-400/90 opacity-90 bg-gradient-to-l hover:bg-gradient-to-r"
               >
                 <pre class="text-tiny"> {{ index }}</pre>
                 <div class="flex flex-row items-center justify-evenly">
@@ -147,7 +147,7 @@
                         >Submit</atoms-button
                       >
 
-                      <atoms-button class="m-2" @click="complete(index)"
+                      <atoms-button class="m-2" @click="markTaskComplete(index)"
                         >Complete</atoms-button
                       >
                       <atoms-button @click="remove(index)" class="m-2">
@@ -189,6 +189,7 @@
 </template>
 <script lang="ts" setup>
 import useTasks from "~/hooks/useTasks";
+import { notify } from "~/components/atoms/useToaster";
 import { Row, Stack, Center } from "@mpreston17/flexies";
 import Typography from "~~/components/atoms/Typography.vue";
 import StarIcon from "~~/components/icons/StarIcon.vue";
@@ -200,7 +201,7 @@ import FormModal from "~~/components/organisms/FormModal.vue";
 
 import { closeModal, showModal } from "~~/components/molecules/useModal";
 
-const delay = 250;
+const delay = 175;
 const maxTasks = 20;
 const duration = maxTasks * delay;
 
@@ -250,7 +251,9 @@ const initialReward = {
 const task = ref({ ...initialTask });
 const reward = ref({ ...initialReward });
 const filteredTasks = computed(() => {
-  return tasks.value;
+  return tasks.value.sort(
+    (a, b) => a?.Status < b?.Status || a?.Status?.Length < b?.Status?.Length
+  );
   //.filter((t) => t.Status !== "Done");
 });
 
@@ -307,6 +310,7 @@ async function submitReward() {
   }
 
   closeModal();
+  notify("Reward Submitted!", "Success!");
 }
 async function submitTask() {
   if (!task?.value?.Name) {
@@ -327,7 +331,6 @@ async function submitTask() {
   };
 
   const response = await createTask(newTask);
-
   let record = response?.data?.records?.[0];
 
   if (record) {
@@ -337,6 +340,7 @@ async function submitTask() {
     });
   }
 
+  notify("Task created successfully!", "Success!");
   closeModal();
   // clear();
   // Object.assign(task.value, initialTask);
@@ -361,7 +365,7 @@ async function submitNotes(index) {
   editNotes(-1); //reset to nothing.
 }
 
-async function complete(index) {
+async function markTaskComplete(index) {
   // console.log("index", index);
   let updatedTask = filteredTasks.value[index];
   updatedTask.Status = updatedTask?.Status === "Todo" ? "Done" : "Todo";
@@ -374,6 +378,8 @@ async function complete(index) {
   const response = await patchTask(records).then((_) => {
     error.value = "";
   });
+
+  notify("Task Completed! :D", "Completed!");
 }
 
 async function remove(index) {
@@ -382,7 +388,7 @@ async function remove(index) {
   deleteTask(current.id)
     .then((response) => {
       console.log("response", response);
-      // alert("Update complete!");
+      notify("Successfully removed task", "Success!");
       if (response.status === 200)
         tasks.value = tasks.value.filter((x) => x.id !== current.id);
     })

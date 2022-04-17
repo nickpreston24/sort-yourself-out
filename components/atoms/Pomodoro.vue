@@ -55,5 +55,3 @@ onMounted(() => {
   timer.start();
 });
 </script>
-
-<style></style>

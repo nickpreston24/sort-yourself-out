@@ -1,7 +1,7 @@
 <template>
   <router-link
     :to="to"
-    class="relative flex items-center h-8 m-2 font-normal text-white no-underline rounded cursor-pointer select-none hover:bg-tahiti-500 active:bg-tahiti-800"
+    class="relative flex items-center h-8 m-2 font-normal text-white no-underline rounded cursor-pointer select-none hover:bg-tahiti-500 active:bg-tahiti-800 p-tiny"
   >
     <!-- 
     :class="{ active: isActive }"

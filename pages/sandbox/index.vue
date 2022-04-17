@@ -3,6 +3,13 @@
     <div class="sandbox-grid">
       <Box size="md" class="">
         <atoms-typography type="h4">Toasts Test</atoms-typography>
+
+        <pre>Toasts? {{ toastCount }}</pre>
+        <input class="text-white bg-regal-500" v-model="duration" placeholder="1500" />
+
+        <Tooltip text="Click for Toast!">
+          <atoms-button @click="makeToast">???</atoms-button>
+        </Tooltip>
       </Box>
 
       <Box size="md" class="">
@@ -11,8 +18,7 @@
 
       <Box size="md" class="">
         <atoms-typography type="h4">Tooltip Test</atoms-typography>
-
-        <Stack>
+        <Row>
           <Tooltip text="Yo ho ho! this be a tooltip!">
             <p class="!text-sunglo-300 text-tiny">
               Lorem ipsum dolor sit, amet consectetur adipisicing elit.
@@ -24,10 +30,7 @@
               darkMode ? "Light Mode" : "Dark Mode"
             }}</atoms-button>
           </Tooltip>
-          <Tooltip text="Click for Toast!">
-            <atoms-button>???</atoms-button>
-          </Tooltip>
-        </Stack>
+        </Row>
       </Box>
 
       <!-- TODO: Complains of CommonJS modlues or something -->
@@ -169,6 +172,9 @@ import Typography from "~~/components/atoms/Typography.vue";
 import Pomodoro from "~~/components/atoms/Pomodoro.vue";
 import Tooltip from "~~/components/atoms/Tooltip.vue";
 import { darkMode, toggleDarkMode } from "~~/hooks";
+import DirtyToast from "~~/components/atoms/DirtyToast.vue";
+import Toaster from "~~/components/atoms/Toaster.vue";
+import { notify, toastQ, duration } from "~~/components/atoms/useToaster";
 
 const randomInt = ref(RNG.Int(3));
 const headerValue = ref("");
@@ -203,6 +209,11 @@ const html = computed(() => {
     </p>
     `;
 });
+
+const toastCount = computed(() => toastQ?.value?.length);
+function makeToast() {
+  notify("Hello, There!", "Sandbox Test");
+}
 </script>
 
 <style scoped>
@@ -214,14 +225,14 @@ const html = computed(() => {
   margin-inline: auto;
   width: min(95%, 70rem);
 }
-
+/* 
 .span-2 {
   grid-column: span 2;
 }
 
 .span-3 {
   grid-column: span 3;
-}
+} */
 
 div >>> p {
   font-size: 24px;

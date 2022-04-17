@@ -28,6 +28,10 @@ module.exports = {
           "0%, 100%": { transform: "opacity 0" },
         },
       },
+      backgroundImage: {
+        "lobster-pattern": "url('/assets/public/lobster-pattern.svg')",
+        // 'footer-texture': "url('/assets/public/footer-texture.png')",
+      },
       borderRadius: {
         "4xl": "2rem",
       },
