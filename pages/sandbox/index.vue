@@ -5,15 +5,35 @@
         <atoms-typography type="h4">Toasts Test</atoms-typography>
 
         <pre>Toasts? {{ toastCount }}</pre>
+        <pre>duration? {{ duration }}</pre>
         <input class="text-white bg-regal-500" v-model="duration" placeholder="1500" />
+        <input
+          class="mt-2 text-white bg-regal-500"
+          v-model="toastTitle"
+          :placeholder="toastTitle!"
+        />
+
+        <input
+          class="mt-2 text-white bg-regal-500"
+          v-model="toastText"
+          :placeholder="toastText!"
+        />
 
         <Tooltip text="Click for Toast!">
-          <atoms-button @click="makeToast">???</atoms-button>
+          <atoms-button @click="makeToast">Button of Awesome</atoms-button>
+          <atoms-button @click="clearToasts">Clear Toasts</atoms-button>
         </Tooltip>
       </Box>
 
       <Box size="md" class="">
         <atoms-typography type="h4">Airtable Forms</atoms-typography>
+      </Box>
+
+      <Box size="md" class="">
+        <atoms-typography type="h4">Randomizer</atoms-typography>
+        <span>
+          {{ RNG.Lorem() }}
+        </span>
       </Box>
 
       <Box size="xl" class="border-2 bg-regal-500">
@@ -74,7 +94,10 @@
             </p>
           </Tooltip>
 
-          <Tooltip text="Ho ho ho! I've got a machine gun!">
+          <Tooltip
+            background="bg-[rgb(6,250,11)]"
+            text="Ho ho ho! I've got a machine gun!"
+          >
             <atoms-button @click="toggleDarkMode">{{
               darkMode ? "Light Mode" : "Dark Mode"
             }}</atoms-button>
@@ -93,7 +116,7 @@
       <div class="w-64 h-64 bg-transparent border-2">
         <atoms-typography type="h1">Regexer</atoms-typography>
         <input type="text" class="bg-regal-800" v-model="pattern" />
-        <textarea class="bg-regal-800 text-tahiti-500" v-model="text"> </textarea>
+        <textarea class="bg-regal-800 text-tahiti-500" v-model="rawText"> </textarea>
         <div type="p" class="bg-regal-800" v-html="html"></div>
         <!-- <p>{{ matches.groups.year }}</p> -->
         <!-- <pre>extract? {{ extract(re, text) }}</pre> -->
@@ -210,6 +233,8 @@
           5
         </div>
       </div> -->
+
+      <Toaster :debug="true" />
     </div>
   </NuxtLayout>
 </template>
@@ -223,7 +248,7 @@ import Tooltip from "~~/components/atoms/Tooltip.vue";
 import { darkMode, toggleDarkMode } from "~~/hooks";
 import DirtyToast from "~~/components/atoms/DirtyToast.vue";
 import Toaster from "~~/components/atoms/Toaster.vue";
-import { notify, toastQ, duration } from "~~/components/atoms/useToaster";
+import { notify, toastQ, duration, clearToasts } from "~~/components/atoms/useToaster";
 
 const randomInt = ref(RNG.Int(3));
 const headerValue = ref("");
@@ -244,7 +269,7 @@ const extract = (regex, text): Person => {
   };
 };
 
-const text = ref("Hello, there! \n32 nugs found");
+const rawText = ref("");
 const html = computed(() => {
   //   const re = new RegExp(pattern.value, "i");
   //   const re = new RegExp("(?<year>\d{4})-(?<month>\d{2})-(?<day>\d{2})", "i");
@@ -254,14 +279,20 @@ const html = computed(() => {
 
   return `
     <p class="text-red" color="red">
-          ${text.value} year: <b>${year}</b>
+          ${rawText.value} year: <b>${year}</b>
     </p>
     `;
 });
 
+/** Toasts */
+
+const toastTitle = ref("Yer Eternal Reward");
+const toastText = ref("Oi! that stings!");
 const toastCount = computed(() => toastQ?.value?.length);
 function makeToast() {
-  notify("Hello, There!", "Sandbox Test");
+  RNG.Int;
+  notify(RNG.Lorem(), toastTitle.value);
+  // notify(toastText.value, toastTitle.value);
 }
 </script>
 

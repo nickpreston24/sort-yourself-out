@@ -7,25 +7,31 @@ atm... // help?: https://github.com/acidjazz/tv-toast/blob/master/src/utils.js
       class="relative z-20 inline-block w-auto transition-opacity duration-1000 ease-in-out sm:w-64 md:w-128 lg:w-148 bg-ocean-500/80 tranistion-delay-1000 bottom-100 left-1/2"
     >
       <div class="flex flex-row justify-end gap-2">
-        <!-- <pre>show? {{ show }}</pre> -->
-        <pre>id? {{ id }}</pre>
-        <h1 class="!text-cocoa-bean-100 text-2xl font-bold w-1/3">{{ toast.title }}</h1>
-        <button class="sm:w-3/6 md:w-1/3 lg:w-1/3">
-          <atoms-tooltip @click="active = false" text="Dismiss">
-            <p>X</p>
-          </atoms-tooltip>
-        </button>
+        <pre v-if="props?.debug">id? {{ id }}</pre>
+
+        <h1 class="w-5/6 text-2xl font-bold text-center p-base">{{ toast.title }}</h1>
+        <span class="w-1/6 mt-2 mr-2">
+          <icons-cross-icon
+            @click="active = false"
+            tooltip="Dismiss"
+            class="w-8"
+            fill="rgb(6 182 212)"
+          />
+        </span>
       </div>
-      <!-- <slot /> -->
       <!-- <p>{{ secondsRemaining }}s...</p> -->
-      <pre>duration? {{ duration }}</pre>
+      <!-- <pre>duration? {{ duration }}</pre> -->
 
       <Stack class="">
-        <div class="text-center text-white bg-cocoa-bean-800">
-          <span class="text">
+        <div class="m-4 text-white">
+          <span class="text font-extra-bold pl-md">
             {{ message }}
           </span>
-          <img src="https://media.giphy.com/media/Nx0rz3jtxtEre/giphy.gif" />
+
+          <img
+            v-if="props.debug"
+            src="https://media.giphy.com/media/Nx0rz3jtxtEre/giphy.gif"
+          />
         </div>
       </Stack>
     </div>
@@ -43,20 +49,20 @@ const props = defineProps({
       title: "Notification",
       show: { default: true },
       id: -1,
-      duration: { default: 5000 },
+      duration: { default: 7500 },
     },
   },
 });
 // console.log("props", props);
 const { message, title, id, show, duration } = props?.toast;
 
-console.log("show", show);
+// console.log("show", show);
 // console.log("id", id);
 // console.log("message", message);
 // console.log("title", title);
 // console.log("duration.value", duration.value);
 
-console.log("toast", props?.toast);
+// console.log("toast", props?.toast);
 const active = ref(show);
 // const secondsRemaining = computed(() => duration.value);
 // const instance = getCurrentInstance();

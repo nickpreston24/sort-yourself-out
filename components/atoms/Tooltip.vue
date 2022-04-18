@@ -2,7 +2,7 @@
   <div class="tooltip-box">
     <slot />
     <!-- <div class="tooltip" :class="darkMode ? backgrounds.sunglo : backgrounds.tahiti"> -->
-    <div v-show="text" class="rounded-full tooltip bg-sunglo-500">
+    <div v-show="text" class="rounded-full tooltip" :class="props.background">
       <span class="text font-extra-bold">
         {{ text }}
       </span>
@@ -16,6 +16,7 @@ import { backgrounds, darkMode } from "~~/hooks/useTheme";
 
 const props = defineProps({
   text: { default: "Tooltip!" },
+  background: { default: "bg-sunglo-500" },
 });
 
 const { text } = props;

@@ -27,14 +27,20 @@
       <SidebarLink v-if="true" to="/sandbox">Sandbox</SidebarLink>
     </span>
     <span
-      class="absolute bottom-0 p-2 mb-4 ml-4 text-white transition duration-200 opacity-70"
+      class="absolute bottom-0 p-2 mb-4 ml-0 mr-1 text-white transition duration-200 opacity-70"
       @click="toggleSidebar"
-      :class="{ 'rotate-180': collapsed }"
+      :class="{ 'rotate-90': collapsed }"
     >
       <i @click="collapsed = false" v-if="mode === 'RIGHT'" class="text-xl">
-        {{ ">>" }}
+        <icons-arrow-up
+          class="w-8 shadow-3xl shadow-tahiti-400/50"
+          fill="rgb(6 182 212)"
+          stroke="#fff"
+        />
       </i>
-      <i @click="collapsed = true" v-else class="text-xl"> {{ "<<" }} </i>
+      <span @click="collapsed = true" v-else class="text-xl">
+        <icons-arrow-up class="w-8" fill="rgb(6 182 212)" stroke="#fff" />
+      </span>
     </span>
   </div>
 </template>

@@ -1,6 +1,6 @@
 import { ref, onMounted } from "vue";
 export const toastQ = ref([]);
-export const duration = ref(5000);
+export const duration = ref(10000);
 const nextDuration = computed(() => {
   let previousToast = toastQ.value[count.value - 1];
   console.log("previousToast", previousToast);
@@ -8,8 +8,7 @@ const nextDuration = computed(() => {
 });
 
 const count = computed(() => toastQ.value?.length);
-export function notify(message = "", title = "[!]") {
-  // console.log("hello from notify!");
+export function notify(message = "", title = "", timeout = 6000) {
   console.log("nextDuration", nextDuration.value);
   toastQ.value.push({
     title,
@@ -22,7 +21,17 @@ export function notify(message = "", title = "[!]") {
 }
 
 export function destroyToast(id) {
-  toastQ.value = toastQ.value?.filter((t) => t.id !== id);
+  console.log("id", id);
+  // let toast = toastQ.value?.filter((t) => t.id === id)[0];
+  // // toast?.show = false;
+  // console.log("toast", toast);
+  // .map((toast) => (toast.show = false));
+}
+
+export function clearToasts() {
+  for (let i = 0; i < toastQ?.value?.length; i++) {
+    destroyToast(i);
+  }
 }
 
 onMounted(() => {
