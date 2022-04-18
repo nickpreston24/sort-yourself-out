@@ -15,6 +15,7 @@
             "
             :reward="reward"
             :key="index"
+            :active="index === selectedReward"
             @click="setSelectedReward(index)"
           />
         </div>
@@ -71,7 +72,7 @@
                       class="h-24 m-2 overflow-y-auto rounded-md p-tiny text-crimson-600 bg-regal-500 sm:w-56 md:w-64 max-h-128"
                     >
                       <textarea
-                        class="h-64 bg-regal-500 w-128 max-h-128"
+                        class="h-64 bg-regal-500 sm:w-128 md:w-144 lg:w-144 xl:w-144"
                         v-if="editing == index"
                         v-model="task.Notes"
                         type="text"
@@ -90,7 +91,7 @@
                         style="font-size: 0.75rem"
                       >
                         <star-icon
-                          class="text-red"
+                          class="w-8 text-red"
                           height="10mm"
                           fill="#A71A23"
                           stroke="#D62338"
@@ -104,7 +105,7 @@
                         style="font-size: 0.75rem"
                       >
                         <star-icon
-                          class="text-red"
+                          class="w-8 text-red"
                           height="10mm"
                           fill="#777"
                           stroke="#D62338"
