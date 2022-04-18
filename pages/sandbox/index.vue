@@ -16,6 +16,55 @@
         <atoms-typography type="h4">Airtable Forms</atoms-typography>
       </Box>
 
+      <Box size="xl" class="border-2 bg-regal-500">
+        <atoms-typography type="h4">SVG Icons</atoms-typography>
+
+        <Row>
+          <icons-star-icon
+            class="w-16 h-16 border-2"
+            fill="#faf"
+            stroke="#fae"
+            tooltip="sparkles!"
+          />
+          <icons-plus-icon
+            tooltip="ADD something AWESOME"
+            class="w-16 h-16 border-2"
+            fill="#A71A23"
+            stroke="#D62338"
+          />
+          <icons-trash-icon
+            tooltip="PANDA"
+            class="w-16 h-16 border-2"
+            fill="transparent"
+            stroke="#faf"
+          />
+          <icons-edit-icon
+            tooltip="Alcohol, it's a hell of a drug"
+            class="w-16 h-16 border-2"
+            fill="transparent"
+            stroke="#5fa"
+          />
+          <icons-arrow-up
+            tooltip="Assign to Reward"
+            class="w-16 h-16 border-2"
+            fill="transparent"
+            stroke="#aaf"
+          />
+          <icons-reload-icon
+            tooltip="I'm reloading !!!"
+            class="w-16 h-16 border-2"
+            fill="transparent"
+            stroke="#afa"
+          />
+          <icons-calendar-icon
+            tooltip="Make a Schedule"
+            class="w-16 h-16 border-2"
+            fill="transparent"
+            stroke="#5fa"
+          />
+        </Row>
+      </Box>
+
       <Box size="md" class="">
         <atoms-typography type="h4">Tooltip Test</atoms-typography>
         <Row>

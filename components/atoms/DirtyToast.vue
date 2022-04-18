@@ -78,12 +78,29 @@ async function destroy() {
   active.value = false;
   clearInterval(interval);
   // setTimeout(() => {
-  //   // this.$destroy();
+  //   // $destroy();
   //   // destroy();
   //   // removeElement(instance);
   destroyToast(id);
   // }, duration.value);
 }
+
+/** TODO: Start and stop a timer
+ * 1. Pause on hover (mousenter)
+ * 2. Resume on mouse leave
+ * https://codepen.io/psnoonan/pen/KKgPXMp
+ */
+// start() {
+//       clearInterval(interval);
+//       timer = timer > 0 ? timer : INTERVAL / 1000;
+//       timerId = setInterval(() => {
+//         timer -= 1;
+//       }, 1000);
+//     },
+//     pause() {
+//       clearInterval(timerId);
+//       status = 'Paused';
+//     },
 </script>
 
 <style scoped>

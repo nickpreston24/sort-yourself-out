@@ -84,16 +84,16 @@ Gradients work well on the 30%.
 - [x] Add a Task to a Reward
 - [x] Pomodoro timer
 - [ ] Icons needed:
-  - [ ] Trashcan
-  - [ ] Checkmark
-  - [ ] Calendar
-  - [ ] Copy
-  - [ ] Cancel / 'X'
-  - [ ] Reload/Refresh
-  - [ ] Arrows, right and left
-  - [ ] Edit
-  - [ ] Up arrow for assignment
-- [ ] Diy tooltip on hover
+  - [x] Trashcan
+  - [x] Checkmark
+  - [x] Calendar
+  - [x] Copy
+  - [x] Cancel / 'X'
+  - [x] Reload/Refresh
+  - [x] Arrows, right and left
+  - [x] Edit
+  - [x] Up arrow for assignment
+- [x] Diy tooltip on hover
 - [ ] Fix: For your `/atoms` components, use the inline darkMode switcher: `:class='darkMode ? bg-regal-800 : bg-sunglo-500'`
 
 ## Nice to haves

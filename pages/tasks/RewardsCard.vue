@@ -4,6 +4,66 @@
   >
     <molecules-card class="flex items-center justify-center opacity-90 roundex-lg">
       <Typography type="h4">{{ reward?.Name }}</Typography>
+
+      <!-- Buttons Action Bar -->
+      <Row>
+        <icons-plus-icon
+          tooltip="ADD something AWESOME"
+          class="w-8 h-8"
+          fill="transparent"
+          stroke="#faf"
+        />
+        <icons-trash-icon
+          tooltip="PANDA"
+          class="w-8 h-8"
+          fill="transparent"
+          stroke="#faf"
+        />
+        <icons-edit-icon
+          tooltip="Alcohol, it's a hell of a drug"
+          class="w-8 h-8"
+          fill="transparent"
+          stroke="#faf"
+        />
+        <icons-arrow-up
+          tooltip="Assign to Reward"
+          class="w-8 h-8"
+          fill="transparent"
+          stroke="#faf"
+        />
+        <icons-reload-icon
+          tooltip="I'm reloading !!!"
+          class="w-8 h-8"
+          fill="transparent"
+          stroke="#faf"
+        />
+        <icons-calendar-icon
+          tooltip="Make a Schedule"
+          class="w-8 h-8"
+          fill="transparent"
+          stroke="#faf"
+        />
+        <icons-copy-icon
+          tooltip="Copy"
+          class="w-8 h-8"
+          fill="transparent"
+          stroke="#faf"
+        />
+        <icons-cross-icon
+          tooltip="Cancel"
+          class="w-8 h-8"
+          fill="transparent"
+          stroke="#faf"
+        />
+
+        <icons-checkmark-icon
+          tooltip="Cancel"
+          class="w-8 h-8"
+          fill="transparent"
+          stroke="#faf"
+        />
+      </Row>
+
       <Row>
         <Typography type="p"
           >Points: {{ completedPoints + "/" + reward?.Points }}</Typography
@@ -21,7 +81,7 @@
           <Typography type="b">{{ percentCompleted.toFixed() }}%</Typography>
         </radial-progress-bar>
       </Row>
-      <!-- <pre>Matching Prerequisites? {{ requirements?.length }}</pre> -->
+      <!-- <pre>Matching Prerequisites? {{ requirements?.length }}<buttonsActive/pre> -->
 
       <!-- <ul class="h-32 overflow-y-auto">
         <li v-for="(req, index) in requirements">
@@ -41,12 +101,18 @@ import RadialProgressBar from "vue3-radial-progress";
 import Typography from "~~/components/atoms/Typography.vue";
 import { Row, Stack } from "@mpreston17/flexies";
 import { useTasks } from "~~/hooks";
+import Tooltip from "~~/components/atoms/Tooltip.vue";
 const props = defineProps({
   reward: { type: Object },
 });
 
 const { tasks } = useTasks();
 const { reward } = props;
+
+const buttonsActive = ref(false);
+function toggleButtonsActive() {
+  buttonsActive.value = !buttonsActive.value;
+}
 
 // % completion of all Prerequisites
 const completedPrereqs = computed(() => {

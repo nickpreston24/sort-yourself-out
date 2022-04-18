@@ -2,8 +2,8 @@
   <div class="tooltip-box">
     <slot />
     <!-- <div class="tooltip" :class="darkMode ? backgrounds.sunglo : backgrounds.tahiti"> -->
-    <div class="tooltip bg-sunglo-500">
-      <span class="text">
+    <div v-show="text" class="rounded-full tooltip bg-sunglo-500">
+      <span class="text font-extra-bold">
         {{ text }}
       </span>
     </div>
@@ -33,7 +33,7 @@ const { text } = props;
 .tooltip {
   color: #ffffff;
   text-align: center;
-  padding: 5px 0;
+  /* padding: 5px 0; */
   border-radius: 2px;
 
   width: 120px;
