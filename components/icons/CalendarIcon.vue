@@ -172,12 +172,12 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, defineProps } from "vue";
+import { defineProps } from "vue";
 import Tooltip from "../atoms/Tooltip.vue";
 
 const props = defineProps({
   stroke: { default: "#fff", type: String },
-  fill: { default: "#aaa", type: String },
-  tooltip: { default: "" },
+  fill: { default: "transparent", type: String },
+  tooltip: { default: "Date" },
 });
 </script>

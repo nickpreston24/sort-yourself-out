@@ -35,7 +35,7 @@ export const getRecords = async (
     },
   });
 
-  console.log("result", result);
+  // console.log("result", result);
 
   return formatRecords(result?.data?.records);
 };

@@ -3,8 +3,6 @@
     <div>
       <!-- Rewards Cards -->
 
-      <pre>loading? {{ loading }}</pre>
-      <!-- <pre>selectedReward? {{ rewards[selectedReward] }}</pre> -->
       <div class="mb-10 ml-4 mr-4 bg-transparent rewards-grid">
         <div v-for="(reward, index) in rewards">
           <RewardsCard
@@ -15,13 +13,15 @@
             "
             :reward="reward"
             :key="index"
-            :active="index === selectedReward"
             @click="setSelectedReward(index)"
           />
         </div>
-        <atoms-button class="w-16 h-16 bg-transparent border-2 border-tahiti-500">
-          <plus-icon fill="#fff" stroke="#D62338" @click="startNewModel('reward')" />
-        </atoms-button>
+        <plus-icon
+          class="w-8 h-8"
+          fill="transparent"
+          stroke="rgba(34 211 238)"
+          @click="startNewModel('reward')"
+        />
       </div>
       <!-- Tasks Grid -->
       <div class="m-4 task-grid">
@@ -31,165 +31,30 @@
           v-for="(task, index) in filteredTasks"
           :key="index"
         >
-          <transition
-            name="fade"
-            enter-active-class="duration-300 ease-out"
-            enter-from-class="transform scale-75 opacity-0"
-            enter-to-class="scale-100 opacity-100"
-            leave-active-class="duration-200 ease-in"
-            leave-from-class="scale-100 opacity-100"
-            leave-to-class="transform scale-75 opacity-0"
-          >
-            <div class="hover:bg-regal-600">
-              <Card
-                v-show="index >= timer / delay"
-                class="gap-2 shadow-md from-regal-800 to-regal-700 shadow-regal-400/90 opacity-90 bg-gradient-to-l hover:bg-gradient-to-r"
-              >
-                <pre class="text-tiny"> {{ index }}</pre>
-                <div class="flex flex-row items-center justify-evenly">
-                  <!-- Left Column -->
-
-                  <div class="m-2 sm:w-8 md:w-16 lg:w-24 xl:w-32">
-                    <img
-                      class="h-auto rounded-full shadow-lg max-wbutton-full shadow-regal-300/50 hover:scale-110"
-                      src="~/assets/public/lobster-sticker.png"
-                      alt="hierarchy"
-                    />
-                  </div>
-
-                  <!-- Right column -->
-                  <Stack>
-                    <input
-                      class="bg-regal-500 text-crimson-600"
-                      v-if="editing == index"
-                      v-model="task.Name"
-                      type="text"
-                      :id="index"
-                    />
-                    <typography v-else type="h3">{{ task?.Name }}</typography>
-
-                    <!-- Notes -->
-                    <span
-                      class="h-24 m-2 overflow-y-auto rounded-md p-tiny text-crimson-600 bg-regal-500 sm:w-56 md:w-64 max-h-128"
-                    >
-                      <textarea
-                        class="h-64 bg-regal-500 sm:w-128 md:w-144 lg:w-144 xl:w-144"
-                        v-if="editing == index"
-                        v-model="task.Notes"
-                        type="text"
-                        :id="index"
-                      />
-
-                      <typography type="p" v-else>
-                        {{ task?.Notes }}
-                      </typography>
-                    </span>
-
-                    <Row class="gap-0">
-                      <div
-                        v-for="k in task?.Points || 0"
-                        :key="k"
-                        style="font-size: 0.75rem"
-                      >
-                        <star-icon
-                          class="w-8 text-red"
-                          height="10mm"
-                          fill="#A71A23"
-                          stroke="#D62338"
-                          @click="updatePoints(index, k)"
-                        />
-                      </div>
-
-                      <div
-                        v-for="k in 5 - (task?.Points || 5)"
-                        :key="k"
-                        style="font-size: 0.75rem"
-                      >
-                        <star-icon
-                          class="w-8 text-red"
-                          height="10mm"
-                          fill="#777"
-                          stroke="#D62338"
-                          @click="updatePoints(index, k + task?.Points)"
-                        />
-                      </div>
-                    </Row>
-                  </Stack>
-                </div>
-                <!-- </template> -->
-
-                <template v-slot:footer>
-                  <Flex class="flex justify-wrap">
-                    <!-- Left -->
-                    <Row class="w-2/5">
-                      <AtomsChip :status="task?.Status">{{ task?.Status }}</AtomsChip>
-
-                      <div
-                        class="flex items-center justify-center w-6 h-6 p-0 text-sm text-white rounded-full"
-                      >
-                        <plus-icon fill="#A71A23" stroke="#D62338" />
-                        <!-- <p>
-                        {{ task?.["Subtasks"]?.Length || 0 }}
-                      </p> -->
-                      </div>
-                    </Row>
-
-                    <!-- Right -->
-                    <div class="flex flex-row justify-evenly">
-                      <!-- <atoms-button
-                        v-if="editing != index"
-                        class="m-2"
-                        @click="editNotes(index)"
-                        >Edit</atoms-button
-                      > -->
-
-                      <icons-edit-icon
-                        v-if="editing != index"
-                        class="w-8"
-                        fill="transparent"
-                        stroke="#5fa"
-                        tooltip="Edit this Task"
-                        @click="editNotes(index)"
-                      />
-                      <icons-cross-icon
-                        v-else-if="editing == index"
-                        class="w-8"
-                        @click="submitNotes(index)"
-                      />
-                      <!-- <atoms-button
-                        v-else-if="editing == index"
-                        class="m-2"
-                        @click="submitNotes(index)"
-                        >Submit</atoms-button
-                      > -->
-
-                      <atoms-button class="m-2" @click="markTaskComplete(index)"
-                        >Complete</atoms-button
-                      >
-                      <atoms-button @click="remove(index)" class="m-2">
-                        Delete
-                      </atoms-button>
-
-                      <atoms-button @click="cashIn(index)" class="m-2">
-                        $$$
-                      </atoms-button>
-                    </div>
-                    <span class="w-1/6"></span>
-                  </Flex>
-                </template>
-              </Card>
-            </div>
-          </transition>
+          <TaskCard
+            :class="
+              index === selectedTask
+                ? 'border-2 border-tahiti-400'
+                : 'border-2 border-transparent'
+            "
+            :active="index >= timer / delay"
+            :task="task"
+            :index="index"
+            @click="setSelectedTask(index)"
+          />
         </div>
-        <atoms-button class="w-16 h-16 bg-transparent border-2 border-tahiti-500">
-          <plus-icon fill="#fff" stroke="#D62338" @click="startNewModel('task')" />
-        </atoms-button>
+        <plus-icon
+          class="w-8 h-8"
+          stroke="rgba(34 211 238)"
+          @click="startNewModel('task')"
+        />
       </div>
     </div>
 
     <transition name="fade">
       <lobster-spinner
         v-if="loading"
+        :show="loading"
         id="overlay"
         class="fixed absolute top-0 bottom-0 left-0 right-0 z-10 w-64 h-64 m-auto"
       />
@@ -212,10 +77,11 @@ import StarIcon from "~~/components/icons/StarIcon.vue";
 import PlusIcon from "~~/components/icons/PlusIcon.vue";
 import Card from "~~/components/molecules/Card.vue";
 import RewardsCard from "./RewardsCard.vue";
-// import Modal from "~~/components/molecules/Modal.vue";
 import FormModal from "~~/components/organisms/FormModal.vue";
 
 import { closeModal, showModal } from "~~/components/molecules/useModal";
+import TaskCard from "./TaskCard.vue";
+import { collapsed } from "~~/components/organisms/sidebar/useSidebar";
 
 const delay = 175;
 const maxTasks = 25;
@@ -242,6 +108,8 @@ const {
   loading,
   createReward,
   patchReward,
+
+  filteredTasks,
 } = useTasks(maxTasks);
 
 const initialTask = {
@@ -266,16 +134,9 @@ const initialReward = {
 
 const task = ref({ ...initialTask });
 const reward = ref({ ...initialReward });
-const filteredTasks = computed(() => {
-  return tasks.value.sort(
-    (a, b) => a?.Status < b?.Status || a?.Status?.Length < b?.Status?.Length
-  );
-  //.filter((t) => t.Status !== "Done");
-});
 
 const picked = ref("");
 const visible = ref(false);
-const editing = ref(-1);
 const modelName = ref("task");
 const currentModel = computed(() => {
   if (modelName.value === "task") return task;
@@ -283,8 +144,14 @@ const currentModel = computed(() => {
 });
 
 const selectedReward = ref(-1);
+const selectedTask = ref(-1);
 
 const reload = () => load(maxTasks);
+
+onMounted(() => {
+  collapsed.value = true;
+  load(maxTasks);
+});
 
 function startNewModel(model = "task") {
   modelName.value = model;
@@ -293,6 +160,10 @@ function startNewModel(model = "task") {
 
 function setSelectedReward(index) {
   selectedReward.value = selectedReward.value !== index ? index : -1;
+}
+
+function setSelectedTask(index) {
+  selectedTask.value = selectedTask.value !== index ? index : -1;
 }
 
 function onSubmit() {
@@ -362,43 +233,39 @@ async function submitTask() {
   // Object.assign(task.value, initialTask);
 }
 
-function editNotes(index) {
-  editing.value = index;
-}
+// async function submitNotes(index) {
+//   let updatedTask = filteredTasks.value[index];
+//   console.log("submitted notes", updatedTask?.Notes);
 
-async function submitNotes(index) {
-  let updatedTask = filteredTasks.value[index];
-  console.log("submitted notes", updatedTask?.Notes);
+//   console.log("updatedTask", updatedTask);
+//   let records = Array.from([{ ...updatedTask }]);
+//   console.log("records", records);
 
-  console.log("updatedTask", updatedTask);
-  let records = Array.from([{ ...updatedTask }]);
-  console.log("records", records);
+//   const response = await patchTask(records).then((_) => {
+//     error.value = "";
+//   });
 
-  const response = await patchTask(records).then((_) => {
-    error.value = "";
-  });
+//   editNotes(-1); //reset to nothing.
+// }
 
-  editNotes(-1); //reset to nothing.
-}
+// async function markTaskComplete(index) {
+//   // console.log("index", index);
+//   let updatedTask = filteredTasks.value[index];
+//   updatedTask.Status = updatedTask?.Status === "Todo" ? "Done" : "Todo";
+//   console.log("current", updatedTask);
 
-async function markTaskComplete(index) {
-  // console.log("index", index);
-  let updatedTask = filteredTasks.value[index];
-  updatedTask.Status = updatedTask?.Status === "Todo" ? "Done" : "Todo";
-  console.log("current", updatedTask);
+//   console.log("updatedTask", updatedTask);
+//   let records = Array.from([{ ...updatedTask }]);
+//   console.log("records", records);
 
-  console.log("updatedTask", updatedTask);
-  let records = Array.from([{ ...updatedTask }]);
-  console.log("records", records);
+//   const response = await patchTask(records).then((_) => {
+//     error.value = "";
+//   });
 
-  const response = await patchTask(records).then((_) => {
-    error.value = "";
-  });
+//   notify("Task Completed! :D", "Completed!");
+// }
 
-  notify("Task Completed! :D", "Completed!");
-}
-
-async function remove(index) {
+async function removeTask(index) {
   let current = filteredTasks.value[index];
   console.log("current", current);
   deleteTask(current.id)
@@ -439,28 +306,19 @@ async function cashIn(index) {
   await patchReward(records);
 }
 
-async function updatePoints(index, value) {
-  let updatedTask = filteredTasks.value[index];
-  updatedTask.Points = value;
+// async function updatePoints(index, value) {
+//   let updatedTask = filteredTasks.value[index];
+//   updatedTask.Points = value;
 
-  console.log("updatedTask", updatedTask);
-  let records = Array.from([{ ...updatedTask }]);
-  console.log("records", records);
+//   console.log("updatedTask", updatedTask);
+//   let records = Array.from([{ ...updatedTask }]);
+//   console.log("records", records);
 
-  const response = await patchTask(records).then((_) => {
-    error.value = "";
-  });
-}
+//   const response = await patchTask(records).then((_) => {
+//     error.value = "";
+//   });
+// }
 </script>
-
-<!-- <select v-model="selected">
-  <option @select="onSelect(index)" disabled value="">
-    Please select one
-  </option>
-  <option>Todo</option>
-  <option>Done</option>
-  <option>In Progress</option>
-</select> -->
 
 <style scoped>
 .task-grid {
@@ -471,7 +329,7 @@ async function updatePoints(index, value) {
 
 .rewards-grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   grid-gap: 1em;
 }
 

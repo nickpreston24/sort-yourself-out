@@ -30,55 +30,59 @@
           tooltip="ADD something AWESOME"
           class="w-8 h-8"
           fill="transparent"
-          stroke="#faf"
+          stroke="rgba(34 211 238)"
         />
         <icons-trash-icon
           tooltip="Delete this!"
           class="w-8 h-8"
           fill="transparent"
-          stroke="#faf"
+          stroke="rgba(34 211 238)"
         />
         <icons-edit-icon
           tooltip="Alcohol, it's a hell of a drug"
           class="w-8 h-8"
           fill="transparent"
-          stroke="#faf"
+          stroke="rgba(34 211 238)"
         />
-        <icons-arrow-up
+        <!-- <icons-arrow-up
           tooltip="Assign to Reward"
           class="w-8 h-8"
           fill="transparent"
-          stroke="#faf"
-        />
-        <icons-reload-icon
-          
-         class="w-8 h-8" fill="#fff" stroke="#faf" />
+          stroke="rgba(34 211 238)"
+        /> -->
+        <!-- <icons-reload-icon class="w-8 h-8" fill="#fff" stroke="rgba(34 211 238)" /> -->
         <icons-calendar-icon
           tooltip="Make a Schedule"
           class="w-8 h-8"
           fill="transparent"
-          stroke="#faf"
+          stroke="rgba(34 211 238)"
         />
-        <icons-copy-icon
+        <!-- <icons-copy-icon
           tooltip="Copy"
           class="w-8 h-8"
           fill="transparent"
-          stroke="#faf"
-        />
-        <icons-cross-icon
+          stroke="rgba(34 211 238)"
+        /> -->
+        <!-- <icons-cross-icon
           tooltip="Cancel"
           class="w-8 h-8"
           fill="transparent"
-          stroke="#faf"
-        />
+          stroke="rgba(34 211 238)"
+        /> -->
 
         <icons-checkmark-icon
-          tooltip="Cancel"
+          tooltip="Mark as Concluded"
           class="w-8 h-8"
           fill="transparent"
-          stroke="#faf"
+          stroke="rgba(34 211 238)"
+          @click="concludeReward"
         />
       </Row>
+      <!-- <molecules-modal>
+        <template.header>
+          <h1>Delete this for real?</h1>
+        </template.header>
+      </molecules-modal> -->
     </molecules-card>
   </div>
 </template>
@@ -89,13 +93,14 @@ import RadialProgressBar from "vue3-radial-progress";
 import Typography from "~~/components/atoms/Typography.vue";
 import { Row, Stack } from "@mpreston17/flexies";
 import { useTasks } from "~~/hooks";
-import Tooltip from "~~/components/atoms/Tooltip.vue";
+import { notify } from "~~/components/atoms/useToaster";
+import { showModal } from "~~/components/molecules/useModal";
 const props = defineProps({
   reward: { type: Object },
   active: { default: false },
 });
 
-const { tasks } = useTasks();
+const { tasks, rewards } = useTasks();
 const { reward } = props;
 
 const buttonsActive = ref(false);
@@ -133,4 +138,43 @@ function onMouseEnter() {
 function onMouseLeave() {
   buttonsActive.value = false;
 }
+
+/* API */
+
+async function submitReward() {
+  console.log("reward", reward);
+  if (!reward?.value?.Name) {
+    error.value = "Name is a required Field";
+    return;
+  }
+
+  let newReward = {
+    ...reward.value,
+    Points: parseInt(reward.value?.Points),
+    // Start: DateTime.local().toISO(),
+    // Start: now.toISO(),
+  };
+
+  const response = await createReward(newReward);
+
+  let record = response?.data?.records?.[0];
+
+  if (record) {
+    rewards.value.push({
+      ...record.fields,
+      id: record.id,
+    });
+  }
+
+  // closeModal();
+  showModal.value = false;
+  notify("Reward Submitted!", "Success!");
+}
+
+function concludeReward() {
+  console.log("reward to conclude", reward);
+  notify("concludeReward() Not implemented yet...", "Warning!", 100000);
+}
+
+function deleteReward() {}
 </script>

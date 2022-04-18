@@ -58,7 +58,7 @@ import Tooltip from "../atoms/Tooltip.vue";
 
 const props = defineProps({
   stroke: { default: "#fff", type: String },
-  fill: { default: "#aaa", type: String },
+  fill: { default: "transparent", type: String },
   tooltip: { default: "Reload" },
 });
 </script>

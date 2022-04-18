@@ -60,11 +60,11 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, defineProps } from "vue";
+import { defineProps } from "vue";
 
 const props = defineProps({
   stroke: { default: "#fff", type: String },
-  fill: { default: "#aaa", type: String },
+  fill: { default: "transparent", type: String },
   tooltip: { default: "Check" },
 });
 </script>

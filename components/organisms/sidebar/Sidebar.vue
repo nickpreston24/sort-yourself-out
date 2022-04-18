@@ -45,11 +45,28 @@
   </div>
 </template>
 <script setup lang="ts">
+import { ref, computed } from "vue";
 import SidebarLink from "./SidebarLink.vue";
 import { collapsed, toggleSidebar, sidebarWidth, className, hidden } from "./useSidebar";
 import Toaster from "~~/components/atoms/Toaster.vue";
 const props = defineProps({
   mode: { type: String, default: "LEFT" },
+});
+
+const duration = ref(2500);
+const interval = computed(() => {
+  get: () => {
+    return setInterval(() => {
+      console.log("Interval completed");
+    }, duration.value);
+  };
+  set: (ms) => {
+    duration.value = ms;
+  };
+});
+
+onMounted(() => {
+  // interval = setInterval(()=>{}, 2500)
 });
 
 function onMouseLeave() {

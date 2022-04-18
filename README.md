@@ -53,7 +53,8 @@ Gradients work well on the 30%.
 - [x] Fix the Clear button on Tasks form.
 - [x] Fix the input fields on tasks form.
 - [ ] Add due dates
-- [ ] Support nested Tasks
+  - [ ] https://www.vuescript.com/datetime-range-picker/
+- [x] Support nested Tasks
 - [x] Support Assignments to Rewards
 - [x] Put Tasks in a Grid
 - [x] Learn CSS Grid :)
