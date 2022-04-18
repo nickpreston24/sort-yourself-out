@@ -40,6 +40,28 @@
           </radial-progress-bar>
         </Row>
 
+        <Row class="gap-0">
+          <div v-for="k in task?.Points || 0" :key="k" style="font-size: 0.75rem">
+            <icons-star-icon
+              class="w-8 text-red"
+              height="10mm"
+              stroke="rgba(34 211 238)"
+              fill="rgba(34 211 238)"
+              @click="updatePoints(index, k)"
+            />
+          </div>
+
+          <div v-for="k in 5 - (task?.Points || 5)" :key="k" style="font-size: 0.75rem">
+            <icons-star-icon
+              class="w-8 text-red"
+              height="10mm"
+              stroke="rgba(34 211 238)"
+              fill="#777"
+              @click="updatePoints(index, k + task?.Points)"
+            />
+          </div>
+        </Row>
+
         <!-- Buttons Action Bar -->
         <Flex class="flex justify-wrap">
           <Row class="w-2/5">
@@ -90,7 +112,8 @@
               @click="removeTask(index)"
             />
           </Row>
-          <span class="w-1/6"></span>
+
+          <!-- <span class="w-1/6"></span> -->
         </Flex>
         <!-- <molecules-modal>
         <template.header>
@@ -138,29 +161,7 @@
               </atoms-typography>
             </span>
 
-            <Row class="gap-0">
-              <div v-for="k in task?.Points || 0" :key="k" style="font-size: 0.75rem">
-                <star-icon
-                  class="w-8 text-red"
-                  height="10mm"
-                  stroke="rgba(34 211 238)"
-                  @click="updatePoints(index, k)"
-                />
-              </div>
-
-              <div
-                v-for="k in 5 - (task?.Points || 5)"
-                :key="k"
-                style="font-size: 0.75rem"
-              >
-                <star-icon
-                  class="w-8 text-red"
-                  height="10mm"
-                  stroke="rgba(34 211 238)"
-                  @click="updatePoints(index, k + task?.Points)"
-                />
-              </div>
-            </Row>
+            
           </Stack>
         </div>
 
