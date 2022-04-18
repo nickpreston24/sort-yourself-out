@@ -31,7 +31,7 @@ export function useTasks(take = 10, pageSize = 10) {
   const filteredTasks = computed(() => {
     return tasks.value
       .sort(
-        (a, b) => a?.Status < b?.Status || a?.Status?.Length < b?.Status?.Length
+        (a, b) => a?.Status < b?.Status || a?.Status?.length < b?.Status?.length
       )
       .slice(0, take);
     //.filter((t) => t.Status !== "Done");
@@ -40,7 +40,7 @@ export function useTasks(take = 10, pageSize = 10) {
   const filteredRewards = computed(() => {
     return rewards.value
       .sort(
-        (a, b) => a?.Status < b?.Status || a?.Status?.Length < b?.Status?.Length
+        (a, b) => a?.Status < b?.Status || a?.Status?.length < b?.Status?.length
       )
       .slice(0, take);
   });

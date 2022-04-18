@@ -7,9 +7,9 @@ atm... // help?: https://github.com/acidjazz/tv-toast/blob/master/src/utils.js
       class="relative z-20 inline-block w-auto transition-opacity duration-1000 ease-in-out sm:w-64 md:w-128 lg:w-148 tranistion-delay-1000 bottom-100 left-1/2"
       :class="background"
     >
-      <pre>background? {{ background }}</pre>
+      <!-- <pre>background? {{ background }}</pre>
       <pre>type? {{ type }}</pre>
-      <pre>duration? {{ duration }}</pre>
+      <pre>duration? {{ duration }}</pre> -->
       <div class="flex flex-row justify-end gap-2">
         <h1 class="w-5/6 text-2xl font-bold text-center p-base">{{ toast.title }}</h1>
         <span class="w-1/6 mt-2 mr-2">
@@ -42,6 +42,7 @@ atm... // help?: https://github.com/acidjazz/tv-toast/blob/master/src/utils.js
 <script setup lang="ts">
 import { Row, Stack } from "@mpreston17/flexies";
 import { defineProps, ref, computed, getCurrentInstance } from "vue";
+import { sleep } from "~~/helpers/timers";
 import { destroyToast, toastType } from "./useToaster";
 const props = defineProps({
   toast: {
@@ -70,17 +71,26 @@ const background = computed(() => {
 //   else el.parentNode.removeChild(el);
 // }
 
-let interval;
+// let interval;
 onMounted(() => {
-  interval = setInterval(() => {
+  // interval = setInterval(() => {
+  // destroy();
+  // }, duration);
+
+  sleep(2500).then(() => {
     destroy();
-  }, duration);
+    // collapsed.value = true;
+    // notify(
+    //   "Hello, I just timed out...thought you ought to know",
+    //   collapsed.value.toString()
+    // );
+  });
 });
 
 function destroy() {
   // console.log("el", instance);
   active.value = false;
-  clearInterval(interval);
+  // clearInterval(interval);
   // setTimeout(() => {
   //   // $destroy();
   //   // destroy();

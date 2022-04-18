@@ -13,23 +13,34 @@
 import { mode, collapsed } from "~~/components/organisms/sidebar/useSidebar";
 import { onMounted } from "vue";
 import Toaster from "~~/components/atoms/Toaster.vue";
+import { notify } from "~~/components/atoms/useToaster";
+import { sleep } from "~~/helpers/timers";
 
-function listener(event) {
-  // event.returnValue = "Write something"; // Notify user of refresh
-  collapsed.value = true;
-}
+// function listener(event) {
+//   // event.returnValue = "Write something"; // Notify user of refresh
+//   // collapsed.value = true;
+// }
 
 onMounted(() => {
-  console.log("mounted");
-  window?.addEventListener("beforeunload", listener);
-
-  // setTimeout(() => {
-  //   collapsed.value = true;
-  // }, 2500);
+  sleep(2500).then(() => {
+    collapsed.value = true;
+    notify(
+      "Hello, I just timed out...thought you ought to know",
+      collapsed.value.toString()
+    );
+  });
 });
 
-onUnmounted(() => {
-  window?.removeEventListener("beforeunload", listener);
-  collapsed.value = true;
-});
+// onMounted(async () => {
+//   window?.addEventListener("beforeunload", listener);
+
+//   // setTimeout(() => {
+
+//   // }, 3000);
+// });
+
+// onUnmounted(() => {
+//   window?.removeEventListener("beforeunload", listener);
+//   // collapsed.value = true;
+// });
 </script>

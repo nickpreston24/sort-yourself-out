@@ -289,7 +289,7 @@ async function cashIn(index) {
   if (!updatedReward?.["Cashed-In"]) updatedReward["Cashed-In"] = [];
   updatedReward?.["Cashed-In"].push(task.id);
 
-  const total = updatedReward?.["Cashed-In"]?.Length + 1;
+  const total = updatedReward?.["Cashed-In"]?.length + 1;
 
   console.log("total", total);
   console.log("points", points);

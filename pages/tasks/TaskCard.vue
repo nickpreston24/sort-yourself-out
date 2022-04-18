@@ -19,7 +19,31 @@
       <molecules-card class="flex items-center justify-center opacity-90 roundex-lg">
         <atoms-typography type="h4">{{ task?.Name }}</atoms-typography>
 
-        <atoms-atoms-typography type="p">{{ task?.Notes }}</atoms-atoms-typography>
+        <Stack>
+          <input
+            class="bg-regal-500 text-crimson-600"
+            v-if="editing == index"
+            v-model="task.Name"
+            type="text"
+            :id="index"
+          />
+
+          <span
+            class="h-24 m-2 overflow-y-auto rounded-md p-tiny text-crimson-600 bg-regal-500 sm:w-56 md:w-64 max-h-128"
+          >
+            <textarea
+              class="h-64 bg-regal-500 sm:w-128 md:w-144 lg:w-144 xl:w-144"
+              v-if="editing == index"
+              v-model="task.Notes"
+              type="text"
+              :id="index"
+            />
+
+            <atoms-typography type="p" v-else>
+              {{ task?.Notes }}
+            </atoms-typography>
+          </span>
+        </Stack>
 
         <Row>
           <atoms-typography v-if="task?.Points > 0" type="p"
@@ -51,7 +75,11 @@
             />
           </div>
 
-          <div v-for="k in 5 - (task?.Points || 5)" :key="k" style="font-size: 0.75rem">
+          <div
+            v-for="k in maxPoints - (task?.Points || 5)"
+            :key="k"
+            style="font-size: 0.75rem"
+          >
             <icons-star-icon
               class="w-8 text-red"
               height="10mm"
@@ -89,7 +117,7 @@
               fill="transparent"
               stroke="rgba(34 211 238)"
               tooltip="Edit this Task"
-              @click="editNotes(index)"
+              @click="editNotes"
             />
             <icons-cross-icon
               v-else-if="editing == index"
@@ -135,34 +163,7 @@
             />
           </div>
 
-          <Stack>
-            <input
-              class="bg-regal-500 text-crimson-600"
-              v-if="editing == index"
-              v-model="task.Name"
-              type="text"
-              :id="index"
-            />
-            <atoms-typography v-else type="h3">{{ task?.Name }}</atoms-typography>
-
-            <span
-              class="h-24 m-2 overflow-y-auto rounded-md p-tiny text-crimson-600 bg-regal-500 sm:w-56 md:w-64 max-h-128"
-            >
-              <textarea
-                class="h-64 bg-regal-500 sm:w-128 md:w-144 lg:w-144 xl:w-144"
-                v-if="editing == index"
-                v-model="task.Notes"
-                type="text"
-                :id="index"
-              />
-
-              <atoms-typography type="p" v-else>
-                {{ task?.Notes }}
-              </atoms-typography>
-            </span>
-
-            
-          </Stack>
+          
         </div>
 
         <template v-slot:footer>
@@ -187,7 +188,7 @@ const props = defineProps({
 let { task } = props;
 let { id } = task;
 
-const { loading } = useTasks();
+const { loading, filteredTasks } = useTasks();
 
 const buttonsActive = ref(false);
 
@@ -205,6 +206,8 @@ const completedPoints = computed(() => {
   return 0;
 });
 
+const maxPoints = 10;
+
 // Gets the nested Points from all subtasks, recursively and adds them.
 const cumulativePoints = computed(() => {
   return 0;
@@ -215,7 +218,7 @@ const percentCompleted = computed(() => {
 });
 
 const subtasks = computed(() => {
-  return task.SubTasks?.length || 0;
+  return task?.SubTasks?.length || 0;
 });
 
 // function editTask(index) {
@@ -233,8 +236,6 @@ async function submitNotes(index) {
   const response = await patchTask(records).then((_) => {
     error.value = "";
   });
-
-  editNotes(-1); //reset to nothing.
 }
 
 async function markTaskComplete(index) {
@@ -266,6 +267,8 @@ async function updatePoints(index, value) {
     error.value = "";
   });
 }
+
+async function editNotes() {}
 
 function onMouseEnter() {
   buttonsActive.value = true;

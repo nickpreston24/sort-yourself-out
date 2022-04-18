@@ -54,7 +54,7 @@ export function notify(
   duration = 5000,
   type = "success"
 ) {
-  console.log("nextDuration", nextDuration.value);
+  // console.log("nextDuration", nextDuration.value);
 
   toastQ.value.push({
     title,
@@ -68,7 +68,7 @@ export function notify(
 }
 
 export function destroyToast(toast) {
-  console.log("toast", toast);
+  console.log("toast", toast.id);
   toastQ.value = toastQ?.value?.filter((t) => t?.id !== toast?.id) || [];
 }
 
@@ -78,17 +78,6 @@ export function clearToasts() {
     destroyToast(toastQ.value.pop());
   }
 }
-
-// onMounted(() => {
-// let max = 10;
-// for (let i = max; i > 0; i--) {
-//   console.log("i", i);
-//   toastQ.value.push({
-//     message: "Hello, There!",
-//     duration: i * milliseconds.value,
-//   });
-// }
-// });
 
 export const toastType = {
   SUCCESS: {
