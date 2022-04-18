@@ -3,7 +3,7 @@
     <div>
       <!-- Rewards Cards -->
 
-      <!-- <pre>loading? {{ loading }}</pre> -->
+      <pre>loading? {{ loading }}</pre>
       <!-- <pre>selectedReward? {{ rewards[selectedReward] }}</pre> -->
       <div class="mb-10 ml-4 mr-4 bg-transparent rewards-grid">
         <div v-for="(reward, index) in rewards">

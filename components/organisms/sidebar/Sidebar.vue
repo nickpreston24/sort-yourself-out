@@ -31,12 +31,11 @@
       @click="toggleSidebar"
       :class="{ 'rotate-180': collapsed }"
     >
-      <i v-if="mode === 'RIGHT'" class="text-xl"> {{ ">>" }} </i>
-      <i v-else class="text-xl"> {{ "<<" }} </i>
+      <i @click="collapsed = false" v-if="mode === 'RIGHT'" class="text-xl">
+        {{ ">>" }}
+      </i>
+      <i @click="collapsed = true" v-else class="text-xl"> {{ "<<" }} </i>
     </span>
-    <!-- <span class="absolute bottom-0 p-2 mb-4 ml-4">
-      <Toaster :debug="true" />
-    </span> -->
   </div>
 </template>
 <script setup lang="ts">
