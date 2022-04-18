@@ -83,10 +83,11 @@ import FormModal from "~~/components/organisms/FormModal.vue";
 import { closeModal, showModal } from "~~/components/molecules/useModal";
 import TaskCard from "./TaskCard.vue";
 import { collapsed } from "~~/components/organisms/sidebar/useSidebar";
+import { sleep } from "~~/helpers/timers";
 
 const delay = 175;
-const maxTasks = 10;
-const duration = maxTasks * delay;
+const maxTasks = ref(100);
+const duration = maxTasks.value * delay;
 
 const timer = ref(duration);
 
@@ -111,7 +112,7 @@ const {
   patchReward,
 
   filteredTasks,
-} = useTasks(maxTasks);
+} = useTasks(maxTasks.value);
 
 const initialTask = {
   Name: "",
@@ -147,11 +148,11 @@ const currentModel = computed(() => {
 const selectedReward = ref(-1);
 const selectedTask = ref(-1);
 
-const reload = () => load(maxTasks);
+const reload = () => load(maxTasks.value);
 
 onMounted(() => {
   collapsed.value = true;
-  load(maxTasks);
+  load(maxTasks.value);
 });
 
 function startNewModel(model = "task") {

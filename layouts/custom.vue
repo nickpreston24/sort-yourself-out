@@ -24,10 +24,10 @@ import { sleep } from "~~/helpers/timers";
 onMounted(() => {
   sleep(2500).then(() => {
     collapsed.value = true;
-    notify(
-      "Hello, I just timed out...thought you ought to know",
-      collapsed.value.toString()
-    );
+    // notify(
+    //   "Hello, I just timed out...thought you ought to know",
+    //   collapsed.value.toString()
+    // );
   });
 });
 

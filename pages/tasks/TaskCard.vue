@@ -45,10 +45,36 @@
           </span>
         </Stack>
 
-        <Row>
-          <atoms-typography v-if="task?.Points > 0" type="p"
+        <Stack>
+          <!-- <atoms-typography v-if="task?.Points > 0" type="p"
             >Points: {{ completedPoints + "/" + task?.Points }}</atoms-typography
-          >
+          > -->
+
+          <Row class="gap-0">
+            <div v-for="k in task?.Points || 0" :key="k" style="font-size: 0.75rem">
+              <icons-star-icon
+                class="w-8 text-red"
+                height="10mm"
+                stroke="rgba(34 211 238)"
+                fill="rgba(34 211 238)"
+                @click="updatePoints(index, k)"
+              />
+            </div>
+
+            <div
+              v-for="k in maxPoints - (task?.Points || 5)"
+              :key="k"
+              style="font-size: 0.75rem"
+            >
+              <icons-star-icon
+                class="w-8 text-red"
+                height="10mm"
+                stroke="rgba(34 211 238)"
+                fill="#777"
+                @click="updatePoints(index, k + task?.Points)"
+              />
+            </div>
+          </Row>
           <atoms-typography type="p" v-if="subtasks?.length > 0"
             >Subtasks: {{ completedSubtasks + "/" + subtasks?.length }}</atoms-typography
           >
@@ -62,33 +88,7 @@
               >{{ percentCompleted.toFixed() }}%</atoms-typography
             >
           </radial-progress-bar>
-        </Row>
-
-        <Row class="gap-0">
-          <div v-for="k in task?.Points || 0" :key="k" style="font-size: 0.75rem">
-            <icons-star-icon
-              class="w-8 text-red"
-              height="10mm"
-              stroke="rgba(34 211 238)"
-              fill="rgba(34 211 238)"
-              @click="updatePoints(index, k)"
-            />
-          </div>
-
-          <div
-            v-for="k in maxPoints - (task?.Points || 5)"
-            :key="k"
-            style="font-size: 0.75rem"
-          >
-            <icons-star-icon
-              class="w-8 text-red"
-              height="10mm"
-              stroke="rgba(34 211 238)"
-              fill="#777"
-              @click="updatePoints(index, k + task?.Points)"
-            />
-          </div>
-        </Row>
+        </Stack>
 
         <!-- Buttons Action Bar -->
         <Flex class="flex justify-wrap">
@@ -188,7 +188,7 @@ const props = defineProps({
 let { task } = props;
 let { id } = task;
 
-const { loading, filteredTasks } = useTasks();
+const { loading, error, createTask, patchTask, deleteTask, filteredTasks } = useTasks();
 
 const buttonsActive = ref(false);
 
@@ -238,21 +238,19 @@ async function submitNotes(index) {
   });
 }
 
-async function markTaskComplete(index) {
-  // console.log("index", index);
-  let updatedTask = filteredTasks.value[index];
+async function markTaskComplete() {
+  let updatedTask = task;
   updatedTask.Status = updatedTask?.Status === "Todo" ? "Done" : "Todo";
-  console.log("current", updatedTask);
-
   console.log("updatedTask", updatedTask);
+
   let records = Array.from([{ ...updatedTask }]);
-  console.log("records", records);
+  // console.log("records", records);
 
   const response = await patchTask(records).then((_) => {
     error.value = "";
   });
 
-  notify("Task Completed! :D", "Completed!");
+  // notify("Task Completed! :D", "Completed!");
 }
 
 async function updatePoints(index, value) {
