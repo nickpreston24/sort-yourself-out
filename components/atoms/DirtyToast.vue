@@ -7,12 +7,12 @@ atm... // help?: https://github.com/acidjazz/tv-toast/blob/master/src/utils.js
       class="relative z-20 inline-block w-auto transition-opacity duration-1000 ease-in-out sm:w-64 md:w-128 lg:w-148 bg-ocean-500/80 tranistion-delay-1000 bottom-100 left-1/2"
     >
       <div class="flex flex-row justify-end gap-2">
-        <pre v-if="props?.debug">id? {{ id }}</pre>
+        <!-- <pre>id? {{ id }}</pre> -->
 
         <h1 class="w-5/6 text-2xl font-bold text-center p-base">{{ toast.title }}</h1>
         <span class="w-1/6 mt-2 mr-2">
           <icons-cross-icon
-            @click="active = false"
+            @click="destroyToast(props.toast)"
             tooltip="Dismiss"
             class="w-8"
             fill="rgb(6 182 212)"
@@ -47,16 +47,16 @@ const props = defineProps({
     default: {
       message: "Ping!",
       title: "Notification",
-      show: { default: true },
+      show: true,
       id: -1,
-      duration: { default: 7500 },
+      duration: 5000,
     },
   },
 });
 // console.log("props", props);
 const { message, title, id, show, duration } = props?.toast;
 
-// console.log("show", show);
+console.log("show", show);
 // console.log("id", id);
 // console.log("message", message);
 // console.log("title", title);
@@ -74,12 +74,12 @@ function removeElement(el) {
 
 let interval;
 onMounted(() => {
-  interval = setInterval(async () => {
-    await destroy();
+  interval = setInterval(() => {
+    destroy();
   }, duration);
 });
 
-async function destroy() {
+function destroy() {
   // console.log("el", instance);
   active.value = false;
   clearInterval(interval);
@@ -87,7 +87,7 @@ async function destroy() {
   //   // $destroy();
   //   // destroy();
   //   // removeElement(instance);
-  destroyToast(id);
+  destroyToast(props.toast);
   // }, duration.value);
 }
 

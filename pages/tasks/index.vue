@@ -20,11 +20,12 @@
           />
         </div>
         <atoms-button class="w-16 h-16 bg-transparent border-2 border-tahiti-500">
-          <plus-icon fill="#A71A23" stroke="#D62338" @click="startNewModel('reward')" />
+          <plus-icon fill="#fff" stroke="#D62338" @click="startNewModel('reward')" />
         </atoms-button>
       </div>
       <!-- Tasks Grid -->
       <div class="m-4 task-grid">
+        <pre>filteredTasks.value.length? {{ filteredTasks.length }}</pre>
         <div
           class="gap-4 overflow-auto display-block"
           v-for="(task, index) in filteredTasks"
@@ -135,18 +136,32 @@
 
                     <!-- Right -->
                     <div class="flex flex-row justify-evenly">
-                      <atoms-button
+                      <!-- <atoms-button
                         v-if="editing != index"
                         class="m-2"
                         @click="editNotes(index)"
                         >Edit</atoms-button
-                      >
-                      <atoms-button
+                      > -->
+
+                      <icons-edit-icon
+                        v-if="editing != index"
+                        class="w-8"
+                        fill="transparent"
+                        stroke="#5fa"
+                        tooltip="Edit this Task"
+                        @click="editNotes(index)"
+                      />
+                      <icons-cross-icon
+                        v-else-if="editing == index"
+                        class="w-8"
+                        @click="submitNotes(index)"
+                      />
+                      <!-- <atoms-button
                         v-else-if="editing == index"
                         class="m-2"
                         @click="submitNotes(index)"
                         >Submit</atoms-button
-                      >
+                      > -->
 
                       <atoms-button class="m-2" @click="markTaskComplete(index)"
                         >Complete</atoms-button
@@ -167,7 +182,7 @@
           </transition>
         </div>
         <atoms-button class="w-16 h-16 bg-transparent border-2 border-tahiti-500">
-          <plus-icon fill="#A71A23" stroke="#D62338" @click="startNewModel('task')" />
+          <plus-icon fill="#fff" stroke="#D62338" @click="startNewModel('task')" />
         </atoms-button>
       </div>
     </div>
@@ -203,7 +218,7 @@ import FormModal from "~~/components/organisms/FormModal.vue";
 import { closeModal, showModal } from "~~/components/molecules/useModal";
 
 const delay = 175;
-const maxTasks = 20;
+const maxTasks = 25;
 const duration = maxTasks * delay;
 
 const timer = ref(duration);

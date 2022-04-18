@@ -1,6 +1,7 @@
 <template>
   <div
-    @mouseleave="active = false"
+    @mouseleave="onMouseLeave"
+    @mouseenter="onMouseEnter"
     class="shadow-sm bg-regal-800 hover:bg-regal-600 from-regal-800 to-regal-700 shadow-regal-400/90 opacity-90 bg-gradient-to-l hover:bg-gradient-to-r"
   >
     <molecules-card class="flex items-center justify-center opacity-90 roundex-lg">
@@ -10,7 +11,7 @@
         <Typography type="p"
           >Points: {{ completedPoints + "/" + reward?.Points }}</Typography
         >
-        <pre>props.active? {{ props.active }}</pre>
+        <!-- <pre>props.active? {{ props.active }}</pre> -->
         <Typography type="p" v-if="requirements?.length > 0"
           >Requirements: {{ completedPrereqs + "/" + requirements?.length }}</Typography
         >
@@ -24,7 +25,7 @@
       </Row>
 
       <!-- Buttons Action Bar -->
-      <Row v-show="props.active">
+      <Row v-if="buttonsActive">
         <icons-plus-icon
           tooltip="ADD something AWESOME"
           class="w-8 h-8"
@@ -32,7 +33,7 @@
           stroke="#faf"
         />
         <icons-trash-icon
-          tooltip="PANDA"
+          tooltip="Delete this!"
           class="w-8 h-8"
           fill="transparent"
           stroke="#faf"
@@ -50,11 +51,8 @@
           stroke="#faf"
         />
         <icons-reload-icon
-          tooltip="I'm reloading !!!"
-          class="w-8 h-8"
-          fill="transparent"
-          stroke="#faf"
-        />
+          
+         class="w-8 h-8" fill="#fff" stroke="#faf" />
         <icons-calendar-icon
           tooltip="Make a Schedule"
           class="w-8 h-8"
@@ -81,17 +79,6 @@
           stroke="#faf"
         />
       </Row>
-
-      <!-- <pre>Matching Prerequisites? {{ requirements?.length }}<buttonsActive/pre> -->
-
-      <!-- <ul class="h-32 overflow-y-auto">
-        <li v-for="(req, index) in requirements">
-          <pre>{{ req.Name }} - {{ req.Points }} - {{ req.Status }}</pre>
-        </li>
-      </ul> -->
-      <!-- <pre>totalSteps? {{ totalSteps }}</pre>
-      <pre>completedPrereqs? {{ completedPrereqs }}</pre>
-      <pre>completedPoints? {{ completedPoints }}</pre> -->
     </molecules-card>
   </div>
 </template>
@@ -109,12 +96,9 @@ const props = defineProps({
 });
 
 const { tasks } = useTasks();
-const { reward, active } = props;
+const { reward } = props;
 
 const buttonsActive = ref(false);
-function toggleButtonsActive() {
-  buttonsActive.value = !buttonsActive.value;
-}
 
 // % completion of all Prerequisites
 const completedPrereqs = computed(() => {
@@ -141,4 +125,12 @@ const requirements = computed(() => {
 const cashedIn = computed(() => {
   return tasks.value.filter((task) => reward?.["Cashed-In"]?.includes(task.id));
 });
+
+function onMouseEnter() {
+  buttonsActive.value = true;
+}
+
+function onMouseLeave() {
+  buttonsActive.value = false;
+}
 </script>

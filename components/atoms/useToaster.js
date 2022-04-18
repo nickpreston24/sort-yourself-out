@@ -1,4 +1,5 @@
 import { ref, onMounted } from "vue";
+import { RNG } from "~~/helpers/random";
 export const toastQ = ref([]);
 export const duration = ref(10000);
 const nextDuration = computed(() => {
@@ -14,24 +15,19 @@ export function notify(message = "", title = "", timeout = 6000) {
     title,
     message,
     type: "success",
-    id: count.value + 1,
+    id: `${title} ${RNG.Int(100 * count.value)}`,
     duration: duration.value,
     show: true,
   });
 }
 
-export function destroyToast(id) {
-  console.log("id", id);
-  // let toast = toastQ.value?.filter((t) => t.id === id)[0];
-  // // toast?.show = false;
-  // console.log("toast", toast);
-  // .map((toast) => (toast.show = false));
+export function destroyToast(toast) {
+  console.log("toast", toast);
+  toastQ.value = toastQ?.value?.filter((t) => t?.id !== toast?.id);
 }
 
 export function clearToasts() {
-  for (let i = 0; i < toastQ?.value?.length; i++) {
-    destroyToast(i);
-  }
+  toastQ.value = [];
 }
 
 onMounted(() => {
