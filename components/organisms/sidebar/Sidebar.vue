@@ -26,6 +26,9 @@
       <SidebarLink to="/schedule">Schedule</SidebarLink>
       <SidebarLink v-if="true" to="/sandbox">Sandbox</SidebarLink>
     </span>
+
+    <!-- <pre>interval? {{ interval }}</pre> -->
+    <!-- <pre>duration? {{ duration }}</pre> -->
     <span
       class="absolute bottom-0 p-2 mb-4 ml-0 mr-1 text-white transition duration-200 opacity-70"
       @click="toggleSidebar"
@@ -53,20 +56,45 @@ const props = defineProps({
   mode: { type: String, default: "LEFT" },
 });
 
-const duration = ref(2500);
-const interval = computed(() => {
-  get: () => {
-    return setInterval(() => {
-      console.log("Interval completed");
-    }, duration.value);
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+function timer(callback, delay) {
+  var timerId,
+    start,
+    remaining = delay;
+
+  this.pause = function () {
+    window.clearTimeout(timerId);
+    remaining -= new Date() - start;
   };
-  set: (ms) => {
-    duration.value = ms;
+
+  var resume = function () {
+    start = new Date();
+    timerId = window.setTimeout(function () {
+      remaining = delay;
+      resume();
+      callback();
+    }, remaining);
   };
-});
+
+  this.resume = resume;
+
+  this.resume();
+}
+
+const duration = ref(3000);
 
 onMounted(() => {
-  // interval = setInterval(()=>{}, 2500)
+  setInterval(() => {
+    // console.log("Interval completed");
+    collapsed.value = true;
+  }, duration.value);
+
+  // timer(() => {
+  //   collapsed.value = true;
+  // }, duration.value);
 });
 
 function onMouseLeave() {

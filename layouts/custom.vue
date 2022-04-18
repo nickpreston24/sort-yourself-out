@@ -23,9 +23,9 @@ onMounted(() => {
   console.log("mounted");
   window?.addEventListener("beforeunload", listener);
 
-  setTimeout(() => {
-    collapsed.value = true;
-  }, 2500);
+  // setTimeout(() => {
+  //   collapsed.value = true;
+  // }, 2500);
 });
 
 onUnmounted(() => {
