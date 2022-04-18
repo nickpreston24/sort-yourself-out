@@ -291,7 +291,7 @@ const toastText = ref("Oi! that stings!");
 const toastCount = computed(() => toastQ?.value?.length);
 function makeToast() {
   RNG.Int;
-  notify(RNG.Lorem(), toastTitle.value);
+  notify(RNG.Lorem(), toastTitle.value, 5000, "indefinite");
   // notify(toastText.value, toastTitle.value);
 }
 </script>

@@ -4,11 +4,13 @@ atm... // help?: https://github.com/acidjazz/tv-toast/blob/master/src/utils.js
   <transition name="fade">
     <div
       v-if="active"
-      class="relative z-20 inline-block w-auto transition-opacity duration-1000 ease-in-out sm:w-64 md:w-128 lg:w-148 bg-ocean-500/80 tranistion-delay-1000 bottom-100 left-1/2"
+      class="relative z-20 inline-block w-auto transition-opacity duration-1000 ease-in-out sm:w-64 md:w-128 lg:w-148 tranistion-delay-1000 bottom-100 left-1/2"
+      :class="background"
     >
+      <pre>background? {{ background }}</pre>
+      <pre>type? {{ type }}</pre>
+      <pre>duration? {{ duration }}</pre>
       <div class="flex flex-row justify-end gap-2">
-        <!-- <pre>id? {{ id }}</pre> -->
-
         <h1 class="w-5/6 text-2xl font-bold text-center p-base">{{ toast.title }}</h1>
         <span class="w-1/6 mt-2 mr-2">
           <icons-cross-icon
@@ -16,11 +18,10 @@ atm... // help?: https://github.com/acidjazz/tv-toast/blob/master/src/utils.js
             tooltip="Dismiss"
             class="w-8"
             fill="rgb(6 182 212)"
+            stroke="#fff"
           />
         </span>
       </div>
-      <!-- <p>{{ secondsRemaining }}s...</p> -->
-      <!-- <pre>duration? {{ duration }}</pre> -->
 
       <Stack class="">
         <div class="m-4 text-white">
@@ -41,7 +42,7 @@ atm... // help?: https://github.com/acidjazz/tv-toast/blob/master/src/utils.js
 <script setup lang="ts">
 import { Row, Stack } from "@mpreston17/flexies";
 import { defineProps, ref, computed, getCurrentInstance } from "vue";
-import { destroyToast } from "./useToaster";
+import { destroyToast, toastType } from "./useToaster";
 const props = defineProps({
   toast: {
     default: {
@@ -50,27 +51,23 @@ const props = defineProps({
       show: true,
       id: -1,
       duration: 5000,
+      type: "success",
     },
   },
 });
-// console.log("props", props);
-const { message, title, id, show, duration } = props?.toast;
+const { message, title, id, show, duration, type } = props?.toast;
 
-console.log("show", show);
-// console.log("id", id);
-// console.log("message", message);
-// console.log("title", title);
-// console.log("duration.value", duration.value);
-
-// console.log("toast", props?.toast);
 const active = ref(show);
-// const secondsRemaining = computed(() => duration.value);
-// const instance = getCurrentInstance();
+const background = computed(() => {
+  return toastType?.[type.toUpperCase()]?.background || "bg-ocean-500/75";
+});
 
-function removeElement(el) {
-  if (typeof el.remove !== "undefined") el.remove();
-  else el.parentNode.removeChild(el);
-}
+// const background =
+
+// function removeElement(el) {
+//   if (typeof el.remove !== "undefined") el.remove();
+//   else el.parentNode.removeChild(el);
+// }
 
 let interval;
 onMounted(() => {
