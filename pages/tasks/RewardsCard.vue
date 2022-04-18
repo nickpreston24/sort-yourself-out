@@ -37,6 +37,7 @@
           class="w-8 h-8"
           fill="transparent"
           stroke="rgba(34 211 238)"
+          @click="deleteReward(reward?.id)"
         />
         <icons-edit-icon
           tooltip="Alcohol, it's a hell of a drug"
@@ -44,25 +45,14 @@
           fill="transparent"
           stroke="rgba(34 211 238)"
         />
-        <!-- <icons-arrow-up
-          tooltip="Assign to Reward"
-          class="w-8 h-8"
-          fill="transparent"
-          stroke="rgba(34 211 238)"
-        /> -->
-        <!-- <icons-reload-icon class="w-8 h-8" fill="#fff" stroke="rgba(34 211 238)" /> -->
+
         <icons-calendar-icon
           tooltip="Make a Schedule"
           class="w-8 h-8"
           fill="transparent"
           stroke="rgba(34 211 238)"
         />
-        <!-- <icons-copy-icon
-          tooltip="Copy"
-          class="w-8 h-8"
-          fill="transparent"
-          stroke="rgba(34 211 238)"
-        /> -->
+
         <!-- <icons-cross-icon
           tooltip="Cancel"
           class="w-8 h-8"
@@ -100,7 +90,7 @@ const props = defineProps({
   active: { default: false },
 });
 
-const { tasks, rewards } = useTasks();
+const { tasks, rewards, deleteReward } = useTasks();
 const { reward } = props;
 
 const buttonsActive = ref(false);
@@ -175,6 +165,4 @@ function concludeReward() {
   console.log("reward to conclude", reward);
   notify("concludeReward() Not implemented yet...", "Warning!", 100000);
 }
-
-function deleteReward() {}
 </script>

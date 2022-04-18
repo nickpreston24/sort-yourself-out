@@ -7,7 +7,7 @@
 */
 
 import { ref, onMounted } from "vue";
-import { notify } from "~~/components/atoms/useToaster";
+import { notify, toastType } from "~~/components/atoms/useToaster";
 import { getRecords, create, patch, deleteRecord } from "../airtable/airtable";
 
 const devmode = (() => import.meta.env.NODE_ENV !== "production")();
@@ -27,18 +27,22 @@ const debug = ref(devmode);
 /** If there are more records, the response will contain an offset. To fetch the next page of records, include offset in the next request's parameters. -- airtable docs */
 const offset = ref(0);
 
-export function useTasks(maxRecords = 10, pageSize = 10) {
+export function useTasks(take = 10, pageSize = 10) {
   const filteredTasks = computed(() => {
-    return tasks.value.sort(
-      (a, b) => a?.Status < b?.Status || a?.Status?.Length < b?.Status?.Length
-    );
+    return tasks.value
+      .sort(
+        (a, b) => a?.Status < b?.Status || a?.Status?.Length < b?.Status?.Length
+      )
+      .slice(0, take);
     //.filter((t) => t.Status !== "Done");
   });
 
   const filteredRewards = computed(() => {
-    return rewards.value.sort(
-      (a, b) => a?.Status < b?.Status || a?.Status?.Length < b?.Status?.Length
-    );
+    return rewards.value
+      .sort(
+        (a, b) => a?.Status < b?.Status || a?.Status?.Length < b?.Status?.Length
+      )
+      .slice(0, take);
   });
 
   // onMounted(async () => {
@@ -83,7 +87,7 @@ export function useTasks(maxRecords = 10, pageSize = 10) {
     deleteRecord("Rewards", id).catch((err) => {
       console.error(err);
       error.value = err;
-      toastsEnabled.value && notify(err, "ERROR", 7000);
+      toastsEnabled.value && notify(err, "ERROR", 7000, toastType.ERROR);
     });
 
   async function load(max = 10) {

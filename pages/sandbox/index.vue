@@ -248,7 +248,14 @@ import Tooltip from "~~/components/atoms/Tooltip.vue";
 import { darkMode, toggleDarkMode } from "~~/hooks";
 import DirtyToast from "~~/components/atoms/DirtyToast.vue";
 import Toaster from "~~/components/atoms/Toaster.vue";
-import { notify, toastQ, duration, clearToasts } from "~~/components/atoms/useToaster";
+import {
+  notify,
+  Notifier,
+  toastType,
+  toastQ,
+  duration,
+  clearToasts,
+} from "~~/components/atoms/useToaster";
 
 const randomInt = ref(RNG.Int(3));
 const headerValue = ref("");
@@ -290,8 +297,14 @@ const toastTitle = ref("Yer Eternal Reward");
 const toastText = ref("Oi! that stings!");
 const toastCount = computed(() => toastQ?.value?.length);
 function makeToast() {
-  RNG.Int;
-  notify(RNG.Lorem(), toastTitle.value, 5000, "indefinite");
+  // RNG.Int;
+  const notifier = new Notifier()
+    .message("Hello, there!")
+    .title("Eat My shorts!")
+    .type(toastType.WARNING)
+    .notify();
+  // notify(RNG.Lorem(), toastTitle.value, 5000, "indefinite");
+
   // notify(toastText.value, toastTitle.value);
 }
 </script>

@@ -57,9 +57,10 @@ const props = defineProps({
 });
 const { message, title, id, show, duration, type } = props?.toast;
 
+console.log("toast", props.toast);
 const active = ref(show);
 const background = computed(() => {
-  return toastType?.[type.toUpperCase()]?.background || "bg-ocean-500/75";
+  return toastType?.background || "bg-ocean-500/75";
 });
 
 // const background =

@@ -1,9 +1,9 @@
 <template>
   <NuxtLayout name="custom">
-    <div>
+    <Row class="w-full">
       <!-- Rewards Cards -->
 
-      <div class="mb-10 ml-4 mr-4 bg-transparent rewards-grid">
+      <div class="w-1/2 mb-10 ml-4 mr-4 bg-transparent rewards-grid">
         <div v-for="(reward, index) in rewards">
           <RewardsCard
             :class="
@@ -23,9 +23,10 @@
           @click="startNewModel('reward')"
         />
       </div>
+
       <!-- Tasks Grid -->
-      <div class="m-4 task-grid">
-        <pre>filteredTasks.value.length? {{ filteredTasks.length }}</pre>
+      <div class="w-1/2 m-4 task-grid">
+        <!-- <pre>tasks? {{ filteredTasks.length }}</pre> -->
         <div
           class="gap-4 overflow-auto display-block"
           v-for="(task, index) in filteredTasks"
@@ -49,7 +50,7 @@
           @click="startNewModel('task')"
         />
       </div>
-    </div>
+    </Row>
 
     <transition name="fade">
       <lobster-spinner
@@ -84,7 +85,7 @@ import TaskCard from "./TaskCard.vue";
 import { collapsed } from "~~/components/organisms/sidebar/useSidebar";
 
 const delay = 175;
-const maxTasks = 25;
+const maxTasks = 10;
 const duration = maxTasks * delay;
 
 const timer = ref(duration);
@@ -323,13 +324,13 @@ async function cashIn(index) {
 <style scoped>
 .task-grid {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(1, minmax(0, 1fr));
   grid-gap: 1em;
 }
 
 .rewards-grid {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(1, minmax(0, 1fr));
   grid-gap: 1em;
 }
 

@@ -10,6 +10,44 @@ const nextDuration = computed(() => {
 
 const count = computed(() => toastQ.value?.length);
 
+export class Notifier {
+  constructor() {}
+
+  message(text) {
+    this.message = text;
+    return this;
+  }
+
+  title = (text) => {
+    this.title = text;
+    return this;
+  };
+
+  type = (typeObj) => {
+    console.log("typeObj", typeObj);
+    this.type = typeObj;
+    console.log("this.type", this.type);
+    return this;
+  };
+
+  id = (id) => {
+    this.id = id || `${this.title} ${RNG.Int(100 * count.value)}`;
+    return this;
+  };
+
+  notify = () => {
+    const { title, message, type } = this;
+    toastQ.value.push({
+      title,
+      message,
+      type,
+      id: `${title} ${RNG.Int(100 * count.value)}`,
+      duration: toastType?.duration || duration || duration.value,
+      show: true,
+    });
+  };
+}
+
 export function notify(
   message = "",
   title = "",
