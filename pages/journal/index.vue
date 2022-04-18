@@ -2,7 +2,8 @@
   <NuxtLayout name="custom" class="text-white">
     <Stack>
       <h1 class="text-4xl">My journal</h1>
-      <pre>journal entries? {{ entries?.length }}</pre>
+      <pre>journal entries? {{ store.entries?.length }}</pre>
+      <pre>count? {{ store.count }}</pre>
 
       <typography type="h2">Add an Entry</typography>
 
@@ -17,7 +18,11 @@
           />
         </li>
       </ul>
-      <atoms-typography v-if="error" class="text-crimson-500" type="b"></atoms-typography>
+      <atoms-typography
+        v-if="store.error"
+        class="text-crimson-500"
+        type="b"
+      ></atoms-typography>
       <Button @click="submitEntry">Submit</Button>
 
       <div id="journal-grid-container" class="journal-grid">
@@ -27,7 +32,7 @@
           :step="12"
           class="gap-4 overflow-auto display-block"
           :key="index"
-          v-for="(entry, index) in entries"
+          v-for="(entry, index) in store.entries"
         >
           <transition
             name="fade"
@@ -54,7 +59,7 @@
       </div>
       <transition name="fade">
         <lobster-spinner
-          v-if="loading"
+          v-if="store.loading"
           id="overlay"
           class="fixed absolute top-0 bottom-0 left-0 right-0 z-10 w-64 h-64 m-auto"
         />
@@ -65,17 +70,22 @@
 
 <script setup lang="ts">
 import { Center, Right, Stack } from "@mpreston17/flexies";
-import { useJournal } from "../../hooks/useJournal";
+// import { useJournal } from "../../hooks/useJournal";
+import store from "~~/hooks/useJournal";
 
-const { entries, loading, createJournalEntry, patchEntry, error } = useJournal();
+// const { entries, loading, createJournalEntry, patchEntry, error, count } = store;
 
 const entry = ref({
   Text: "",
 });
 
+onMounted(async () => {
+  await store.load(10);
+});
+
 function submitEntry() {
-  const response = createJournalEntry(entry.value).then((_) => {
-    error.value = "";
+  const response = store.createJournalEntry(entry.value).then((_) => {
+    store.error.value = "";
     // entry.value.Text = "";
     entry.value = {
       Text: "",

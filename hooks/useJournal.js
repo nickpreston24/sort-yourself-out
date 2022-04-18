@@ -1,12 +1,7 @@
-import { ref, onMounted, computed, toRefs } from "vue";
-import {
-  searchTable,
-  getRecords,
-  create,
-  patch,
-  deleteRecord,
-} from "../airtable/airtable";
+import { ref, onMounted, computed, reactive } from "vue";
+import { getRecords, create, patch, deleteRecord } from "../airtable/airtable";
 
+// Factory
 export function useJournal() {
   const entries = ref([]);
   const loading = ref(true);
@@ -53,4 +48,46 @@ export function useJournal() {
   };
 }
 
-export default useJournal;
+// Shared Singleton
+export default reactive({
+  entries: [],
+  loading: true,
+  error: null,
+
+  table: "Journal",
+
+  count: computed(() => {
+    return this?.entries?.length || 0;
+  }),
+
+  async load(max = 100) {
+    this.loading = true;
+
+    this.entries = await getRecords(this.table, max).catch((err) => {
+      this.error = err;
+    });
+
+    this.loading = false;
+  },
+
+  async createJournalEntry(props) {
+    return create(this.table, props).catch((err) => {
+      console.log(err);
+      this.error = err;
+    });
+  },
+
+  async patchEntry(props) {
+    return patch(this.table, props).catch((err) => {
+      console.error(err);
+      this.error = err;
+    });
+  },
+
+  async deleteEntry(id) {
+    deleteRecord(this.table, id).catch((err) => {
+      console.error(err);
+      this.error = err;
+    });
+  },
+});
