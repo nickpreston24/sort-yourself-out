@@ -6,8 +6,8 @@
 * Fancy pattern for making Excel-like behavior: https://www.toptal.com/vue-js/on-demand-reactivity-vue-3
 */
 
-import { ref, onMounted } from "vue";
-import { notify, toastType } from "~~/components/atoms/useToaster";
+import { ref } from "vue";
+import { notifyError, notifySuccess } from "~~/components/atoms/useToaster";
 import { getRecords, create, patch, deleteRecord } from "../airtable/airtable";
 
 const devmode = (() => import.meta.env.NODE_ENV !== "production")();
@@ -33,23 +33,6 @@ const debug = ref(devmode);
 const offset = ref(0);
 
 export function useTasks(take = 10, pageSize = 10) {
-  const filteredTasks = computed(() => {
-    return tasks.value
-      .sort(
-        (a, b) => a?.Status < b?.Status || a?.Status?.length < b?.Status?.length
-      )
-      .slice(0, take);
-    //.filter((t) => t.Status !== "Done");
-  });
-
-  const filteredRewards = computed(() => {
-    return rewards.value
-      .sort(
-        (a, b) => a?.Status < b?.Status || a?.Status?.length < b?.Status?.length
-      )
-      .slice(0, take);
-  });
-
   // onMounted(async () => {
   //   await load(maxRecords);
   // });
@@ -59,57 +42,119 @@ export function useTasks(take = 10, pageSize = 10) {
     // TODO: Append the Date of a Task to the end of the name in ()
     // TODO: Enforce 1 and only 1 Task to a Reward
     // TODO: Make a Clone button for Tasks
+
+    let now = new Date();
+    console.log("now", now);
     let myTask = {
       ...props,
+      Name: props.Name + now.getDate(),
     };
 
-    return create("Tasks", props).catch((err) => {
+    console.log("myTask", myTask.Name);
+
+    return create("Tasks", myTask).catch((err) => {
       console.log(err);
       error.value = err;
     });
   };
 
+  // Clone this task and increment the Date, Blank out the AssociatedRewards
+  const clone = (props) => {
+    let date = Date.parse(props?.Created) || new Date();
+    console.log("date", date);
+    let tomorrow = new Date(date);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    console.log("tomorrow", tomorrow);
+    let day = tomorrow.getDate();
+    let month = tomorrow.getMonth() + 1;
+    let year = tomorrow.getFullYear();
+
+    let fullDate = `${month}-${day}-${year}.`;
+
+    // TODO: Clone all subtasks, or this won't work.
+    let parentTask = {
+      ...props,
+      // id: null,
+      // Created: null,
+      // Start: tomorrow,
+      // "Last Modified": null,
+      Status: "Todo",
+      Name: `${props.Name} ${fullDate}`,
+      // AssociatedRewards: [],
+    };
+
+    let subTasks = props?.Subtasks?.map((t) => clone(t));
+    if (subTasks?.length > 0) parentTask.Subtasks = subTasks;
+
+    console.log("parentTask", parentTask);
+    console.log("subTasks", subTasks);
+
+    return parentTask;
+  };
+
   const cloneTask = async (props) => {
-    // TODO: Clone this task and increment the Date, Blank out the AssociatedRewards
-    return create("Tasks", props).catch((err) => {
-      console.log(err);
-      error.value = err;
-    });
+    console.log("clone props", props);
+
+    let sheep = clone(props);
+
+    console.log("clonedTask", sheep);
+
+    return create("Tasks", sheep)
+      .then((response) => {
+        notifySuccess("Clone complete!", "Baah");
+        console.log("response.data", response.data?.records?.[0]);
+      })
+      .catch((err) => {
+        console.log(err);
+        error.value = err;
+        notifyError("Cloning failed..." + err.message, "Baaad news...");
+      });
   };
 
   const patchTask = async (props) =>
     patch("Tasks", props).catch((err) => {
       console.error(err);
       error.value = err;
-      toastsEnabled.value && notify(err, "ERROR", 7000);
+      notifyError("Patch failed...");
     });
 
-  const deleteTask = async (id) =>
-    deleteRecord("Tasks", id).catch((err) => {
-      console.error(err);
-      error.value = err;
-      toastsEnabled.value && notify(err, "ERROR", 7000);
-    });
+  const deleteTask = async (task) => {
+    let id = task.id;
+    if (!id)
+      notifyError(
+        `No Id Could be found for task${task?.Name}`,
+        "I have no ID!"
+      );
+    return deleteRecord("Tasks", id)
+      .then(() => {
+        tasks.value = tasks.value.filter((t) => t.id !== id);
+      })
+      .catch((err) => {
+        console.error(err);
+        error.value = err;
+        notifyError("Task Delete failed...");
+      });
+  };
 
   const createReward = async (props) =>
     create("Rewards", props).catch((err) => {
       console.log(err);
       error.value = err;
-      toastsEnabled.value && notify(err, "ERROR", 7000);
+      notifyError("Creation of task failed...");
     });
 
   const patchReward = async (props) =>
     patch("Rewards", props).catch((err) => {
       console.error(err);
       error.value = err;
-      toastsEnabled.value && notify(err, "ERROR", 7000);
+      notifyError("Patching the task failed...");
     });
 
   const deleteReward = async (id) =>
     deleteRecord("Rewards", id).catch((err) => {
       console.error(err);
       error.value = err;
-      toastsEnabled.value && notify(err, "ERROR", 7000, toastType.ERROR);
+      notifyError("Deleting this reward failed...");
     });
 
   async function load(max = 10) {
@@ -121,13 +166,13 @@ export function useTasks(take = 10, pageSize = 10) {
     tasks.value = await getRecords("Tasks", max, pageSize, byStatus).catch(
       (err) => {
         error.value = err;
-        toastsEnabled.value && notify(err, "ERROR", 7000);
+        notifyError("Loading of Tasks failed...");
       }
     );
     rewards.value = await getRecords("Rewards", 10, pageSize, byStatus).catch(
       (err) => {
         error.value = err;
-        toastsEnabled.value && notify(err, "ERROR", 7000);
+        notifyError("Loading of Rewards failed...");
       }
     );
 
@@ -140,11 +185,11 @@ export function useTasks(take = 10, pageSize = 10) {
 
   // /** SCHEDULER FUNCTIONS */
 
-  function assignTaskToReward(task, reward) {
+  async function assignTaskToReward(task, reward) {
     // TODO:  When assigning a Task to a Reward, if the reward already has more points than available, throw an error and notify user
   }
 
-  function scheduleTask(task, date) {}
+  async function scheduleTask(task, date) {}
 
   return {
     tasks,
@@ -156,16 +201,15 @@ export function useTasks(take = 10, pageSize = 10) {
     //tasks api
 
     createTask,
+    cloneTask,
     patchTask,
     deleteTask,
-    filteredTasks,
 
     // rewards api
 
     createReward,
     deleteReward,
     patchReward,
-    filteredRewards,
   };
 }
 
@@ -173,45 +217,53 @@ export default useTasks;
 
 /* Public Computed values */
 
-// // Tasks, but with any current filters applied
-// const filteredTasks = computed(() => {
-//   return tasks.value
-//     .sort(
-//       (a, b) => a?.Status < b?.Status || a?.Status?.length < b?.Status?.length
-//     )
-//     .slice(0, take);
-//   //.filter((t) => t.Status !== "Done");
-// });
-
-// // Rewards, but with any current filters applied
-// const filteredRewards = computed(() => {
-//   return rewards.value
-//     .sort(
-//       (a, b) => a?.Status < b?.Status || a?.Status?.length < b?.Status?.length
-//     )
-//     .slice(0, take);
-// });
-
-// const lateTasks = computed(() => {
-//   let now = new Date();
-//   tasks.value.filter((t) => t?.Start > now);
-// });
-
-// % completion of all Prerequisites
-const completedSubtasks = computed(() => {
-  // return subtasks.value.filter((t) => t.Status === "Done")?.length || 0;
-  return 0;
+export const filteredTasks = computed(() => {
+  return tasks.value.sort(
+    (a, b) => a?.Status < b?.Status || a?.Status?.length < b?.Status?.length
+  );
+  // .slice(0, take);
+  //.filter((t) => t.Status !== "Done");
 });
 
-// % completion of the points required for this Task
-const completedPoints = computed(() => {
-  // return cashedIn.value
-  //   .filter((t) => t.Status === "Done")
-  //   .reduce((total, next) => total + next.Points, 0);
-  return 0;
+export const filteredRewards = computed(() => {
+  return rewards.value.sort(
+    (a, b) => a?.Status < b?.Status || a?.Status?.length < b?.Status?.length
+  );
+  // .slice(0, take);
+});
+
+export const lateTasks = computed(() => {
+  let now = new Date();
+  tasks.value.filter((t) => t?.Start > now);
 });
 
 // Gets the nested Points from all subtasks, recursively and adds them.
-const cumulativePoints = computed(() => {
-  return 0;
+export const allPoints = computed(() => {
+  let allPoints = filteredTasks.value
+    .filter((task) => task?.Status.toString() === "Done")
+    .reduce((total, task) => {
+      console.log("task", task);
+      let subTasks = task?.Subtasks || [];
+      console.log("subTasks", subTasks);
+      let subTotal = subTasks
+        .filter((t) => t.Points)
+        .reduce((total, next) => (total += next), 0);
+
+      total += subTotal;
+    }, 0);
+  console.log("allPoints", allPoints);
+  return allPoints;
+});
+
+export const creditsUsed = computed(() => {
+  return -1;
+});
+
+// <!-- TODO:
+// 1. Available Credits (Rewards points available)
+// 2. Credits used (Total of all cashed in Credits/Points from all Tasks associated to Rewards)
+//  -->
+
+export const availableCredits = computed(() => {
+  return allPoints.value || 0 - creditsUsed.value || 0;
 });

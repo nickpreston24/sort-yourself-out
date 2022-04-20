@@ -6,7 +6,7 @@
     <!-- 
     :class="{ active: isActive }"
    -->
-    <icon v-if="props.icon" class="flex-shrink w-5 ml-2 mr-2" :class="props.icon"></icon>
+    <!-- <icon v-if="props.icon" class="flex-shrink w-5 ml-2 mr-2" :class="props.icon"></icon> -->
 
     <!-- <div class="flex-shrink w-5 ml-2 mr-2">
       <slot name="svg" />

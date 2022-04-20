@@ -1,17 +1,33 @@
 <template>
   <NuxtLayout name="custom">
     <div id="i-am-a-spacer" class="h-16 bg-transparent"></div>
-    <Row>
-      <molecules-card class="justify-center w-1/2 ml-8 bg-regal-700">
-        <plus-icon
-          tooltip="Add a New Task!"
-          class="w-8 h-8 m-4"
-          Stack
-          stroke="rgba(34 211 238)"
-          @click="startNewModel('task')"
-        />
-      </molecules-card>
-    </Row>
+
+    <Stack>
+      <atoms-pomodoro class="justify-center w-1/2 ml-8" />
+
+      <div id="i-am-a-spacer" class="h-8 bg-transparent"></div>
+
+      <Row>
+        <molecules-card class="justify-center ml-8 bg-regal-700">
+          <icons-plus-icon
+            tooltip="Add a New Task!"
+            class="w-8 h-8 m-4"
+            Stack
+            stroke="rgba(34 211 238)"
+            @click="startNewModel('task')"
+          />
+
+          <icons-reload-icon
+            tooltip="Add a New Task!"
+            class="w-8 h-8 m-4"
+            Stack
+            stroke="rgba(34 211 238)"
+            @click="load(10)"
+          />
+        </molecules-card>
+      </Row>
+    </Stack>
+
     <Row class="w-full">
       <div class="m-4 task-grid">
         <div
@@ -48,7 +64,7 @@
   </NuxtLayout>
 </template>
 <script lang="ts" setup>
-import useTasks from "~/hooks/useTasks";
+import { useTasks, filteredTasks } from "~/hooks/useTasks";
 import { notify } from "~/components/atoms/useToaster";
 import { Row, Stack, Center } from "@mpreston17/flexies";
 import Typography from "~~/components/atoms/Typography.vue";
@@ -89,8 +105,6 @@ const {
   loading,
   createReward,
   patchReward,
-
-  filteredTasks,
 } = useTasks(maxTasks.value);
 
 const initialTask = {

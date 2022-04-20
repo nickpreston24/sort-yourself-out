@@ -2,6 +2,14 @@
   <NuxtLayout name="custom">
     <atoms-typography type="h1">Hello There!</atoms-typography>
 
+    <Row>
+      <molecules-card>
+        <Typography type="p">
+          Credits Available:
+          {{ availableCredits }}
+        </Typography>
+      </molecules-card>
+    </Row>
     <pre>rewards.length? {{ rewards.length }}</pre>
     <div class="mb-10 ml-4 mr-4 bg-transparent rewards-grid">
       <div v-for="(reward, index) in rewards">
@@ -39,7 +47,7 @@
 </template>
 <script setup lang="ts">
 import { notify } from "~~/components/atoms/useToaster";
-import { useTasks, rewards, loading } from "~~/hooks/useTasks";
+import { useTasks, rewards, loading, availableCredits } from "~~/hooks/useTasks";
 import { Center, Stack, Row, Right, Left, Flex } from "@mpreston17/flexies";
 import { closeModal } from "~~/components/molecules/useModal";
 import RewardsCard from "../tasks/RewardsCard.vue";
@@ -100,5 +108,15 @@ async function submitReward() {
 .rewards-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.rewards-grid-sm {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.rewards-grid-md {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 </style>

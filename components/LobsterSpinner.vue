@@ -20,9 +20,13 @@
 const props = defineProps({
   show: { default: true },
   debug: { default: false },
+  seconds: { default: 3 },
 });
+
+const duration = ref(`${props.seconds}s`);
 </script>
 <style scoped>
+/* var seconds : v-bind(duration) */
 /* Fade */
 .fade-enter-from,
 .fade-leave-to {
@@ -30,6 +34,6 @@ const props = defineProps({
 }
 .fade-enter-active,
 .fade-leave-active {
-  transition: opacity 3s ease;
+  transition: opacity v-bind(duration) ease;
 }
 </style>

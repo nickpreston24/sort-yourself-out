@@ -1,6 +1,7 @@
 // https://v3.nuxtjs.org/docs/directory-structure/layouts/
 <template>
   <div class="h-full text-white bg-regal-800">
+    <atoms-heading />
     <slot />
     <organisms-sidebar />
     <footer class="text-tahiti-500">Help</footer>

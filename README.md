@@ -84,6 +84,7 @@ Gradients work well on the 30%.
   - [ ] Add Arrows for Pagification
 - [x] Add a Task to a Reward
 - [x] Pomodoro timer
+  - [ ] [Emulate this](https://github.com/dejwid/react-pomodoro-timer/blob/master/src/Timer.js)
 - [ ] Icons needed:
   - [x] Trashcan
   - [x] Checkmark

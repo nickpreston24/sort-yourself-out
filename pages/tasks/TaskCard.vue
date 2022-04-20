@@ -58,9 +58,7 @@
               />
             </div>
           </Row>
-          <atoms-typography type="p" v-if="subtasks?.length > 0"
-            >Subtasks: {{ completedSubtasks + "/" + subtasks?.length }}</atoms-typography
-          >
+
           <radial-progress-bar
             v-if="task?.Points > 0"
             :diameter="85"
@@ -71,24 +69,32 @@
               >{{ percentCompleted.toFixed() }}%</atoms-typography
             >
           </radial-progress-bar>
-          <atoms-typography v-if="task?.Points > 0" type="p"
-            >Points: {{ completedPoints + "/" + task?.Points }}</atoms-typography
-          >
+
+          <Row>
+            <atoms-typography type="p" v-if="subtasks?.length > 0"
+              >Subtasks:
+              {{ completedSubtasks + "/" + subtasks?.length }}</atoms-typography
+            >
+
+            <atoms-chip :status="task?.Status">{{ task?.Status }}</atoms-chip>
+
+            <atoms-typography v-if="task?.Points > 0" type="p"
+              >Points: {{ completedPoints + "/" + task?.Points }}</atoms-typography
+            >
+          </Row>
         </Stack>
 
         <!-- Buttons Action Bar -->
         <Flex class="flex justify-wrap">
           <Row class="w-2/5">
-            <atoms-chip :status="task?.Status">{{ task?.Status }}</atoms-chip>
-
-            <div
+            <!-- <div
               class="flex items-center justify-center w-6 h-6 p-0 text-sm text-white rounded-full"
             >
               <plus-icon stroke="rgba(34 211 238)" />
-            </div>
+            </div> -->
           </Row>
 
-          <Row class="flex flex-row justify-evenly">
+          <Row v-show="buttonsActive" class="flex flex-row justify-evenly">
             <icons-checkmark-icon
               tooltip="Mark Task Completed"
               class="w-8 h-8"
@@ -103,7 +109,7 @@
               fill="transparent"
               stroke="rgba(34 211 238)"
               tooltip="Edit this Task"
-              @click="editNotes"
+              @click="editNotes(task)"
             />
             <icons-cross-icon
               tooltip="Cancel Edit"
@@ -117,7 +123,7 @@
               stroke="rgba(34 211 238)"
               class="w-8 h-8"
               tooltip="Cash In! $_$"
-              @click="cashIn"
+              @click="cashIn(task, selectedReward)"
             >
             </icons-arrow-up>
 
@@ -125,7 +131,7 @@
               stroke="rgba(34 211 238)"
               class="w-8 h-8"
               tooltip="Clone this task"
-              @click="cloneTask"
+              @click="cloneTask(task)"
             >
             </icons-copy-icon>
 
@@ -133,7 +139,7 @@
               class="w-8 h-8"
               stroke="rgba(34 211 238)"
               tooltip="Delete this Task"
-              @click="removeTask"
+              @click="deleteTask(task)"
             />
           </Row>
 
@@ -141,6 +147,10 @@
         </Flex>
 
         <template v-slot:footer>
+          <p class="tiny text-ocean">Created - {{ task.Created }}</p>
+          <p v-if="task?.Start" class="tiny text-ocean">Start - {{ task.Start }}</p>
+          <p v-if="task?.End" class="tiny text-ocean">End - {{ task.End }}</p>
+
           <Box v-show="showNotes && !!task.Notes" class="">
             <textarea
               class="m-2 overflow-y-auto rounded-md p-tiny bg-regal-500 max-h-128 sm:w-128 md:w-144 lg:w-144 xl:w-144 laptop:w-144 desktop:w-144 2xl:w-144"
@@ -161,27 +171,6 @@
         </template.header>
       </molecules-modal> -->
       </molecules-card>
-
-      <!-- <molecules-card
-        class="gap-2 shadow-md from-regal-800 to-regal-700 shadow-regal-400/90 opacity-90 bg-gradient-to-l hover:bg-gradient-to-r"
-      >
-        <div class="flex flex-row items-center justify-evenly">
-
-          <div class="m-2 sm:w-8 md:w-16 lg:w-24 xl:w-32">
-            <img
-              class="h-auto rounded-full shadow-lg max-wbutton-full shadow-regal-300/50 hover:scale-110"
-              src="~/assets/public/lobster-sticker.png"
-              alt="hierarchy"
-            />
-          </div>
-
-          
-        </div>
-
-        <template v-slot:footer>
-          
-        </template>
-      </molecules-card> -->
     </div>
   </transition>
 </template>
@@ -189,8 +178,11 @@
 <script setup>
 import { Row, Stack } from "@mpreston17/flexies";
 import { useTasks } from "~~/hooks/useTasks";
+
 import Card from "~/components/molecules/Card.vue";
 import RadialProgressBar from "vue3-radial-progress";
+import { notify, notifySuccess } from "~~/components/atoms/useToaster";
+
 const props = defineProps({
   task: { type: Object },
   active: { default: false },
@@ -200,12 +192,14 @@ const props = defineProps({
 let { task } = props;
 let { id } = task;
 
-const { error, patchTask, cloneTask } = useTasks();
+const { error, patchTask, cloneTask, deleteTask } = useTasks();
 const maxPoints = 5;
 const editing = ref(false);
 const buttonsActive = ref(false);
 const showNotes = ref(true);
 
+// const created = ref(task?.Created);
+// ?.toUTCString().slice(5, 16)
 // % completion of all Prerequisites
 const completedSubtasks = computed(() => {
   // return subtasks.value.filter((t) => t.Status === "Done")?.length || 0;
@@ -254,7 +248,7 @@ async function markTaskComplete() {
 
   let records = Array.from([{ ...updatedTask }]);
 
-  // notify("Task Completed! :D", "Completed!");
+  notifySuccess("Yay!", status);
 }
 
 async function updatePoints(stars) {
@@ -276,6 +270,10 @@ function onMouseEnter() {
 function onMouseLeave() {
   buttonsActive.value = false;
   showNotes.value = false;
+}
+
+function cashIn(task, reward) {
+  notify("Not yet implemented!", "Sorry!", 5000, "warning");
 }
 </script>
 

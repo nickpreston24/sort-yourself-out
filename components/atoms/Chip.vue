@@ -16,7 +16,10 @@ const props = defineProps({
   status: { type: String, default: "Todo" },
 });
 const chip = computed(() => {
-  switch (props.status.toLowerCase()) {
+  let chipStatus = props?.status || "Unknown";
+  // console.log("chipStatus", chipStatus);
+
+  switch (chipStatus?.toLocaleLowerCase()) {
     case "in progress":
       return `bg-yellow-500 text-yellow-200 shadow-yellow-500/50 border-yellow-600/50`;
 

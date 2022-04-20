@@ -1,5 +1,9 @@
 import { ref, onMounted } from "vue";
 import { RNG } from "~~/helpers/random";
+
+const devmode = (() => import.meta.env.NODE_ENV !== "production")();
+const toastsEnabled = ref(devmode);
+
 export const toastQ = ref([]);
 export const duration = ref(10000);
 const nextDuration = computed(() => {
@@ -102,3 +106,17 @@ export const toastType = {
   }, // long-running.
   //... achievement?  long?
 };
+
+// Shorthand helpers
+
+export const notifyError = (message, title = "ERROR") =>
+  toastsEnabled.value &&
+  notify(message, title, toastType.ERROR.duration, "error");
+
+export const notifySuccess = (message, title = "Success!") =>
+  toastsEnabled.value &&
+  notify(message, title, toastType.SUCCESS.duration, "success");
+
+export const notifyWarn = (message, title = "Success!") =>
+  toastsEnabled.value &&
+  notify(message, title, toastType.WARNING.duration, "warning");
