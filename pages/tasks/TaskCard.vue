@@ -96,11 +96,11 @@
 
         <Row v-show="buttonsActive" class="flex flex-row justify-evenly">
           <icons-checkmark-icon
-            tooltip="Mark Task Completed"
+            tooltip="Change Status"
             class="w-8 h-8"
             fill="transparent"
             stroke="rgba(34 211 238)"
-            @click="markTaskComplete"
+            @click="changeStatus"
             >Complete</icons-checkmark-icon
           >
           <icons-edit-icon
@@ -229,24 +229,27 @@ async function submitNotes() {
   console.log("updatedTask", updatedTask);
   let records = Array.from([{ ...updatedTask }]);
   console.log("records", records);
+  patchTask(records);
 }
 
-async function markTaskComplete() {
+const getNextStatus = (status = "") => {
+  if (!status) return "Unknown";
+  if (status === "Done") return "Todo";
+  if (status === "In progress") return "Done";
+  if (status === "Todo") return "In progress";
+};
+
+async function changeStatus() {
   let updatedTask = task;
   const status = updatedTask?.Status;
-
-  const nextStatus = () => {
-    if (status === "Done") return "Todo";
-    if (status === "In progress") return "Done";
-    if (status === "Todo") return "In progress";
-  };
-  console.log("nextStatus", nextStatus());
-  updatedTask.Status = nextStatus;
+  console.log("status", status);
+  console.log("nextStatus", getNextStatus(status));
+  updatedTask.Status = getNextStatus(status);
   console.log("updatedTask", updatedTask);
 
   let records = Array.from([{ ...updatedTask }]);
 
-  notifySuccess("Yay!", status);
+  patchTask(records);
 }
 
 async function updatePoints(stars) {
@@ -256,6 +259,7 @@ async function updatePoints(stars) {
   console.log("updatedTask", updatedTask);
   let records = Array.from([{ ...updatedTask }]);
   console.log("records", records);
+  patchTask(records);
 }
 
 async function editNotes() {}

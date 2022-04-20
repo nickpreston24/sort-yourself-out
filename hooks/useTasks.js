@@ -112,11 +112,17 @@ export function useTasks(take = 10, pageSize = 10) {
   };
 
   const patchTask = async (props) =>
-    patch("Tasks", props).catch((err) => {
-      console.error(err);
-      error.value = err;
-      notifyError("Patch failed...");
-    });
+    patch("Tasks", props)
+      .then((response) => {
+        console.log("patch completed.");
+        notifySuccess("Update successful!", "Yay!");
+      })
+
+      .catch((err) => {
+        console.error(err);
+        error.value = err;
+        notifyError("Patch failed...");
+      });
 
   const deleteTask = async (task) => {
     let id = task.id;
