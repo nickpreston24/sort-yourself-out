@@ -1,80 +1,82 @@
 <template>
-  <div
-    @mouseleave="onMouseLeave"
-    @mouseenter="onMouseEnter"
-    class="shadow-sm bg-regal-800 hover:bg-regal-600 from-regal-800 to-regal-700 shadow-regal-400/90 opacity-90 bg-gradient-to-l hover:bg-gradient-to-r"
-  >
-    <molecules-card class="flex items-center justify-center opacity-90 roundex-lg">
-      <Typography type="h4">{{ reward?.Name }}</Typography>
+  <transition name="slide-fade">
+    <div
+      @mouseleave="onMouseLeave"
+      @mouseenter="onMouseEnter"
+      class="shadow-sm bg-regal-800 hover:bg-regal-600 from-regal-800 to-regal-700 shadow-regal-400/90 opacity-90 bg-gradient-to-l hover:bg-gradient-to-r"
+    >
+      <molecules-card class="flex items-center justify-center opacity-90 roundex-lg">
+        <Typography type="h4">{{ reward?.Name }}</Typography>
 
-      <Row>
-        <Typography type="p"
-          >Points: {{ completedPoints + "/" + reward?.Points }}</Typography
-        >
-        <!-- <pre>props.active? {{ props.active }}</pre> -->
-        <Typography type="p" v-if="requirements?.length > 0"
-          >Requirements: {{ completedPrereqs + "/" + requirements?.length }}</Typography
-        >
-        <radial-progress-bar
-          :diameter="85"
-          :completed-steps="completedPoints"
-          :total-steps="totalSteps"
-        >
-          <Typography type="b">{{ percentCompleted.toFixed() }}%</Typography>
-        </radial-progress-bar>
-      </Row>
+        <Row>
+          <Typography type="p"
+            >Points: {{ completedPoints + "/" + reward?.Points }}</Typography
+          >
+          <!-- <pre>props.active? {{ props.active }}</pre> -->
+          <Typography type="p" v-if="requirements?.length > 0"
+            >Requirements: {{ completedPrereqs + "/" + requirements?.length }}</Typography
+          >
+          <radial-progress-bar
+            :diameter="85"
+            :completed-steps="completedPoints"
+            :total-steps="totalSteps"
+          >
+            <Typography type="b">{{ percentCompleted.toFixed() }}%</Typography>
+          </radial-progress-bar>
+        </Row>
 
-      <!-- Buttons Action Bar -->
-      <Row v-if="buttonsActive">
-        <icons-plus-icon
-          tooltip="ADD something AWESOME"
-          class="w-8 h-8"
-          fill="transparent"
-          stroke="rgba(34 211 238)"
-        />
-        <icons-trash-icon
-          tooltip="Delete this!"
-          class="w-8 h-8"
-          fill="transparent"
-          stroke="rgba(34 211 238)"
-          @click="deleteReward(reward?.id)"
-        />
-        <icons-edit-icon
-          tooltip="Alcohol, it's a hell of a drug"
-          class="w-8 h-8"
-          fill="transparent"
-          stroke="rgba(34 211 238)"
-        />
+        <!-- Buttons Action Bar -->
+        <Row v-if="buttonsActive">
+          <icons-plus-icon
+            tooltip="ADD something AWESOME"
+            class="w-8 h-8"
+            fill="transparent"
+            stroke="rgba(34 211 238)"
+          />
+          <icons-trash-icon
+            tooltip="Delete this!"
+            class="w-8 h-8"
+            fill="transparent"
+            stroke="rgba(34 211 238)"
+            @click="deleteReward(reward?.id)"
+          />
+          <icons-edit-icon
+            tooltip="Alcohol, it's a hell of a drug"
+            class="w-8 h-8"
+            fill="transparent"
+            stroke="rgba(34 211 238)"
+          />
 
-        <icons-calendar-icon
-          tooltip="Make a Schedule"
-          class="w-8 h-8"
-          fill="transparent"
-          stroke="rgba(34 211 238)"
-        />
+          <icons-calendar-icon
+            tooltip="Make a Schedule"
+            class="w-8 h-8"
+            fill="transparent"
+            stroke="rgba(34 211 238)"
+          />
 
-        <!-- <icons-cross-icon
+          <!-- <icons-cross-icon
           tooltip="Cancel"
           class="w-8 h-8"
           fill="transparent"
           stroke="rgba(34 211 238)"
         /> -->
 
-        <icons-checkmark-icon
-          tooltip="Mark as Concluded"
-          class="w-8 h-8"
-          fill="transparent"
-          stroke="rgba(34 211 238)"
-          @click="concludeReward"
-        />
-      </Row>
-      <!-- <molecules-modal>
+          <icons-checkmark-icon
+            tooltip="Mark as Concluded"
+            class="w-8 h-8"
+            fill="transparent"
+            stroke="rgba(34 211 238)"
+            @click="concludeReward"
+          />
+        </Row>
+        <!-- <molecules-modal>
         <template.header>
           <h1>Delete this for real?</h1>
         </template.header>
       </molecules-modal> -->
-    </molecules-card>
-  </div>
+      </molecules-card>
+    </div>
+  </transition>
 </template>
 
 <script setup lang="ts">

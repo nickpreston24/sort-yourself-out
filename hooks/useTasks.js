@@ -13,14 +13,19 @@ import { getRecords, create, patch, deleteRecord } from "../airtable/airtable";
 const devmode = (() => import.meta.env.NODE_ENV !== "production")();
 export const editIndex = ref(-1); // time to do some sketchy shit. do daah, doo daaah. hope I get away with it, do-de-do-ah-eyy
 
-const tasks = ref([]);
+export const tasks = ref([]);
 const taskFilters = [() => true];
 
-const rewards = ref([]);
+// const filters = new Map {
+//   'Show Done' : () => t=> t.Status === 'Done'
+// ...
+// }
+
+export const rewards = ref([]);
 const rewardFilters = [() => true];
 
-const loading = ref(true);
-const error = ref(null);
+export const loading = ref(true);
+export const error = ref(null);
 const toastsEnabled = ref(devmode);
 const debug = ref(devmode);
 
@@ -49,11 +54,28 @@ export function useTasks(take = 10, pageSize = 10) {
   //   await load(maxRecords);
   // });
 
-  const createTask = async (props) =>
-    create("Tasks", props).catch((err) => {
+  const createTask = async (props) => {
+    // TODO: Add the Start and End dates to a newly created task - default to today if null
+    // TODO: Append the Date of a Task to the end of the name in ()
+    // TODO: Enforce 1 and only 1 Task to a Reward
+    // TODO: Make a Clone button for Tasks
+    let myTask = {
+      ...props,
+    };
+
+    return create("Tasks", props).catch((err) => {
       console.log(err);
       error.value = err;
     });
+  };
+
+  const cloneTask = async (props) => {
+    // TODO: Clone this task and increment the Date, Blank out the AssociatedRewards
+    return create("Tasks", props).catch((err) => {
+      console.log(err);
+      error.value = err;
+    });
+  };
 
   const patchTask = async (props) =>
     patch("Tasks", props).catch((err) => {
@@ -112,6 +134,18 @@ export function useTasks(take = 10, pageSize = 10) {
     loading.value = false;
   }
 
+  // onMounted(async () => {
+  //   await load(maxRecords);
+  // });
+
+  // /** SCHEDULER FUNCTIONS */
+
+  function assignTaskToReward(task, reward) {
+    // TODO:  When assigning a Task to a Reward, if the reward already has more points than available, throw an error and notify user
+  }
+
+  function scheduleTask(task, date) {}
+
   return {
     tasks,
     rewards,
@@ -136,3 +170,48 @@ export function useTasks(take = 10, pageSize = 10) {
 }
 
 export default useTasks;
+
+/* Public Computed values */
+
+// // Tasks, but with any current filters applied
+// const filteredTasks = computed(() => {
+//   return tasks.value
+//     .sort(
+//       (a, b) => a?.Status < b?.Status || a?.Status?.length < b?.Status?.length
+//     )
+//     .slice(0, take);
+//   //.filter((t) => t.Status !== "Done");
+// });
+
+// // Rewards, but with any current filters applied
+// const filteredRewards = computed(() => {
+//   return rewards.value
+//     .sort(
+//       (a, b) => a?.Status < b?.Status || a?.Status?.length < b?.Status?.length
+//     )
+//     .slice(0, take);
+// });
+
+// const lateTasks = computed(() => {
+//   let now = new Date();
+//   tasks.value.filter((t) => t?.Start > now);
+// });
+
+// % completion of all Prerequisites
+const completedSubtasks = computed(() => {
+  // return subtasks.value.filter((t) => t.Status === "Done")?.length || 0;
+  return 0;
+});
+
+// % completion of the points required for this Task
+const completedPoints = computed(() => {
+  // return cashedIn.value
+  //   .filter((t) => t.Status === "Done")
+  //   .reduce((total, next) => total + next.Points, 0);
+  return 0;
+});
+
+// Gets the nested Points from all subtasks, recursively and adds them.
+const cumulativePoints = computed(() => {
+  return 0;
+});

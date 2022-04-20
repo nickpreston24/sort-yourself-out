@@ -21,6 +21,7 @@
     <span class="mx-auto">
       <SidebarLink to="/">Home</SidebarLink>
       <SidebarLink to="/tasks">Tasks</SidebarLink>
+      <SidebarLink to="/rewards">Rewards</SidebarLink>
       <SidebarLink to="/journal">Journal</SidebarLink>
       <SidebarLink to="/about">About</SidebarLink>
       <SidebarLink to="/schedule">Schedule</SidebarLink>
@@ -101,9 +102,4 @@ function onMouseOver() {
   // collapsed.value = false;
 }
 </script>
-<style scoped>
-.rotate-180 {
-  transform: rotate(180deg);
-  transition: 0.2s linear;
-}
-</style>
+<style scoped></style>

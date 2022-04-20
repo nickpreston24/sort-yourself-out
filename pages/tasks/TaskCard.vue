@@ -14,42 +14,25 @@
       v-if="active"
       class="bg-regal-500 hover:bg-regal-600"
     >
-      <pre class="text-tiny"> {{ index }}</pre>
+      <!-- <pre class="text-tiny"> {{ index }}</pre> -->
 
-      <molecules-card class="flex items-center justify-center opacity-90 roundex-lg">
-        <atoms-typography type="h4">{{ task?.Name }}</atoms-typography>
+      <molecules-card
+        enableShadow="false"
+        class="flex items-center justify-center m-4 rounded-lg opacity-90"
+      >
+        <atoms-typography class="ml-2 mr-2" type="h4">{{ task?.Name }}</atoms-typography>
 
         <Stack>
           <input
-            class="bg-regal-500 text-crimson-600"
-            v-if="editing == index"
+            class="bg-regal-500"
+            v-if="editing"
             v-model="task.Name"
             type="text"
             :id="index"
           />
-
-          <span
-            class="h-24 m-2 overflow-y-auto rounded-md p-tiny text-crimson-600 bg-regal-500 sm:w-56 md:w-64 max-h-128"
-          >
-            <textarea
-              class="h-64 bg-regal-500 sm:w-128 md:w-144 lg:w-144 xl:w-144"
-              v-if="editing == index"
-              v-model="task.Notes"
-              type="text"
-              :id="index"
-            />
-
-            <atoms-typography type="p" v-else>
-              {{ task?.Notes }}
-            </atoms-typography>
-          </span>
         </Stack>
 
         <Stack>
-          <!-- <atoms-typography v-if="task?.Points > 0" type="p"
-            >Points: {{ completedPoints + "/" + task?.Points }}</atoms-typography
-          > -->
-
           <Row class="gap-0">
             <div v-for="k in task?.Points || 0" :key="k" style="font-size: 0.75rem">
               <icons-star-icon
@@ -88,6 +71,9 @@
               >{{ percentCompleted.toFixed() }}%</atoms-typography
             >
           </radial-progress-bar>
+          <atoms-typography v-if="task?.Points > 0" type="p"
+            >Points: {{ completedPoints + "/" + task?.Points }}</atoms-typography
+          >
         </Stack>
 
         <!-- Buttons Action Bar -->
@@ -108,11 +94,11 @@
               class="w-8 h-8"
               fill="transparent"
               stroke="rgba(34 211 238)"
-              @click="markTaskComplete(index)"
+              @click="markTaskComplete"
               >Complete</icons-checkmark-icon
             >
             <icons-edit-icon
-              v-if="editing != index"
+              v-if="!editing"
               class="w-8 h-8"
               fill="transparent"
               stroke="rgba(34 211 238)"
@@ -120,29 +106,55 @@
               @click="editNotes"
             />
             <icons-cross-icon
-              v-else-if="editing == index"
+              tooltip="Cancel Edit"
+              v-else-if="editing"
               class="w-8 h-8"
               stroke="rgba(34 211 238)"
-              @click="submitNotes(index)"
+              @click="submitNotes"
             />
 
             <icons-arrow-up
               stroke="rgba(34 211 238)"
               class="w-8 h-8"
               tooltip="Cash In! $_$"
-              @click="cashIn(index)"
+              @click="cashIn"
             >
             </icons-arrow-up>
+
+            <icons-copy-icon
+              stroke="rgba(34 211 238)"
+              class="w-8 h-8"
+              tooltip="Clone this task"
+              @click="cloneTask"
+            >
+            </icons-copy-icon>
+
             <icons-trash-icon
               class="w-8 h-8"
               stroke="rgba(34 211 238)"
               tooltip="Delete this Task"
-              @click="removeTask(index)"
+              @click="removeTask"
             />
           </Row>
 
           <!-- <span class="w-1/6"></span> -->
         </Flex>
+
+        <template v-slot:footer>
+          <Box v-show="showNotes && !!task.Notes" class="">
+            <textarea
+              class="m-2 overflow-y-auto rounded-md p-tiny bg-regal-500 max-h-128 sm:w-128 md:w-144 lg:w-144 xl:w-144 laptop:w-144 desktop:w-144 2xl:w-144"
+              v-if="editing"
+              v-model="task.Notes"
+              type="text"
+              :id="index"
+            />
+
+            <atoms-typography type="p" v-else>
+              {{ task?.Notes }}
+            </atoms-typography>
+          </Box>
+        </template>
         <!-- <molecules-modal>
         <template.header>
           <h1>Delete this for real?</h1>
@@ -176,7 +188,7 @@
 
 <script setup>
 import { Row, Stack } from "@mpreston17/flexies";
-import { useTasks } from "~~/hooks";
+import { useTasks } from "~~/hooks/useTasks";
 import Card from "~/components/molecules/Card.vue";
 import RadialProgressBar from "vue3-radial-progress";
 const props = defineProps({
@@ -188,9 +200,11 @@ const props = defineProps({
 let { task } = props;
 let { id } = task;
 
-const { loading, error, createTask, patchTask, deleteTask, filteredTasks } = useTasks();
-
+const { error, patchTask, cloneTask } = useTasks();
+const maxPoints = 5;
+const editing = ref(false);
 const buttonsActive = ref(false);
+const showNotes = ref(true);
 
 // % completion of all Prerequisites
 const completedSubtasks = computed(() => {
@@ -206,12 +220,7 @@ const completedPoints = computed(() => {
   return 0;
 });
 
-const maxPoints = 10;
-
 // Gets the nested Points from all subtasks, recursively and adds them.
-const cumulativePoints = computed(() => {
-  return 0;
-});
 
 const percentCompleted = computed(() => {
   return ((completedPoints.value * 1.0) / task.Points) * 100;
@@ -221,59 +230,52 @@ const subtasks = computed(() => {
   return task?.SubTasks?.length || 0;
 });
 
-// function editTask(index) {
-//   editIndex.value = index;
-// }
-
-async function submitNotes(index) {
-  let updatedTask = filteredTasks.value[index];
+async function submitNotes() {
+  let updatedTask = task;
   console.log("submitted notes", updatedTask?.Notes);
 
   console.log("updatedTask", updatedTask);
   let records = Array.from([{ ...updatedTask }]);
   console.log("records", records);
-
-  const response = await patchTask(records).then((_) => {
-    error.value = "";
-  });
 }
 
 async function markTaskComplete() {
   let updatedTask = task;
-  updatedTask.Status = updatedTask?.Status === "Todo" ? "Done" : "Todo";
+  const status = updatedTask?.Status;
+
+  const nextStatus = () => {
+    if (status === "Done") return "Todo";
+    if (status === "In progress") return "Done";
+    if (status === "Todo") return "In progress";
+  };
+  console.log("nextStatus", nextStatus());
+  updatedTask.Status = nextStatus;
   console.log("updatedTask", updatedTask);
 
   let records = Array.from([{ ...updatedTask }]);
-  // console.log("records", records);
-
-  const response = await patchTask(records).then((_) => {
-    error.value = "";
-  });
 
   // notify("Task Completed! :D", "Completed!");
 }
 
-async function updatePoints(index, value) {
-  let updatedTask = filteredTasks.value[index];
-  updatedTask.Points = value;
+async function updatePoints(stars) {
+  let updatedTask = task;
+  updatedTask.Points = stars;
 
   console.log("updatedTask", updatedTask);
   let records = Array.from([{ ...updatedTask }]);
   console.log("records", records);
-
-  const response = await patchTask(records).then((_) => {
-    error.value = "";
-  });
 }
 
 async function editNotes() {}
 
 function onMouseEnter() {
   buttonsActive.value = true;
+  showNotes.value = true;
 }
 
 function onMouseLeave() {
   buttonsActive.value = false;
+  showNotes.value = false;
 }
 </script>
 
@@ -285,3 +287,15 @@ function onMouseLeave() {
   <option>Done</option>
   <option>In Progress</option>
 </select> -->
+
+<style scoped>
+/* Fade */
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 3s ease;
+}
+</style>

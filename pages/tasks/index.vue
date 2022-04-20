@@ -1,32 +1,19 @@
 <template>
   <NuxtLayout name="custom">
-    <Row class="w-full">
-      <!-- Rewards Cards -->
-
-      <div class="w-1/2 mb-10 ml-4 mr-4 bg-transparent rewards-grid">
-        <div v-for="(reward, index) in rewards">
-          <RewardsCard
-            :class="
-              index === selectedReward
-                ? 'border-2 border-tahiti-400'
-                : 'border-2 border-transparent'
-            "
-            :reward="reward"
-            :key="index"
-            @click="setSelectedReward(index)"
-          />
-        </div>
+    <div id="i-am-a-spacer" class="h-16 bg-transparent"></div>
+    <Row>
+      <molecules-card class="justify-center w-1/2 ml-8 bg-regal-700">
         <plus-icon
-          class="w-8 h-8"
-          fill="transparent"
+          tooltip="Add a New Task!"
+          class="w-8 h-8 m-4"
+          Stack
           stroke="rgba(34 211 238)"
-          @click="startNewModel('reward')"
+          @click="startNewModel('task')"
         />
-      </div>
-
-      <!-- Tasks Grid -->
-      <div class="w-1/2 m-4 task-grid">
-        <!-- <pre>tasks? {{ filteredTasks.length }}</pre> -->
+      </molecules-card>
+    </Row>
+    <Row class="w-full">
+      <div class="m-4 task-grid">
         <div
           class="gap-4 overflow-auto display-block"
           v-for="(task, index) in filteredTasks"
@@ -44,23 +31,14 @@
             @click="setSelectedTask(index)"
           />
         </div>
-        <plus-icon
-          class="w-8 h-8"
-          stroke="rgba(34 211 238)"
-          @click="startNewModel('task')"
-        />
       </div>
     </Row>
 
-    <transition name="fade">
-      <lobster-spinner
-        v-if="loading"
-        :show="loading"
-        id="overlay"
-        class="fixed absolute top-0 bottom-0 left-0 right-0 z-10 w-64 h-64 m-auto"
-      />
-    </transition>
-    <pre>modelName? {{ modelName }}</pre>
+    <lobster-spinner
+      :show="loading"
+      id="overlay"
+      class="fixed absolute top-0 bottom-0 left-0 right-0 z-10 w-64 h-64 m-auto"
+    />
     <FormModal
       class="bg-white"
       :model="currentModel.value"
@@ -84,9 +62,10 @@ import { closeModal, showModal } from "~~/components/molecules/useModal";
 import TaskCard from "./TaskCard.vue";
 import { collapsed } from "~~/components/organisms/sidebar/useSidebar";
 import { sleep } from "~~/helpers/timers";
+import Heading from "~~/components/atoms/Heading.vue";
 
 const delay = 175;
-const maxTasks = ref(100);
+const maxTasks = ref(25);
 const duration = maxTasks.value * delay;
 
 const timer = ref(duration);
@@ -308,41 +287,25 @@ async function cashIn(index) {
   await patchReward(records);
 }
 
-// async function updatePoints(index, value) {
-//   let updatedTask = filteredTasks.value[index];
-//   updatedTask.Points = value;
+async function updatePoints(value = 1) {
+  let updatedTask = task;
+  updatedTask.Points = value;
 
-//   console.log("updatedTask", updatedTask);
-//   let records = Array.from([{ ...updatedTask }]);
-//   console.log("records", records);
+  console.log("updatedTask", updatedTask);
+  let records = Array.from([{ ...updatedTask }]);
+  console.log("records", records);
 
-//   const response = await patchTask(records).then((_) => {
-//     error.value = "";
-//   });
-// }
+  const response = await patchTask(records).then((_) => {
+    error.value = "";
+  });
+}
 </script>
 
 <style scoped>
 .task-grid {
   display: grid;
-  grid-template-columns: repeat(1, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   grid-gap: 1em;
-}
-
-.rewards-grid {
-  display: grid;
-  grid-template-columns: repeat(1, minmax(0, 1fr));
-  grid-gap: 1em;
-}
-
-/* Fade */
-.fade-enter-from,
-.fade-leave-to {
-  opacity: 0;
-}
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity 3s ease;
 }
 
 /* Bounce */
@@ -362,17 +325,5 @@ async function cashIn(index) {
   100% {
     transform: scale(1);
   }
-}
-
-.slide-fade-enter-active {
-  transition: all 0.3s ease;
-}
-.slide-fade-leave-active {
-  transition: all 0.8s cubic-bezier(1, 0.5, 0.8, 1);
-}
-.slide-fade-enter, .slide-fade-leave-to
-/* .slide-fade-leave-active below version 2.1.8 */ {
-  transform: translateX(10px);
-  opacity: 0;
 }
 </style>

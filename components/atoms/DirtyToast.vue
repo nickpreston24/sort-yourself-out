@@ -7,6 +7,9 @@ atm... // help?: https://github.com/acidjazz/tv-toast/blob/master/src/utils.js
       class="relative z-20 inline-block w-auto transition-opacity duration-1000 ease-in-out sm:w-64 md:w-128 lg:w-148 tranistion-delay-1000 bottom-100 left-1/2"
       :class="background"
     >
+      <pre>active? {{ active }}</pre>
+      <pre>props.active? {{ show }}</pre>
+
       <!-- <pre>background? {{ background }}</pre>
       <pre>type? {{ type }}</pre>
       <pre>duration? {{ duration }}</pre> -->
@@ -59,7 +62,7 @@ const props = defineProps({
 const { message, title, id, show, duration, type } = props?.toast;
 
 console.log("toast", props.toast);
-const active = ref(show);
+const active = ref(true);
 const background = computed(() => {
   return toastType?.background || "bg-ocean-500/75";
 });

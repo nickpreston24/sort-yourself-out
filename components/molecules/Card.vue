@@ -17,7 +17,11 @@
 import { computed, ref } from "vue";
 const isHovering = ref(false);
 const animation = computed(() => {
+  if (props?.enableShadow) return "shadow-none";
   return isHovering?.value ? "shadow-xl" : "shadow-lg";
+});
+const props = defineProps({
+  enableShadow: { default: true },
 });
 </script>
 <style scoped>

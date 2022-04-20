@@ -1,10 +1,6 @@
 <template>
-  <h1 class="text-crimson-500">
+  <Row>
     <slot />
-  </h1>
+  </Row>
 </template>
-<script setup lang="ts">
-// import { themes } from "../../hooks/useTheme";
-// const { hailLobster } = themes;
-// const header = ref(`text-red `);  // PITA!
-</script>
+<script setup lang="ts"></script>
