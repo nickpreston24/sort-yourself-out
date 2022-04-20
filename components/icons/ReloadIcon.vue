@@ -1,5 +1,5 @@
 <template>
-  <Tooltip :text="props.tooltip">
+  <atoms-tooltip :text="props.tooltip">
     <svg
       viewBox="0 0 40 40"
       version="1.1"
@@ -49,7 +49,7 @@
         />
       </g>
     </svg>
-  </Tooltip>
+ </atoms-tooltip>
 </template>
 
 <script setup lang="ts">

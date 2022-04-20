@@ -43,7 +43,7 @@ atm... // help?: https://github.com/acidjazz/tv-toast/blob/master/src/utils.js
 </template>
 
 <script setup lang="ts">
-import { Row, Stack } from "@mpreston17/flexies";
+import { Flex, Row, Stack, Right, Center } from "@mpreston17/flexies";;
 import { defineProps, ref, computed, getCurrentInstance } from "vue";
 import { sleep } from "~~/helpers/timers";
 import { destroyToast, toastType } from "./useToaster";

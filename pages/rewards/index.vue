@@ -1,17 +1,55 @@
 <template>
   <NuxtLayout name="custom">
-    <atoms-typography type="h1">Hello There!</atoms-typography>
+    <!-- <atoms-typography type="h1">Hello There!</atoms-typography> -->
 
-    <Row>
-      <molecules-card>
-        <Typography type="p">
-          Credits Available:
-          {{ availableCredits }}
-        </Typography>
+    <div id="i-am-a-spacer" class="h-16 bg-transparent"></div>
+
+    <Stack class="gap-16">
+      <atoms-pomodoro class="justify-center w-1/2 ml-8" />
+
+      <molecules-card class="justify-center w-1/2 bg-regal-700">
+        <div class="grid grid-cols-4 gap-4">
+          <Typography type="p">
+            Credits Available:
+            {{ availableCredits }}
+          </Typography>
+
+          <Typography type="p">
+            Credits Available:
+            {{ allPoints }}
+          </Typography>
+
+          <Typography type="p">
+            Credits Used:
+            {{ creditsUsed }}
+          </Typography>
+          <Typography type="p"> Total Rewards: {{ rewards.length }} </Typography>
+        </div>
       </molecules-card>
-    </Row>
-    <pre>rewards.length? {{ rewards.length }}</pre>
-    <div class="mb-10 ml-4 mr-4 bg-transparent rewards-grid">
+      <Row>
+        <molecules-card class="justify-center ml-8 bg-regal-700">
+          <icons-plus-icon
+            tooltip="Add a New Task!"
+            class="w-8 h-8 m-4"
+            Stack
+            stroke="rgba(34 211 238)"
+            @click="startNewModel('task')"
+          />
+
+          <icons-reload-icon
+            tooltip="Add a New Task!"
+            class="w-8 h-8 m-4"
+            Stack
+            stroke="rgba(34 211 238)"
+            @click="load(10)"
+          />
+        </molecules-card>
+      </Row>
+    </Stack>
+
+    <div id="i-am-a-spacer" class="h-16 bg-transparent"></div>
+
+    <div class="grid grid-cols-4 gap-4 mb-10 ml-4 mr-4 bg-transparent">
       <div v-for="(reward, index) in rewards">
         <RewardsCard
           :class="
@@ -47,8 +85,15 @@
 </template>
 <script setup lang="ts">
 import { notify } from "~~/components/atoms/useToaster";
-import { useTasks, rewards, loading, availableCredits } from "~~/hooks/useTasks";
-import { Center, Stack, Row, Right, Left, Flex } from "@mpreston17/flexies";
+import {
+  useTasks,
+  rewards,
+  loading,
+  creditsUsed,
+  allPoints,
+  availableCredits,
+} from "~~/hooks/useTasks";
+import { Flex, Row, Stack, Right, Center } from "@mpreston17/flexies";
 import { closeModal } from "~~/components/molecules/useModal";
 import RewardsCard from "../tasks/RewardsCard.vue";
 

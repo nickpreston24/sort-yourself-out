@@ -22,5 +22,5 @@
   </button>
 </template>
 <script setup lang="ts">
-import { Row } from "@mpreston17/flexies";
+import { Flex, Row, Stack, Right, Center } from "@mpreston17/flexies";;
 </script>

@@ -34,7 +34,7 @@
      inkscape:current-layer="layer1" />
   <defs
      id="defs33537">
-    <inkscape:path-effect
+    <path-effect
        effect="skeletal"
        id="path-effect33833"
        is_visible="true"
@@ -50,7 +50,7 @@
        vertical_pattern="false"
        hide_knot="false"
        fuse_tolerance="0" />
-    <inkscape:path-effect
+    <path-effect
        effect="skeletal"
        id="path-effect33744"
        is_visible="true"

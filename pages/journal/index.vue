@@ -69,7 +69,7 @@
 </template>
 
 <script setup lang="ts">
-import { Center, Right, Stack } from "@mpreston17/flexies";
+import { Flex, Row, Stack, Right, Center } from "@mpreston17/flexies";;
 // import { useJournal } from "../../hooks/useJournal";
 import store from "~~/hooks/useJournal";
 

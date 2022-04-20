@@ -1,12 +1,12 @@
 <template>
-  <Tooltip :text="tooltip">
+  <atoms-tooltip :text="tooltip">
     <button
       class="font-bold text-white rounded-lg shadow-md p-tiny shadow-tahiti-500/30 md:text-lg sm:text-tiny"
       :class="background"
     >
       <slot></slot>
     </button>
-  </Tooltip>
+ </atoms-tooltip>
 </template>
 <script setup>
 import { darkMode, backgrounds } from "~~/hooks/useTheme";

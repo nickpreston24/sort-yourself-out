@@ -3,26 +3,26 @@
     <div class="h-screen">
       <Center>
         <Stack>
-          <atoms-shadow
+          <!-- <atoms-shadow
             class="w-128"
             v-if="true"
             textShadow="rgb(214 35 56)"
             type="basic"
-          >
-            <atoms-typography type="h1">{{ subject }}</atoms-typography>
-          </atoms-shadow>
+          > -->
+          <atoms-typography type="h1">{{ subject }}</atoms-typography>
+          <!-- </atoms-shadow> -->
           <img class="w-auto max-h-64" src="~/assets/public/jordan-speaking.png" />
 
-          <atoms-shadow type="basic">
-            <atoms-typography type="p">{{ predicate }}</atoms-typography>
-          </atoms-shadow>
+          <!-- <atoms-shadow type="basic"> -->
+          <atoms-typography type="p">{{ predicate }}</atoms-typography>
+          <!-- </atoms-shadow> -->
         </Stack>
       </Center>
     </div>
   </NuxtLayout>
 </template>
 <script setup lang="ts">
-import { Center, Stack, Right, Left } from "@mpreston17/flexies";
+import { Flex, Row, Stack, Right, Center, Left } from "@mpreston17/flexies";
 import { RNG } from "../helpers/random";
 import { preference } from "vue-preferences";
 

@@ -41,7 +41,7 @@
 </template>
 
 <script setup lang="ts">
-import { Stack, Row, Flex } from "@mpreston17/flexies";
+import { Flex, Row, Stack, Right, Center } from "@mpreston17/flexies";;
 </script>
 
 <style scoped>

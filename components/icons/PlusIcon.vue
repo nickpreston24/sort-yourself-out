@@ -1,7 +1,7 @@
 <template>
   <!-- <?xml version="1.0" encoding="UTF-8" standalone="no"?> -->
   <!-- Created with Inkscape (http://www.inkscape.org/) -->
-  <Tooltip :text="props.tooltip">
+  <atoms-tooltip :text="props.tooltip">
     <svg viewBox="0 0 40 40" version="1.1">
       <g>
         <g
@@ -18,7 +18,7 @@
         </g>
       </g>
     </svg>
-  </Tooltip>
+ </atoms-tooltip>
 </template>
 <script setup lang="ts">
 import { ref, computed, defineProps } from "vue";

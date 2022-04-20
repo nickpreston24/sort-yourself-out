@@ -13,7 +13,7 @@
 </template>
 
 <script setup lang="ts">
-import { Right, Stack, Left } from "@mpreston17/flexies";
+import { Flex, Row, Stack, Right, Center } from "@mpreston17/flexies";;
 import { darkMode, lobster } from "../hooks/useTheme";
 function toggleTheme() {
   darkMode.value = !darkMode.value;

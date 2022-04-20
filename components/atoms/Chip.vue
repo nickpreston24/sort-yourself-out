@@ -12,6 +12,7 @@
 </template>
 <script setup>
 import { computed, ref } from "vue";
+import { Flex, Row, Stack, Right, Center } from "@mpreston17/flexies";;
 const props = defineProps({
   status: { type: String, default: "Todo" },
 });

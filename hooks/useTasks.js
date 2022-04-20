@@ -240,11 +240,11 @@ export const lateTasks = computed(() => {
 // Gets the nested Points from all subtasks, recursively and adds them.
 export const allPoints = computed(() => {
   let allPoints = filteredTasks.value
-    .filter((task) => task?.Status.toString() === "Done")
+    .filter((task) => task?.Status?.toString() === "Done")
     .reduce((total, task) => {
-      console.log("task", task);
+      // console.log("task", task);
       let subTasks = task?.Subtasks || [];
-      console.log("subTasks", subTasks);
+      if (subTasks?.length > 0) console.log("subTasks", subTasks);
       let subTotal = subTasks
         .filter((t) => t.Points)
         .reduce((total, next) => (total += next), 0);

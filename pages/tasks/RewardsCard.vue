@@ -83,7 +83,7 @@
 import { ref, computed, defineProps } from "vue";
 import RadialProgressBar from "vue3-radial-progress";
 import Typography from "~~/components/atoms/Typography.vue";
-import { Row, Stack } from "@mpreston17/flexies";
+import { Flex, Row, Stack, Right, Center } from "@mpreston17/flexies";;
 import { useTasks } from "~~/hooks";
 import { notify } from "~~/components/atoms/useToaster";
 import { showModal } from "~~/components/molecules/useModal";

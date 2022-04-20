@@ -5,7 +5,7 @@
     <Stack>
       <atoms-pomodoro class="justify-center w-1/2 ml-8" />
 
-      <div id="i-am-a-spacer" class="h-8 bg-transparent"></div>
+      <div id="i-am-a-spacer-2" class="h-8 bg-transparent"></div>
 
       <Row>
         <molecules-card class="justify-center ml-8 bg-regal-700">
@@ -29,24 +29,20 @@
     </Stack>
 
     <Row class="w-full">
-      <div class="m-4 task-grid">
-        <div
-          class="gap-4 overflow-auto display-block"
+      <div class="grid grid-cols-4 gap-4 m-4">
+        <TaskCard
           v-for="(task, index) in filteredTasks"
           :key="index"
-        >
-          <TaskCard
-            :class="
-              index === selectedTask
-                ? 'border-2 border-tahiti-400'
-                : 'border-2 border-transparent'
-            "
-            :active="index >= timer / delay"
-            :task="task"
-            :index="index"
-            @click="setSelectedTask(index)"
-          />
-        </div>
+          :class="
+            index === selectedTask
+              ? 'border-2 border-tahiti-400'
+              : 'border-2 border-transparent'
+          "
+          :active="index >= timer / delay"
+          :task="task"
+          :index="index"
+          @click="setSelectedTask(index)"
+        />
       </div>
     </Row>
 
@@ -55,18 +51,13 @@
       id="overlay"
       class="fixed absolute top-0 bottom-0 left-0 right-0 z-10 w-64 h-64 m-auto"
     />
-    <FormModal
-      class="bg-white"
-      :model="currentModel.value"
-      :onSubmit="onSubmit"
-      :title="modelName"
-    />
+    <FormModal class="bg-white" :model="task" :onSubmit="onSubmit" :title="modelName" />
   </NuxtLayout>
 </template>
 <script lang="ts" setup>
 import { useTasks, filteredTasks } from "~/hooks/useTasks";
 import { notify } from "~/components/atoms/useToaster";
-import { Row, Stack, Center } from "@mpreston17/flexies";
+import { Flex, Row, Stack, Right, Center } from "@mpreston17/flexies";
 import Typography from "~~/components/atoms/Typography.vue";
 import StarIcon from "~~/components/icons/StarIcon.vue";
 import PlusIcon from "~~/components/icons/PlusIcon.vue";

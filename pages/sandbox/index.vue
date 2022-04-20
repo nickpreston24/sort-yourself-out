@@ -19,10 +19,10 @@
           :placeholder="toastText!"
         />
 
-        <Tooltip text="Click for Toast!">
+        <atoms-tooltip text="Click for Toast!">
           <atoms-button @click="makeToast">Button of Awesome</atoms-button>
           <atoms-button @click="clearToasts">Clear Toasts</atoms-button>
-        </Tooltip>
+       </atoms-tooltip>
       </Box>
 
       <Box size="md" class="">
@@ -88,20 +88,20 @@
       <Box size="md" class="">
         <atoms-typography type="h4">Tooltip Test</atoms-typography>
         <Row>
-          <Tooltip text="Yo ho ho! this be a tooltip!">
+          <atoms-tooltip text="Yo ho ho! this be a tooltip!">
             <p class="!text-sunglo-300 text-tiny">
               Lorem ipsum dolor sit, amet consectetur adipisicing elit.
             </p>
-          </Tooltip>
+         </atoms-tooltip>
 
-          <Tooltip
+          <atoms-tooltip
             background="bg-[rgb(6,250,11)]"
             text="Ho ho ho! I've got a machine gun!"
           >
             <atoms-button @click="toggleDarkMode">{{
               darkMode ? "Light Mode" : "Dark Mode"
             }}</atoms-button>
-          </Tooltip>
+         </atoms-tooltip>
         </Row>
       </Box>
 
@@ -240,7 +240,7 @@
 </template>
 <script setup lang="ts">
 import { ref } from "vue";
-import { Stack, Row } from "@mpreston17/flexies";
+import { Flex, Row, Stack, Right, Center } from "@mpreston17/flexies";;
 import { RNG } from "~~/helpers/random";
 import Typography from "~~/components/atoms/Typography.vue";
 import Pomodoro from "~~/components/atoms/Pomodoro.vue";

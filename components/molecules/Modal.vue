@@ -28,7 +28,7 @@ https://vuejs.org/guide/built-ins/teleport.html#basic-usage
 
             <div class="modal-footer">
               <slot name="footer">
-                <Button @click="closeModal">OK</Button>
+                <atoms-button @click="showModal = false">OK</atoms-button>
               </slot>
             </div>
           </div>

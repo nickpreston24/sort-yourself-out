@@ -1,5 +1,5 @@
 <template>
-  <Tooltip :text="props.tooltip">
+  <atoms-tooltip :text="props.tooltip">
     <svg
       viewBox="0 0 40 40"
       version="1.1"
@@ -7,7 +7,7 @@
       xmlns:svg="http://www.w3.org/2000/svg"
     >
       <defs id="defs33537">
-        <inkscape:path-effect
+        <path-effect
           effect="skeletal"
           id="path-effect33833"
           is_visible="true"
@@ -24,7 +24,7 @@
           hide_knot="false"
           fuse_tolerance="0"
         />
-        <inkscape:path-effect
+        <path-effect
           effect="skeletal"
           id="path-effect33744"
           is_visible="true"
@@ -56,7 +56,7 @@
         />
       </g>
     </svg>
-  </Tooltip>
+  </atoms-tooltip>
 </template>
 
 <script setup lang="ts">

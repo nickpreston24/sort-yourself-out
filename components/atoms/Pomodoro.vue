@@ -23,7 +23,7 @@ https://stackoverflow.com/questions/29971898/how-to-create-an-accurate-timer-in-
 import { ref, onMounted } from "vue";
 import dayjs from "dayjs";
 import { TaskTimer } from "tasktimer";
-import { Row, Stack } from "@mpreston17/flexies";
+import { Flex, Row, Stack, Right, Center } from "@mpreston17/flexies";;
 const now = dayjs();
 
 const tomorrow = now.add(1, "day");

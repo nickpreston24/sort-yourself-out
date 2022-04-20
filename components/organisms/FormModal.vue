@@ -1,7 +1,7 @@
 <template>
   <Modal class="bg-white text-crimson-500">
     <template #header>
-      <atoms-typograpy class="bg-white" type="h1">{{ props.title }}</atoms-typograpy>
+      <atoms-typography class="bg-white" type="h1">{{ props.title }}</atoms-typography>
     </template>
     <ul>
       <li class="p-2" v-for="(value, key, index) in props.model" :key="index">
@@ -10,7 +10,7 @@
           class="p-2 m-2 bg-white rounded-xl"
           type="text"
           v-bind:placeholder="key"
-          v-model="model[key]"
+          v-model="props.model[key]"
         />
       </li>
     </ul>
@@ -23,12 +23,12 @@
   </Modal>
 </template>
 <script setup lang="ts">
-import { Row } from "@mpreston17/flexies";
+import { Flex, Row, Stack, Right, Center } from "@mpreston17/flexies";
 import { closeModal, showModal } from "../molecules/useModal";
 import Modal from "../molecules/Modal.vue";
 
 const props = defineProps({
-  model: { default: null },
+  model: { default: {} },
   title: { default: null },
   onSubmit: { default: () => {} },
   debug: { default: false },

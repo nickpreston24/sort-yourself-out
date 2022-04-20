@@ -27,7 +27,7 @@ import { sidebar } from "../../../hooks/useTheme";
 
 const props = defineProps({
   to: { type: String, required: true },
-  icon: { type: String, required: true },
+  icon: { type: String, required: false },
 });
 
 const route = useRoute();
