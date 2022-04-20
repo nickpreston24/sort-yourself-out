@@ -22,8 +22,8 @@ https://stackoverflow.com/questions/29971898/how-to-create-an-accurate-timer-in-
 <script setup lang="ts">
 import { ref, onMounted } from "vue";
 import dayjs from "dayjs";
-import { TaskTimer } from "tasktimer";
-import { Flex, Row, Stack, Right, Center } from "@mpreston17/flexies";;
+// import { TaskTimer } from "tasktimer";
+import { Flex, Row, Stack, Right, Center } from "@mpreston17/flexies";
 const now = dayjs();
 
 const tomorrow = now.add(1, "day");
@@ -92,18 +92,16 @@ const currentTime = computed({
 });
 
 onMounted(() => {
-  const timer = new TaskTimer(1000);
-  // You can also execute some code on each tick... (every 1000 ms)
-  timer.on("tick", () => {
-    // console.log("tick count: " + timer.tickCount);
-    // console.log("elapsed time: " + timer.time.elapsed + " ms.");
-    // stop timer (and all tasks) after 1 hour
-    if (timer.tickCount >= 3600000) timer.stop();
-
-    currentTime.value = 1;
-  });
-
-  // Start the timer
-  timer.start();
+  // const timer = new TaskTimer(1000);
+  // // You can also execute some code on each tick... (every 1000 ms)
+  // timer.on("tick", () => {
+  //   // console.log("tick count: " + timer.tickCount);
+  //   // console.log("elapsed time: " + timer.time.elapsed + " ms.");
+  //   // stop timer (and all tasks) after 1 hour
+  //   if (timer.tickCount >= 3600000) timer.stop();
+  //   currentTime.value = 1;
+  // });
+  // // Start the timer
+  // timer.start();
 });
 </script>
