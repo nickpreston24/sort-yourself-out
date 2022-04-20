@@ -16,7 +16,7 @@
           </atoms-typography>
 
           <atoms-typography type="p">
-            Credits Available:
+            All Points:
             {{ allPoints }}
           </atoms-typography>
 
@@ -25,7 +25,7 @@
             {{ creditsUsed }}
           </atoms-typography>
           <atoms-typography type="p">
-            Total Rewards: {{ filteredRewards.length }}
+            Total Rewards: {{ rewards.length }}
           </atoms-typography>
         </div>
       </molecules-card>
@@ -79,6 +79,7 @@
 <script setup lang="ts">
 import { notify } from "~~/components/atoms/useToaster";
 import {
+  rewards,
   useTasks,
   loading,
   error,

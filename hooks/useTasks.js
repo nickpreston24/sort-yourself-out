@@ -103,6 +103,9 @@ export function useTasks(take = 10, pageSize = 10) {
       Status: "Todo",
       Points: props?.Points,
       Name: `${props.Name} ${fullDate}`,
+      Notes: props?.Notes || "",
+      Frequency: props?.Frequency || "",
+
       // AssociatedRewards: [],
     };
 
@@ -117,7 +120,16 @@ export function useTasks(take = 10, pageSize = 10) {
       let subPromises = foundTasks.map((t) => cloneTask(t));
       let final = await Promise.all(subPromises);
       // console.log("final", final);
+
+      // parentTask.Subtasks =
+      let ids = final.flat(1).map((ft) => ft.id);
+      // console.log("ids", ids);
+
+      parentTask.Subtasks = ids;
     }
+
+    // parentTask.Subtasks = subTaskIds;
+    console.log("parentTask", parentTask);
 
     return parentTask;
   };
@@ -129,16 +141,18 @@ export function useTasks(take = 10, pageSize = 10) {
 
     // console.log("clonedTask", sheep);
 
-    return create("Tasks", sheep)
-      .then((response) => {
-        notifySuccess("Clone complete!", "Baah");
-        console.log("response.data", response.data?.records?.[0]);
-      })
-      .catch((err) => {
-        console.log(err);
-        error.value = err;
-        notifyError("Cloning failed..." + err.message, "Baaad news...");
-      });
+    return (
+      create("Tasks", sheep)
+        // .then((response) => {
+        //   notifySuccess("Clone complete!", "Baah");
+        //   console.log("response.data", response);
+        // })
+        .catch((err) => {
+          console.log(err);
+          error.value = err;
+          notifyError("Cloning failed..." + err.message, "Baaad news...");
+        })
+    );
   };
 
   const patchTask = async (props) => {
@@ -344,9 +358,12 @@ export default useTasks;
 
 export const filteredTasks = computed(() => {
   console.log("filtered tasks updates");
-  return tasks.value.sort(
-    (a, b) => a?.Status < b?.Status || a?.Status?.length < b?.Status?.length
-  );
+  return tasks.value
+    .filter((t) => t.Status !== "Done")
+    .sort((a, b) => a?.Subtasks?.length || 0 >= b?.Subtasks?.length || 0)
+    .sort(
+      (a, b) => a?.Status < b?.Status || a?.Status?.length < b?.Status?.length // Alphabetically, then lenght of word
+    );
   // .slice(0, take);
   //.filter((t) => t.Status !== "Done");
 });
@@ -365,11 +382,18 @@ export const lateTasks = computed(() => {
 
 // Gets the nested Points from all subtasks, recursively and adds them.
 export const allPoints = computed(() => {
-  let allPoints = filteredTasks.value
+  // if)
+  let naiveAllPoints =
+    tasks?.value?.length > 0
+      ? tasks.value.reduce((total, next) => (total += next?.Points), 0)
+      : 0;
+  return naiveAllPoints;
+
+  let allPoints = tasks.value
     .filter((task) => task?.Status?.toString() === "Done")
     .reduce((total, task) => {
-      // console.log("task", task);
-      let subTasks = task?.Subtasks || [];
+      console.log("task", task);
+      let subTasks = task?.Subtasks || []; // TODO: Only ids come back, so you're going to have to sift through tasks.values to find matches, then you can tally points.
       if (subTasks?.length > 0) console.log("subTasks", subTasks);
       let subTotal = subTasks
         .filter((t) => t.Points)
@@ -382,6 +406,17 @@ export const allPoints = computed(() => {
 });
 
 export const creditsUsed = computed(() => {
+  let cashed =
+    tasks?.value?.length > 0
+      ? tasks.value
+          .map((task) => {
+            let rewardsIds = task.AssociatedRewards;
+            // rewardsIds.map(rid=>tasks.value.filter(t=>t.id === r.))
+            // console.log("rewards", rewards);
+            return 0;
+          })
+          .reduce((total, next) => (total += next?.Points), 0)
+      : 0;
   return -1;
 });
 

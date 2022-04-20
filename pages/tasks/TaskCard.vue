@@ -62,7 +62,7 @@
         </Row>
 
         <radial-progress-bar
-          v-if="task?.Points > 0"
+          v-if="task?.Subtasks?.length > 0"
           :diameter="85"
           :completed-steps="completedPoints"
           :total-steps="totalSubtasks"
@@ -78,9 +78,19 @@
 
           <atoms-chip :status="task?.Status">{{ task?.Status }}</atoms-chip>
 
-          <atoms-typography v-if="task?.Points > 0" type="p"
+          <atoms-typography v-if="task?.Subtasks?.length > 0" type="p"
             >Points: {{ completedPoints + "/" + task?.Points }}</atoms-typography
           >
+
+          <!-- <div v-if="task?.AssociatedRewards > 0"> -->
+          <!-- <atoms-typography type="b">Rewards: {{ rewards?.length }}</atoms-typography> -->
+
+          <ul>
+            <div v-for="myReward in rewards" :key="myReward.id">
+              {{ myReward.Name }} - {{ myReward.Points }}
+            </div>
+          </ul>
+          <!-- </div> -->
         </Row>
       </Stack>
 
@@ -160,7 +170,7 @@
             :id="index"
           />
 
-          <atoms-typography type="p" v-else>
+          <atoms-typography class="overflow-y-auto" type="p" v-else>
             {{ task?.Notes }}
           </atoms-typography>
         </Box>
@@ -220,6 +230,10 @@ const percentCompleted = computed(() => {
 
 const totalSubtasks = computed(() => {
   return task?.SubTasks?.length || 0;
+});
+
+const rewards = computed(() => {
+  return task.value?.AssociatedRewards;
 });
 
 async function submitNotes() {

@@ -136,7 +136,7 @@ const requirements = computed(() => {
 });
 
 const cashedIn = computed(() => {
-  return tasks.value.filter((task) => reward?.["Cashed-In"]?.includes(task.id));
+  return tasks.value.filter((task) => reward?.["Cashed-In"]?.includes(task.id)) || [];
 });
 
 function onMouseEnter() {

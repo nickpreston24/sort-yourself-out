@@ -9,7 +9,7 @@
 
       <pre>filteredTasks.length? {{ filteredTasks.length }}</pre>
       <pre>tasks.length? {{ tasks.length }}</pre>
-      <pre>tasks[0]? {{ tasks[0] }}</pre>
+      <!-- <pre>tasks[0]? {{ tasks[0] }}</pre> -->
       <Row>
         <molecules-card class="justify-center ml-8 bg-regal-700">
           <icons-plus-icon
@@ -78,7 +78,7 @@ import { sleep } from "~~/helpers/timers";
 import Heading from "~~/components/atoms/Heading.vue";
 
 const delay = 175;
-const maxTasks = ref(20);
+const maxTasks = ref(100);
 const duration = maxTasks.value * delay;
 
 const timer = ref(duration);

@@ -89,11 +89,12 @@ export const patch = async (tableName = null, records = []) => {
   // if (!record) throw Error(`record cannot be empty`);
 
   console.log("records received", records);
-  // let id = record.id;
-  // console.log("id", id);
-  // console.log("record", { ...record });
 
-  let formattedRecords = records.map((r) => {
+  // TODO: handle single values going in...
+  let collection = [].concat(records);
+  console.log("collection", collection);
+
+  let formattedRecords = collection.map((r) => {
     const { id, ...rest } = r;
     return {
       id,
