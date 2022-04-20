@@ -33,25 +33,32 @@
             fill="transparent"
             stroke="rgba(34 211 238)"
           />
-          <icons-trash-icon
+          <!-- <icons-trash-icon
             tooltip="Delete this!"
             class="w-8 h-8"
             fill="transparent"
             stroke="rgba(34 211 238)"
-            @click="deleteReward(reward?.id)"
-          />
+            @click="deleteReward(reward)"
+          /> -->
           <icons-edit-icon
             tooltip="Alcohol, it's a hell of a drug"
             class="w-8 h-8"
             fill="transparent"
             stroke="rgba(34 211 238)"
+            @click="editing = true"
           />
 
           <icons-calendar-icon
-            tooltip="Make a Schedule"
             class="w-8 h-8"
             fill="transparent"
             stroke="rgba(34 211 238)"
+          />
+
+          <icons-copy-icon
+            class="w-8 h-8"
+            Stack
+            stroke="rgba(34 211 238)"
+            @click="cloneReward(reward)"
           />
 
           <!-- <icons-cross-icon
@@ -69,11 +76,11 @@
             @click="concludeReward"
           />
         </Row>
-        <!-- <molecules-modal>
-        <template.header>
-          <h1>Delete this for real?</h1>
-        </template.header>
-      </molecules-modal> -->
+        <!-- <FormModal
+          title="Delete Reward?"
+          class="bg-white"
+          :onSubmit="deleteReward(reward)"
+        /> -->
       </molecules-card>
     </div>
   </transition>
@@ -83,19 +90,28 @@
 import { ref, computed, defineProps } from "vue";
 import RadialProgressBar from "vue3-radial-progress";
 import Typography from "~~/components/atoms/Typography.vue";
-import { Flex, Row, Stack, Right, Center } from "@mpreston17/flexies";;
+import { Flex, Row, Stack, Right, Center } from "@mpreston17/flexies";
 import { useTasks } from "~~/hooks";
 import { notify } from "~~/components/atoms/useToaster";
 import { showModal } from "~~/components/molecules/useModal";
+import { error } from "~~/hooks/useTasks";
 const props = defineProps({
   reward: { type: Object },
   active: { default: false },
 });
 
-const { tasks, rewards, deleteReward } = useTasks();
+const {
+  tasks,
+  rewards,
+  // deleteReward,
+  cloneReward,
+  createReward,
+  patchReward,
+} = useTasks();
 const { reward } = props;
 
 const buttonsActive = ref(false);
+const editing = ref(false);
 
 // % completion of all Prerequisites
 const completedPrereqs = computed(() => {
@@ -131,6 +147,9 @@ function onMouseLeave() {
   buttonsActive.value = false;
 }
 
+function tryDeleteReward() {
+  showModal.value = true;
+}
 /* API */
 
 async function submitReward() {
@@ -147,24 +166,15 @@ async function submitReward() {
     // Start: now.toISO(),
   };
 
-  const response = await createReward(newReward);
+  createReward(newReward);
 
-  let record = response?.data?.records?.[0];
-
-  if (record) {
-    rewards.value.push({
-      ...record.fields,
-      id: record.id,
-    });
-  }
-
-  // closeModal();
   showModal.value = false;
-  notify("Reward Submitted!", "Success!");
+  // notify("Reward Submitted!", "Success!");
 }
 
 function concludeReward() {
   console.log("reward to conclude", reward);
-  notify("concludeReward() Not implemented yet...", "Warning!", 100000);
+  // notify("concludeReward() Not implemented yet...", "Warning!", 100000);
+  patchReward({ ...reward, Done: true });
 }
 </script>

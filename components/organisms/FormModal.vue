@@ -34,6 +34,10 @@ const props = defineProps({
   debug: { default: false },
 });
 
+onMounted(() => {
+  console.log("props.model", props.model);
+});
+
 // console.log("showModal", showModal);
 
 // const model = ref({});

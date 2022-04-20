@@ -7,6 +7,9 @@
 
       <div id="i-am-a-spacer-2" class="h-8 bg-transparent"></div>
 
+      <pre>filteredTasks.length? {{ filteredTasks.length }}</pre>
+      <pre>tasks.length? {{ tasks.length }}</pre>
+      <pre>tasks[0]? {{ tasks[0] }}</pre>
       <Row>
         <molecules-card class="justify-center ml-8 bg-regal-700">
           <icons-plus-icon
@@ -14,7 +17,7 @@
             class="w-8 h-8 m-4"
             Stack
             stroke="rgba(34 211 238)"
-            @click="startNewModel('task')"
+            @click="showModal = true"
           />
 
           <icons-reload-icon
@@ -29,7 +32,9 @@
     </Stack>
 
     <Row class="w-full">
-      <div class="grid grid-cols-4 gap-4 m-4">
+      <div
+        class="grid gap-4 m-4 desktop:grid-cols-4 sm:grid-cols-2 tablet:grid-cols-2 laptop:grid-cols-3 md:grid-cols-2"
+      >
         <TaskCard
           v-for="(task, index) in filteredTasks"
           :key="index"
@@ -48,10 +53,11 @@
 
     <lobster-spinner
       :show="loading"
+      :seconds="maxTasks / 10"
       id="overlay"
       class="fixed absolute top-0 bottom-0 left-0 right-0 z-10 w-64 h-64 m-auto"
     />
-    <FormModal class="bg-white" :model="task" :onSubmit="onSubmit" :title="modelName" />
+    <FormModal class="bg-white" :model="task" :onSubmit="onSubmit" title="New Task" />
   </NuxtLayout>
 </template>
 <script lang="ts" setup>
@@ -72,7 +78,7 @@ import { sleep } from "~~/helpers/timers";
 import Heading from "~~/components/atoms/Heading.vue";
 
 const delay = 175;
-const maxTasks = ref(25);
+const maxTasks = ref(20);
 const duration = maxTasks.value * delay;
 
 const timer = ref(duration);
@@ -139,11 +145,6 @@ onMounted(() => {
   load(maxTasks.value);
 });
 
-function startNewModel(model = "task") {
-  modelName.value = model;
-  showModal.value = true;
-}
-
 function setSelectedReward(index) {
   selectedReward.value = selectedReward.value !== index ? index : -1;
 }
@@ -153,8 +154,7 @@ function setSelectedTask(index) {
 }
 
 function onSubmit() {
-  if (modelName.value === "task") submitTask();
-  else if (modelName.value === "reward") submitReward();
+  submitTask();
 }
 
 async function submitReward() {
@@ -203,17 +203,16 @@ async function submitTask() {
     // Start: now.toISO(),
   };
 
-  const response = await createTask(newTask);
-  let record = response?.data?.records?.[0];
+  createTask(newTask);
+  // let record = response?.data?.records?.[0];
 
-  if (record) {
-    tasks.value.push({
-      ...record.fields,
-      id: record.id,
-    });
-  }
+  // if (record) {
+  //   tasks.value.push({
+  //     ...record.fields,
+  //     id: record.id,
+  //   });
+  // }
 
-  notify("Task created successfully!", "Success!");
   closeModal();
   // clear();
   // Object.assign(task.value, initialTask);

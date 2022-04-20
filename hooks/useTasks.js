@@ -8,7 +8,13 @@
 
 import { ref } from "vue";
 import { notifyError, notifySuccess } from "~~/components/atoms/useToaster";
-import { getRecords, create, patch, deleteRecord } from "../airtable/airtable";
+import {
+  getRecords,
+  create,
+  patch,
+  deleteRecord,
+  getById,
+} from "../airtable/airtable";
 
 const devmode = (() => import.meta.env.NODE_ENV !== "production")();
 export const editIndex = ref(-1); // time to do some sketchy shit. do daah, doo daaah. hope I get away with it, do-de-do-ah-eyy
@@ -38,66 +44,90 @@ export function useTasks(take = 10, pageSize = 10) {
   // });
 
   const createTask = async (props) => {
-    // TODO: Add the Start and End dates to a newly created task - default to today if null
-    // TODO: Append the Date of a Task to the end of the name in ()
     // TODO: Enforce 1 and only 1 Task to a Reward
     // TODO: Make a Clone button for Tasks
 
     let now = new Date();
-    console.log("now", now);
-    let myTask = {
-      ...props,
-      Name: props.Name + now.getDate(),
-    };
-
-    console.log("myTask", myTask.Name);
-
-    return create("Tasks", myTask).catch((err) => {
-      console.log(err);
-      error.value = err;
-    });
-  };
-
-  // Clone this task and increment the Date, Blank out the AssociatedRewards
-  const clone = (props) => {
-    let date = Date.parse(props?.Created) || new Date();
-    console.log("date", date);
-    let tomorrow = new Date(date);
+    // console.log("now", now);
+    let tomorrow = new Date(now);
     tomorrow.setDate(tomorrow.getDate() + 1);
-    console.log("tomorrow", tomorrow);
+
     let day = tomorrow.getDate();
     let month = tomorrow.getMonth() + 1;
     let year = tomorrow.getFullYear();
 
-    let fullDate = `${month}-${day}-${year}.`;
+    let fullDate = `${month}-${day}-${year}`;
+
+    let myTask = {
+      ...props,
+      //  Append the Date of a Task to the end of the name in ()
+      Name: `(${props.Name} - ${fullDate})`,
+      //  Add the Start and End dates to a newly created task - default to today if null
+      Start: now,
+      End: tomorow,
+    };
+
+    console.log("myTask", myTask.Name);
+
+    return create("Tasks", myTask)
+      .then((records) => {
+        // console.log("response", records);
+        // const record = response.data?.records?.[0];
+        console.log("record", records);
+        tasks.value.push(records);
+        notifySuccess("Task created successfully!");
+      })
+      .catch((err) => {
+        console.log(err);
+        error.value = err;
+      });
+  };
+
+  // Clone this task and increment the Date, Blank out the AssociatedRewards
+  const cloneMyTask = async (props) => {
+    // console.log("props", props);
+    let date = Date.parse(props?.Created) || new Date();
+    let tomorrow = new Date(date);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    // console.log("tomorrow", tomorrow);
+    let day = tomorrow.getDate();
+    let month = tomorrow.getMonth() + 1;
+    let year = tomorrow.getFullYear();
+
+    let fullDate = `${month}-${day}-${year}`;
 
     // TODO: Clone all subtasks, or this won't work.
     let parentTask = {
-      ...props,
-      // id: null,
-      // Created: null,
-      // Start: tomorrow,
-      // "Last Modified": null,
+      Start: tomorrow,
+      End: tomorrow,
       Status: "Todo",
+      Points: props?.Points,
       Name: `${props.Name} ${fullDate}`,
       // AssociatedRewards: [],
     };
 
-    let subTasks = props?.Subtasks?.map((t) => clone(t));
-    if (subTasks?.length > 0) parentTask.Subtasks = subTasks;
+    // console.log("parentTask (init)", parentTask);
 
-    console.log("parentTask", parentTask);
-    console.log("subTasks", subTasks);
+    let subTaskIds = props?.Subtasks || [];
+
+    let promises = subTaskIds.map((id) => getById("Rewards", id));
+    let foundTasks = await (await Promise.all(promises)).flat(2);
+
+    if (foundTasks?.length > 0) {
+      let subPromises = foundTasks.map((t) => cloneTask(t));
+      let final = await Promise.all(subPromises);
+      // console.log("final", final);
+    }
 
     return parentTask;
   };
 
   const cloneTask = async (props) => {
-    console.log("clone props", props);
+    // console.log("clone props", props);
 
-    let sheep = clone(props);
+    let sheep = await cloneMyTask(props);
 
-    console.log("clonedTask", sheep);
+    // console.log("clonedTask", sheep);
 
     return create("Tasks", sheep)
       .then((response) => {
@@ -111,8 +141,15 @@ export function useTasks(take = 10, pageSize = 10) {
       });
   };
 
-  const patchTask = async (props) =>
-    patch("Tasks", props)
+  const patchTask = async (props) => {
+    let taskPatch = {
+      ...props,
+    };
+
+    delete taskPatch.Created;
+    delete taskPatch["Last Modified"];
+    console.log("taskPath", taskPatch);
+    return patch("Tasks", taskPatch)
       .then((response) => {
         console.log("patch completed.");
         notifySuccess("Update successful!", "Yay!");
@@ -123,6 +160,7 @@ export function useTasks(take = 10, pageSize = 10) {
         error.value = err;
         notifyError("Patch failed...");
       });
+  };
 
   const deleteTask = async (task) => {
     let id = task.id;
@@ -133,7 +171,9 @@ export function useTasks(take = 10, pageSize = 10) {
       );
     return deleteRecord("Tasks", id)
       .then(() => {
+        console.log("deleting task w/ id", id);
         tasks.value = tasks.value.filter((t) => t.id !== id);
+        notifySuccess("Task successfully deleted!");
       })
       .catch((err) => {
         console.error(err);
@@ -142,26 +182,104 @@ export function useTasks(take = 10, pageSize = 10) {
       });
   };
 
-  const createReward = async (props) =>
-    create("Rewards", props).catch((err) => {
-      console.log(err);
-      error.value = err;
-      notifyError("Creation of task failed...");
-    });
+  const createReward = async (props) => {
+    let now = new Date();
+    let myReward = {
+      ...props,
+      Name: `${props.Name} - ${now.getDate()}`,
+    };
+
+    console.log("myReward (clone)", myReward.Name);
+
+    return create("Rewards", myReward)
+      .then((response) => {
+        // const record = response.data?.records?.[0];
+        // console.log("record", record);
+        console.log("response", response);
+        // rewards.value.push(record);
+      })
+      .catch((err) => {
+        console.log(err);
+        error.value = err;
+        notifyError("Creation of reward failed...");
+      });
+  };
+
+  const cloneMyReward = (props) => {
+    let date = Date.parse(props?.Created) || new Date();
+    console.log("date", date);
+    let tomorrow = new Date(date);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    console.log("tomorrow", tomorrow);
+    let day = tomorrow.getDate();
+    let month = tomorrow.getMonth() + 1;
+    let year = tomorrow.getFullYear();
+
+    let fullDate = `${month}-${day}-${year}.`;
+
+    // TODO: Clone all subrewards, or this won't work.
+    let parentReward = {
+      // ...props,
+      // // id: null,
+      // // Created: null,
+      Start: tomorrow,
+      End: tomorrow,
+      Notes: props?.Notes,
+      Points: props?.Points || 1,
+      Name: `${props.Name} ${fullDate}`,
+      // AssociatedRewards: [],
+      // Name: "I think I'm a clone now...",
+    };
+
+    let subRewards = props?.Subrewards?.map((t) => cloneMyReward(t));
+    if (subRewards?.length > 0) parentReward.Subrewards = subRewards;
+
+    console.log("parentReward", parentReward);
+    console.log("subRewards", subRewards);
+
+    return parentReward;
+  };
+
+  const cloneReward = async (props) => {
+    console.log("clone props", props);
+
+    let sheep = cloneMyReward(props);
+
+    console.log("clonedReward", sheep);
+
+    return create("Rewards", sheep)
+      .then((records) => {
+        notifySuccess("Clone complete!", "Baah");
+        console.log("records", records);
+        rewards.value.push(records);
+      })
+      .catch((err) => {
+        console.log(err);
+        error.value = err;
+        notifyError("Cloning failed..." + err.message, "Baaad news...");
+      });
+  };
 
   const patchReward = async (props) =>
     patch("Rewards", props).catch((err) => {
       console.error(err);
       error.value = err;
-      notifyError("Patching the task failed...");
+      notifyError("Patching the reward failed...");
     });
 
-  const deleteReward = async (id) =>
-    deleteRecord("Rewards", id).catch((err) => {
-      console.error(err);
-      error.value = err;
-      notifyError("Deleting this reward failed...");
-    });
+  const deleteReward = async (reward) => {
+    const id = reward?.id;
+    return deleteRecord("Rewards", id)
+      .then(() => {
+        rewards.value = rewards.value.filter((r) => r.id !== id);
+        notifySuccess("Reward Successfully Deleted!");
+      })
+      .catch((err) => {
+        console.error(err);
+        error.value = err;
+        notifyError("Deleting this reward failed...");
+      });
+  };
 
   async function load(max = 10) {
     loading.value = true;
@@ -175,7 +293,7 @@ export function useTasks(take = 10, pageSize = 10) {
         notifyError("Loading of Tasks failed...");
       }
     );
-    rewards.value = await getRecords("Rewards", 10, pageSize, byStatus).catch(
+    rewards.value = await getRecords("Rewards", max, pageSize, byStatus).catch(
       (err) => {
         error.value = err;
         notifyError("Loading of Rewards failed...");
@@ -214,6 +332,7 @@ export function useTasks(take = 10, pageSize = 10) {
     // rewards api
 
     createReward,
+    cloneReward,
     deleteReward,
     patchReward,
   };
@@ -224,6 +343,7 @@ export default useTasks;
 /* Public Computed values */
 
 export const filteredTasks = computed(() => {
+  console.log("filtered tasks updates");
   return tasks.value.sort(
     (a, b) => a?.Status < b?.Status || a?.Status?.length < b?.Status?.length
   );
@@ -232,7 +352,7 @@ export const filteredTasks = computed(() => {
 });
 
 export const filteredRewards = computed(() => {
-  return rewards.value.sort(
+  return rewards?.value?.sort(
     (a, b) => a?.Status < b?.Status || a?.Status?.length < b?.Status?.length
   );
   // .slice(0, take);
@@ -258,7 +378,7 @@ export const allPoints = computed(() => {
       total += subTotal;
     }, 0);
   console.log("allPoints", allPoints);
-  return allPoints;
+  return allPoints || -1;
 });
 
 export const creditsUsed = computed(() => {

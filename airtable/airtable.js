@@ -16,7 +16,7 @@ export const formatRecords = (records = []) => {
   };
 
   let result =
-    collection.length > 0 ? collection.map(format) : format(collection);
+    collection.length >= 0 ? collection.map(format) : format(collection);
 
   return result;
 };
@@ -64,13 +64,24 @@ export const searchTable = async (tableName = null, fields = []) => {
   return raw;
 };
 
-export const getById = async (tableName = null, id = null) => {
+export const getById = async (tableName = null, id = -1) => {
   if (!id) throw Error(`id cannot be null or zero`);
   if (!tableName) throw Error(`tableName cannot be null or empty`);
 
-  let record = await get(tableName, id);
+  // let record = await get(tableName, id);
+  let url = `https://api.airtable.com/v0/${baseKey}/Rewards/${id}`;
 
-  return formatRecords(record);
+  const result = await axios({
+    url,
+    headers: {
+      "Content-Type": "x-www-form-urlencoded",
+      Authorization: `Bearer ${apiKey}`,
+    },
+  });
+
+  // console.log("result", result);
+
+  return formatRecords(result?.data);
 };
 
 export const patch = async (tableName = null, records = []) => {
@@ -112,17 +123,21 @@ export const patch = async (tableName = null, records = []) => {
   return formatRecords(result?.data?.records);
 };
 
-export const create = async (tableName = null, record) => {
-  if (!record) throw Error(`record cannot be empty`);
+export const create = async (tableName = null, records = []) => {
+  if (!records) throw Error(`record cannot be empty`);
   if (!tableName) throw Error(`tableName cannot be null or empty`);
 
   // console.log("record", record);
   const data = {
-    records: [
-      {
-        fields: record?.fields || { ...record },
-      },
-    ],
+    records:
+      records?.length >= 0
+        ? records
+        : [
+            {
+              // single record
+              fields: records?.fields || { ...records },
+            },
+          ],
   };
 
   let url = `https://api.airtable.com/v0/${baseKey}/${tableName}`;
@@ -134,8 +149,8 @@ export const create = async (tableName = null, record) => {
   };
   const response = await axios.post(url, data, axiosConfig);
 
-  console.log("response?.data", response?.data);
-  return response;
+  // console.log("response", response);
+  return formatRecords(response?.data?.records);
 };
 
 export const deleteRecord = async (tableName = null, id = null) => {

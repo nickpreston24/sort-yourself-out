@@ -75,7 +75,7 @@ const props = defineProps({
 // });
 
 function onMouseLeave() {
-  console.log("leave");
+  // console.log("leave");
   sleep(250).then(() => {
     collapsed.value = true;
     // notify(
@@ -88,7 +88,7 @@ function onMouseLeave() {
 }
 
 function onMouseOver() {
-  console.log("over");
+  // console.log("over");
   sleep(250).then(() => {
     collapsed.value = false;
     // notify(
