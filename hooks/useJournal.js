@@ -60,7 +60,7 @@ export default reactive({
     return this?.entries?.length || 0;
   }),
 
-  async load(max = 100) {
+  async load(max = 10) {
     this.loading = true;
 
     this.entries = await getRecords(this.table, max).catch((err) => {

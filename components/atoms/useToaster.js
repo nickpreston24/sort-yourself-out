@@ -58,8 +58,6 @@ export function notify(
   duration = 5000,
   type = "success"
 ) {
-  // console.log("nextDuration", nextDuration.value);
-
   toastQ.value.push({
     title,
     message,
@@ -77,7 +75,6 @@ export function destroyToast(toast) {
 }
 
 export function clearToasts() {
-  // toastQ.value = [];
   while (toastQ.value?.length > 0) {
     destroyToast(toastQ.value.pop());
   }

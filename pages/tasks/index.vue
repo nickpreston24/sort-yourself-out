@@ -2,16 +2,27 @@
   <NuxtLayout name="custom">
     <div id="i-am-a-spacer" class="h-16 bg-transparent"></div>
 
-    <Stack>
-      <atoms-pomodoro class="justify-center w-1/2 ml-8" />
+    <!-- TODO: 1. Searchbar for tasks filtering -->
+    <organisms-header :model="filteredTasks" />
+    <Stack class="gap-4`">
+      <!-- <atoms-pomodoro class="justify-center w-1/2 ml-8" /> -->
 
-      <div id="i-am-a-spacer-2" class="h-8 bg-transparent"></div>
+      <!-- <div id="i-am-a-spacer-2" class="h-8 bg-transparent"></div> -->
 
       <pre>filteredTasks.length? {{ filteredTasks.length }}</pre>
       <pre>tasks.length? {{ tasks.length }}</pre>
       <!-- <pre>tasks[0]? {{ tasks[0] }}</pre> -->
+      <pre>todaysTasks? {{ todaysTasks }}</pre>
       <Row>
         <molecules-card class="justify-center ml-8 bg-regal-700">
+          <!-- 
+        TODO: 6. Button for 'Perfect Day' spawning
+        TODO:    1. This will automatically include the 'Essentials' Template 
+        
+        TODO:  11. Show Today's Perfect Day prominently
+        TODO:  12. Show Tasks completeded today :)
+        -->
+
           <icons-plus-icon
             tooltip="Add a New Task!"
             class="w-8 h-8 m-4"
@@ -27,6 +38,31 @@
             stroke="rgba(34 211 238)"
             @click="load(10)"
           />
+
+          <icons-copy-icon
+            tooltip="Spawn a new Perfect Day"
+            class="w-8 h-8 m-4"
+            Stack
+            stroke="rgba(34 211 238)"
+            @click="createPerfectDay"
+          />
+
+          <router-link to="/tasks/bulk">
+            <icons-star-icon
+              tooltip="Bulk Add Tasks"
+              class="w-8 h-8 m-4"
+              Stack
+              stroke="rgba(34 211 238)"
+            />
+          </router-link>
+
+          <pre>maxTasks? {{ maxTasks }}</pre>
+          <select @select="saveMaxTasks">
+            <option disabled value="">Please select one</option>
+            <option>10</option>
+            <option>20</option>
+            <option>50</option>
+          </select>
         </molecules-card>
       </Row>
     </Stack>
@@ -61,8 +97,8 @@
   </NuxtLayout>
 </template>
 <script lang="ts" setup>
-import { useTasks, filteredTasks } from "~/hooks/useTasks";
-import { notify } from "~/components/atoms/useToaster";
+import { useTasks, filteredTasks, todaysTasks } from "~/hooks/useTasks";
+import { notify, notifyError } from "~/components/atoms/useToaster";
 import { Flex, Row, Stack, Right, Center } from "@mpreston17/flexies";
 import Typography from "~~/components/atoms/Typography.vue";
 import StarIcon from "~~/components/icons/StarIcon.vue";
@@ -70,6 +106,7 @@ import PlusIcon from "~~/components/icons/PlusIcon.vue";
 import Card from "~~/components/molecules/Card.vue";
 import RewardsCard from "./RewardsCard.vue";
 import FormModal from "~~/components/organisms/FormModal.vue";
+import { useStorage } from "@vueuse/core";
 
 import { closeModal, showModal } from "~~/components/molecules/useModal";
 import TaskCard from "./TaskCard.vue";
@@ -78,9 +115,8 @@ import { sleep } from "~~/helpers/timers";
 import Heading from "~~/components/atoms/Heading.vue";
 
 const delay = 175;
-const maxTasks = ref(100);
+const maxTasks = ref(50);
 const duration = maxTasks.value * delay;
-
 const timer = ref(duration);
 
 let timerId = setInterval(() => {
@@ -102,6 +138,12 @@ const {
   loading,
   createReward,
   patchReward,
+
+  // Scheduling
+  createPerfectDay,
+  assignTaskToReward,
+  assignSubtaskToTask,
+  scheduleTask,
 } = useTasks(maxTasks.value);
 
 const initialTask = {
@@ -139,14 +181,17 @@ const selectedReward = ref(-1);
 const selectedTask = ref(-1);
 
 const reload = () => load(maxTasks.value);
-
+const store = useStorage("tasks-store", { maxTasks: maxTasks.value });
 onMounted(() => {
   collapsed.value = true;
+  maxTasks.value = store.value?.maxTasks;
+  console.log("store.value", store.value);
   load(maxTasks.value);
 });
 
-function setSelectedReward(index) {
-  selectedReward.value = selectedReward.value !== index ? index : -1;
+function saveMaxTasks() {
+  maxTasks.value = store.value?.maxTasks;
+  console.log("store.value", store.value?.maxTasks);
 }
 
 function setSelectedTask(index) {
@@ -185,6 +230,7 @@ async function submitReward() {
   closeModal();
   notify("Reward Submitted!", "Success!");
 }
+
 async function submitTask() {
   if (!task?.value?.Name) {
     error.value = "Name is a required Field";
@@ -278,7 +324,7 @@ async function cashIn(index) {
   console.log("total", total);
   console.log("points", points);
   if (total > points) {
-    // Notify("You can't add more Tasks to this Reward")
+    notifyError("You can't add more Tasks to this Reward");
     return;
   }
 

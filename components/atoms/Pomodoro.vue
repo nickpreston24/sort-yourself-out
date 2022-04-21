@@ -5,6 +5,8 @@ https://stackoverflow.com/questions/29971898/how-to-create-an-accurate-timer-in-
 <template>
   <div class="bg-sunglo-700">
     <Stack class="h-32">
+      <!-- TODO: 9.  Update the Pomodoro to with the progress thing -->
+      <radial-progress-bar />
       <div class="p-2 border-4 rounded-full border-red">
         <p class="text-2xl !text-sunglo-200 border-2 border-white rounded-full">
           {{ currentTime.format("hh:mm:ss") }}
@@ -24,6 +26,8 @@ import { ref, onMounted } from "vue";
 import dayjs from "dayjs";
 // import { TaskTimer } from "tasktimer";
 import { Flex, Row, Stack, Right, Center } from "@mpreston17/flexies";
+import RadialProgressBar from "vue3-radial-progress";
+
 const now = dayjs();
 
 const tomorrow = now.add(1, "day");

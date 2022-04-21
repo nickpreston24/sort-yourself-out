@@ -27,8 +27,12 @@ export const getRecords = async (
   pageSize = 10,
   sort = ""
 ) => {
+  console.log("maxRecords", maxRecords);
+  console.log("sort", sort);
+  const url = `https://api.airtable.com/v0/${baseKey}/${tableName}?maxRecords=${maxRecords}&pageSize=${pageSize}&sort=${sort}`;
+  console.log("url", url);
   const result = await axios({
-    url: `https://api.airtable.com/v0/${baseKey}/${tableName}?maxRecords=${maxRecords}?pageSize=${pageSize}?${sort}`,
+    url,
     headers: {
       "Content-Type": "x-www-form-urlencoded",
       Authorization: `Bearer ${apiKey}`,
@@ -36,6 +40,9 @@ export const getRecords = async (
   });
 
   // console.log("result", result);
+  let offset = result?.data?.offset || null;
+  // console.log("offset", offset);
+  // TODO: somehow get this offset back into useTasks() so we can pagify...
 
   return formatRecords(result?.data?.records);
 };

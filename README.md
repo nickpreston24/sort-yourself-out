@@ -73,8 +73,8 @@ Gradients work well on the 30%.
 ### Functionality
 - [ ] (*optional*) Find a Schedule Template similar to Airtable's .
 - [ ] Make Tasks assignable to subtasks
-  - [ ] Design a 'Perfect Day' Task
-  - [ ] Design a 'Essentials' Task
+  - [x] Design a 'Perfect Day' Task
+  - [x] Design a 'Essentials' Task
 - [ ] Add a Scheduling button that sets the Frequency, "Daily", "Weekly", "Every other Month, starting 12am Tuesday", etc.
 - [ ] Make the textarea larger on hover/edit
 - [x] Add Modal
@@ -84,7 +84,7 @@ Gradients work well on the 30%.
   - [ ] Add Arrows for Pagification
 - [x] Add a Task to a Reward
 - [x] Pomodoro timer
-  - [ ] [Emulate this](https://github.com/dejwid/react-pomodoro-timer/blob/master/src/Timer.js)
+  - [x] [Emulate this](https://github.com/dejwid/react-pomodoro-timer/blob/master/src/Timer.js)
 - [ ] Icons needed:
   - [x] Trashcan
   - [x] Checkmark
@@ -96,13 +96,13 @@ Gradients work well on the 30%.
   - [x] Edit
   - [x] Up arrow for assignment
 - [x] Diy tooltip on hover
-- [ ] Fix: For your `/atoms` components, use the inline darkMode switcher: `:class='darkMode ? bg-regal-800 : bg-sunglo-500'`
+- [ ] Fix: For your `/atoms` components, use  the inline darkMode switcher: `:class='darkMode ? bg-regal-800 : bg-sunglo-500'`
 
 ## Nice to haves
 
 - [ ] [Overlay navigation](https://www.w3schools.com/howto/howto_js_fullscreen_overlay.asp)
-- [ ] Toasts
-- [ ] Tooltips
+- [x] Toasts
+- [x] Tooltips
 - [ ] Repeating (lobster) svg backgrounds
 - [ ] Expand things (say, your Task Cards on hover) slowly and smoothly by animation...think of a Flubber-like animation where a Card shrinks or grows and shows content into that space.  For example, the `<textarea>`s could warp in and out of existence...
 - [ ] [Export](https://github.com/simonw/airtable-export) Airtable contents to disk

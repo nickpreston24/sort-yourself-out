@@ -20,20 +20,25 @@ const devmode = (() => import.meta.env.NODE_ENV !== "production")();
 export const editIndex = ref(-1); // time to do some sketchy shit. do daah, doo daaah. hope I get away with it, do-de-do-ah-eyy
 
 export const tasks = ref([]);
+export const loading = ref(true);
+export const error = ref(null);
+const toastsEnabled = ref(devmode);
+const debug = ref(devmode);
+export const rewards = ref([]);
+
+/** Filters */
+
+// TODO: 3. Save your searches as toggleable filters[]
+// TODO: 4. Start on a filters computed() for tasks
 const taskFilters = [() => true];
+const storedSearches = ["Nugs Research"];
 
 // const filters = new Map {
 //   'Show Done' : () => t=> t.Status === 'Done'
 // ...
 // }
 
-export const rewards = ref([]);
 const rewardFilters = [() => true];
-
-export const loading = ref(true);
-export const error = ref(null);
-const toastsEnabled = ref(devmode);
-const debug = ref(devmode);
 
 /** If there are more records, the response will contain an offset. To fetch the next page of records, include offset in the next request's parameters. -- airtable docs */
 const offset = ref(0);
@@ -64,7 +69,8 @@ export function useTasks(take = 10, pageSize = 10) {
       Name: `(${props.Name} - ${fullDate})`,
       //  Add the Start and End dates to a newly created task - default to today if null
       Start: now,
-      End: tomorow,
+      End: tomorrow,
+      Status: "Todo",
     };
 
     console.log("myTask", myTask.Name);
@@ -211,6 +217,7 @@ export function useTasks(take = 10, pageSize = 10) {
         // console.log("record", record);
         console.log("response", response);
         // rewards.value.push(record);
+        notifySuccess("Reward Submitted!");
       })
       .catch((err) => {
         console.log(err);
@@ -298,16 +305,24 @@ export function useTasks(take = 10, pageSize = 10) {
   async function load(max = 10) {
     loading.value = true;
 
-    const byStatus =
-      "sort%5B0%5D%5Bfield%5D=Name?sort%5B0%5D%5Bdirection%5D=desc";
+    // const byStatus =
+    //   "sort%5B0%5D%5Bfield%5D=Status?sort%5B0%5D%5Bdirection%5D=desc";
 
-    tasks.value = await getRecords("Tasks", max, pageSize, byStatus).catch(
-      (err) => {
-        error.value = err;
-        notifyError("Loading of Tasks failed...");
-      }
-    );
-    rewards.value = await getRecords("Rewards", max, pageSize, byStatus).catch(
+    // const byName =
+    //   "?sort%5B0%5D%5Bfield%5D=Name&sort%5B0%5D%5Bdirection%5D=desc";
+
+    // TODO: https://community.airtable.com/t/sorting-by-field-my-airtable-api-on-react/29259/2
+
+    // const sortObjects = [ {field: "year", direction: "desc"} ]
+    // const sortString = sortObjects.map(so=>{
+    // })
+
+    tasks.value = await getRecords("Tasks", max, pageSize, "").catch((err) => {
+      error.value = err;
+      notifyError("Loading of Tasks failed...");
+    });
+
+    rewards.value = await getRecords("Rewards", max, pageSize, "").catch(
       (err) => {
         error.value = err;
         notifyError("Loading of Rewards failed...");
@@ -325,9 +340,35 @@ export function useTasks(take = 10, pageSize = 10) {
 
   async function assignTaskToReward(task, reward) {
     // TODO:  When assigning a Task to a Reward, if the reward already has more points than available, throw an error and notify user
+
+    reward["Cashed-In"].push(task.id);
+    console.log("reward", reward);
+    await patchReward(reward);
+    // console.log("result of subtask assignment", result);
   }
 
-  async function scheduleTask(task, date) {}
+  async function assignSubtaskToTask(subtask, task) {
+    // TODO: Check for collisions with other assignments and if already exists.
+    task.Subtasks?.push(subTask.id);
+    console.log("task", task);
+    await patchTask(task);
+    // console.log("result of subtask assignment", result);
+  }
+
+  async function scheduleTask(task, date) {
+    let updatedTask = { ...task, Start: date };
+    // TODO: update the End date to be at least 1 day more than the Start Date, or the same day.
+    console.log("updatedTask", updatedTask);
+    await patchTask(updatedTask);
+  }
+
+  const createPerfectDay = async () => {
+    const perfectDay = { ...perfectDayTemplate };
+    console.log("perfectDay", perfectDay);
+
+    const results = await cloneTask(perfectDay);
+    console.log("results of perfect day cloning", results);
+  };
 
   return {
     tasks,
@@ -349,6 +390,13 @@ export function useTasks(take = 10, pageSize = 10) {
     cloneReward,
     deleteReward,
     patchReward,
+
+    // Scheduling api
+
+    createPerfectDay,
+    assignSubtaskToTask,
+    assignTaskToReward,
+    scheduleTask,
   };
 }
 
@@ -358,12 +406,11 @@ export default useTasks;
 
 export const filteredTasks = computed(() => {
   console.log("filtered tasks updates");
-  return tasks.value
-    .filter((t) => t.Status !== "Done")
-    .sort((a, b) => a?.Subtasks?.length || 0 >= b?.Subtasks?.length || 0)
-    .sort(
-      (a, b) => a?.Status < b?.Status || a?.Status?.length < b?.Status?.length // Alphabetically, then lenght of word
-    );
+  return tasks.value.filter((t) => t.Status !== "Done");
+  // .sort((a, b) => a?.Subtasks?.length || 0 >= b?.Subtasks?.length || 0)
+  // .sort(
+  //   (a, b) => a?.Status < b?.Status || a?.Status?.length < b?.Status?.length // Alphabetically, then lenght of word
+  // )
   // .slice(0, take);
   //.filter((t) => t.Status !== "Done");
 });
@@ -428,3 +475,34 @@ export const creditsUsed = computed(() => {
 export const availableCredits = computed(() => {
   return allPoints.value || 0 - creditsUsed.value || 0;
 });
+
+export const percentageAcheived = computed(() => {
+  return -1;
+});
+
+export const todaysTasks = computed(() => {
+  // const menuItems = [{name:'Hamburger',expirationDate:'09-24-2019'},{name:'Pizza',expirationDate:'03-11-2019'},{name:'Sushi',expirationDate:'03-21-2019'},{name:'Chicken',expirationDate:'10-03-2019'},{name:'Steak',expirationDate:'05-27-2019'},{name:'Hot-Dog',expirationDate:'03-24-2019'}];
+  const today = new Date();
+  const filterByExpiration = (arr) =>
+    arr.filter(({ Created }) => new Date(Created.replace(/-/g, "/")) > today);
+  console.log("filtered (today)", filterByExpiration(tasks.value));
+
+  return [];
+});
+
+export const dailyEssentialsTemplate = {
+  Name: "Daily Essentials",
+  Subtasks: [
+    { Name: "S.S.S", Points: 1, Time: "6:00" },
+    { Name: "TPOT Letters ", Time: "6:30" },
+    { Name: "Breakfast", Points: 1, Time: "7:00" },
+    { Name: "Dishes", Points: 1, Time: "18:45" },
+    { Name: "Lunch", Points: 1, Time: "12:00" },
+    { Name: "Dinner", Points: 1, Time: "18:00" },
+    { Name: "Write a journal entry for the day", Time: "22:00" },
+  ],
+};
+
+export const perfectDayTemplate = [
+  { dailyEssentials: { ...dailyEssentialsTemplate, Name: "The Perfect Day" } },
+];

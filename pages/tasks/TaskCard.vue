@@ -129,6 +129,10 @@
             @click="submitNotes"
           />
 
+          <!-- 
+            TODO: 5. Simple select to assign a task to a reward   
+             TODO:    1. Try to detect collisions
+          -->
           <icons-arrow-up
             stroke="rgba(34 211 238)"
             class="w-8 h-8"
@@ -174,6 +178,22 @@
             {{ task?.Notes }}
           </atoms-typography>
         </Box>
+
+        <!-- 
+          TODO: Show Subtask names for tasks with subtasks - makes for easy understanding of what to do
+            TODO:    1. Show a checkbox next to the done ones.
+         -->
+
+        <Box v-if="showSubtasks && subtasks" class="">
+          <atoms-typography
+            v-for="(sub, index) in subtasks"
+            :key="index"
+            class="overflow-y-auto"
+            type="p"
+          >
+            {{ sub }}
+          </atoms-typography>
+        </Box>
       </template>
       <!-- <molecules-modal>
         <template.header>
@@ -204,7 +224,8 @@ const { error, patchTask, cloneTask, deleteTask } = useTasks();
 const maxPoints = 5;
 const editing = ref(false);
 const buttonsActive = ref(false);
-const showNotes = ref(true);
+const showNotes = ref(false);
+const showSubtasks = ref(true);
 
 // const created = ref(task?.Created);
 // ?.toUTCString().slice(5, 16)
@@ -230,6 +251,13 @@ const percentCompleted = computed(() => {
 
 const totalSubtasks = computed(() => {
   return task?.SubTasks?.length || 0;
+});
+
+// Convenience method for getting the details of the subtasks
+const subtasks = computed(() => {
+  let ids = task?.SubTasks;
+  console.log("ids", ids);
+  return [];
 });
 
 const rewards = computed(() => {
@@ -258,6 +286,11 @@ async function changeStatus() {
   const status = updatedTask?.Status;
   console.log("status", status);
   console.log("nextStatus", getNextStatus(status));
+
+  // TODO: 7. Validate all subtasks are completed be for changing to 'Done'.
+  // TODO:    1. Otherwise, default to 'In-Progress', if incomplete.
+  // TODO:    2. Notify of incomplete status.
+
   updatedTask.Status = getNextStatus(status);
   console.log("updatedTask", updatedTask);
 

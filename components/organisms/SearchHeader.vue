@@ -1,6 +1,6 @@
 <template>
   <header
-    class="z-0 flex items-center justify-between px-6 py-2 bg-white border-b-4 border-indigo-600 max-w-auto"
+    class="z-0 flex items-center justify-between px-6 py-2 mr-12 border-b-4 bg-regal-500 border-sunglo-600 max-w-auto"
     :class="searchbar"
   >
     <div cl class="flex items-center">
@@ -38,29 +38,22 @@
         </span>
 
         <input
-          class="py-2 pl-10 pr-4 ml-8 text-indigo-600 border-gray-200 rounded-md sm:w-64 focus:border-indigo-600 focus:ring focus:ring-opacity-40 focus:ring-indigo-500"
+          class="py-2 pl-10 pr-4 ml-8 border-gray-200 rounded-md text-sunglo-600 sm:w-64 bg-regal-200 focus:border-sunglo-600 focus:ring focus:ring-opacity-40 focus:ring-sunglo-500"
           type="text"
           placeholder="Search"
-          v-model="text"
+          v-model="searchText"
         />
-        <!-- <pre>targets? {{ targets }}</pre> -->
-        <!-- <pre>text? {{ text }}</pre> -->
-        <!-- <pre>results? {{ fuzzyResults }}</pre> -->
-        <!-- <p>{{ fuzzyResults?.map((r) => r?.target) }}</p> -->
-        <ul>
+
+        <ul class="text-sunglo-500">
           <li v-for="(result, index) in fuzzyResults.slice(0, 5)" :key="index">
-            <!-- <p>{{ result?.[0]?.target }}</p> -->
-            <!-- <p>{{ result?.[1]?.target }}</p> -->
-            <!-- <pre>{{ result?.obj}}</p> -->
-            <!-- <pre>result?.obj? {{ result?.obj }}</pre> -->
             <span :class="paragraph">
-              <h1 class="font-bold">{{ result?.Title }}</h1>
-              <!-- <p class="font-bold">{{ result?.Excerpt }}</p> -->
+              <atoms-typography type="b"
+                >{{ result?.Name }} - ({{ result?.Points }})</atoms-typography
+              >
             </span>
           </li>
-          <b v-if="text">{{ fuzzyResults?.length }} Total...</b>
+          <b v-if="searchText">{{ fuzzyResults?.length }} Total...</b>
         </ul>
-        <!-- <pre>inverted? {{ inverted }}</pre> -->
       </div>
     </div>
 
@@ -101,10 +94,10 @@
 
           <div
             v-show="notificationOpen"
-            class="absolute right-0 z-10 mt-2 overflow-hidden bg-white rounded-lg shadow-xl w-80"
+            class="absolute right-0 z-10 mt-2 overflow-hidden rounded-lg shadow-xl bg-regal-800 w-80"
             style="width: 20rem"
           >
-            <slot :name="notifications" />
+            <!-- <slot :name="notifications" /> -->
           </div>
         </div>
       </div>
@@ -113,12 +106,13 @@
           @click="dropdownOpen = !dropdownOpen"
           class="relative z-10 block w-10 h-10 overflow-hidden rounded-full shadow focus:outline-none text-tahiti-300"
         >
-          <span>V H</span>
-          <!-- <img
+          hover:text-white
+          <span>N P</span>
+          <img
             class="object-cover w-full h-full"
-            src=""
-            alt="Your avatar"
-          /> -->
+            src="~/assets/public/lobster-sticker.png"
+            alt="Lobster"
+          />
         </button>
 
         <div
@@ -137,11 +131,11 @@
         >
           <div
             v-show="dropdownOpen"
-            class="absolute right-0 z-20 w-48 py-1 mt-2 bg-white rounded-lg shadow-xl"
+            class="absolute right-0 z-20 w-48 py-1 mt-2 rounded-lg shadow-xl bg-regal-800"
           >
             <a
               href="#"
-              class="flex px-4 py-2 text-sm text-gray-700 rounded-md hover:bg-indigo-600 hover:text-white"
+              class="flex px-4 py-2 text-sm text-gray-700 rounded-md hover:bg-sunglo-600 hover:text-white"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -161,7 +155,7 @@
             >
             <a
               href="#"
-              class="flex px-4 py-2 text-sm text-gray-700 rounded-md hover:bg-indigo-600 hover:text-white"
+              class="flex px-4 py-2 text-sm text-gray-700 rounded-md hover:bg-sunglo-600 hover:text-white"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -186,7 +180,7 @@
             >
             <router-link
               to="/"
-              class="flex px-4 py-2 text-sm text-gray-700 rounded-md hover:bg-indigo-600 hover:text-white"
+              class="flex px-4 py-2 text-sm text-gray-700 rounded-md hover:bg-sunglo-600 hover:text-white"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -210,38 +204,28 @@
     </div>
   </header>
 </template>
-<script setup>
+<script setup lang="ts">
 import { ref, computed } from "vue";
-import { collapsed, hidden } from "../organisms/sidebar/useSidebar";
+import { collapsed, hidden } from "./sidebar/useSidebar";
+import { darkMode, toggleDarkMode, paragraph } from "~~/hooks/useTheme";
+import fuzzysort from "fuzzysort";
+import { rewards } from "~~/hooks/useTasks";
 const dropdownOpen = ref(false);
 const notificationOpen = ref(false);
+
 const searchbar = computed(() => {
   if (!!hidden.value) return "";
   return collapsed.value ? "ml-10" : "ml-48";
 });
 
-const text = ref("");
-// const inverted = computed(() => {
-//   return text?.value?.reverse();
-// });
-
-// const contents = `Lorem ipsum, dolor sit amet consectetur adipisicing elit. Consequuntur doloribus facere magni impedit? Vel doloribus mollitia tempora. Veniam omnis, distinctio tenetur laudantium perspiciatis earum sequi excepturi neque dolor, necessitatibus soluta!
-
-// Lorem ipsum dolor sit amet, consectetur adipisicing elit. Laboriosam quas accusantium excepturi officiis dolores enim iusto aliquid quos reprehenderit unde explicabo dignissimos, illum amet quod mollitia, inventore, praesentium consequatur. Sapiente!`;
-
-// async function fuzzySearch(text) {
-//   console.log("text", text);
-//   const results = fuzzysort.go(text, contents, { key: null });
-//   console.log("fuzzy results", results);
-// }
+const searchText = ref("");
 
 const targets = computed(() => {
-  return teachings.value?.map((teaching) => {
+  return rewards.value?.map((reward) => {
     return {
-      Title: teaching?.Title,
-      Content: teaching?.Contents,
-      Excerpt: teaching?.Excerpt,
-      Description: teaching?.Description,
+      Name: reward?.Name,
+      Notes: reward?.Notes,
+      Points: reward?.Points,
     };
   });
 });
@@ -252,12 +236,12 @@ const options = {
   allowTypo: true,
   threshold: -10000,
   key: null,
-  keys: ["Title", "Excerpt", "Description", "Content"],
+  keys: ["Name", "Notes"],
 };
 
 const fuzzyResults = computed(() => {
   // let targets = contents.split(/[\s*.!,\t*]+/);
-  let results = fuzzysort.go(text.value, targets.value, options);
+  let results = fuzzysort.go(searchText.value, targets.value, options);
 
   var bestResult = results?.[0];
   if (bestResult?.length > 0) {
