@@ -56,13 +56,13 @@
             />
           </router-link>
 
-          <pre>maxTasks? {{ maxTasks }}</pre>
+          <!-- <pre>maxTasks? {{ maxTasks }}</pre>
           <select @select="saveMaxTasks">
             <option disabled value="">Please select one</option>
             <option>10</option>
             <option>20</option>
             <option>50</option>
-          </select>
+          </select> -->
         </molecules-card>
       </Row>
     </Stack>
@@ -116,6 +116,7 @@ import Heading from "~~/components/atoms/Heading.vue";
 
 const delay = 175;
 const maxTasks = ref(50);
+const pageSize = ref(25);
 const duration = maxTasks.value * delay;
 const timer = ref(duration);
 
@@ -144,7 +145,7 @@ const {
   assignTaskToReward,
   assignSubtaskToTask,
   scheduleTask,
-} = useTasks(maxTasks.value);
+} = useTasks(maxTasks.value, pageSize.value);
 
 const initialTask = {
   Name: "",
@@ -181,18 +182,18 @@ const selectedReward = ref(-1);
 const selectedTask = ref(-1);
 
 const reload = () => load(maxTasks.value);
-const store = useStorage("tasks-store", { maxTasks: maxTasks.value });
+// const store = useStorage("tasks-store", { maxTasks: maxTasks.value });
 onMounted(() => {
   collapsed.value = true;
-  maxTasks.value = store.value?.maxTasks;
-  console.log("store.value", store.value);
+  // maxTasks.value = store.value?.maxTasks;
+  // console.log("store.value", store.value);
   load(maxTasks.value);
 });
 
-function saveMaxTasks() {
-  maxTasks.value = store.value?.maxTasks;
-  console.log("store.value", store.value?.maxTasks);
-}
+// function saveMaxTasks() {
+//   maxTasks.value = store.value?.maxTasks;
+//   console.log("store.value", store.value?.maxTasks);
+// }
 
 function setSelectedTask(index) {
   selectedTask.value = selectedTask.value !== index ? index : -1;

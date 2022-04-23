@@ -282,8 +282,8 @@ const getNextStatus = (status = "") => {
 };
 
 async function changeStatus() {
-  let updatedTask = task;
-  const status = updatedTask?.Status;
+  let updatedTask = { id: task.id };
+  const status = task?.Status;
   console.log("status", status);
   console.log("nextStatus", getNextStatus(status));
 
@@ -294,9 +294,10 @@ async function changeStatus() {
   updatedTask.Status = getNextStatus(status);
   console.log("updatedTask", updatedTask);
 
-  let records = Array.from([{ ...updatedTask }]);
+  // let records = Array.from([{ ...updatedTask }]);
 
-  patchTask(records);
+  patchTask(updatedTask);
+  task.Status = updatedTask.Status;
 }
 
 async function updatePoints(stars) {

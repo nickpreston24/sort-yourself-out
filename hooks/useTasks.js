@@ -499,10 +499,13 @@ export const dailyEssentialsTemplate = {
     { Name: "Dishes", Points: 1, Time: "18:45" },
     { Name: "Lunch", Points: 1, Time: "12:00" },
     { Name: "Dinner", Points: 1, Time: "18:00" },
-    { Name: "Write a journal entry for the day", Time: "22:00" },
+    { Name: "Journal", Time: "22:00", Points: 2 },
   ],
 };
 
 export const perfectDayTemplate = [
   { dailyEssentials: { ...dailyEssentialsTemplate, Name: "The Perfect Day" } },
+
+  { Name: "Krav Time", Points: 2, Time: "19:00" },
+  // { Name: "Morning Run", Points: 3, Time: "" },
 ];
