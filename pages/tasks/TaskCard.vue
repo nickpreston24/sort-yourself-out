@@ -256,7 +256,7 @@ const totalSubtasks = computed(() => {
 // Convenience method for getting the details of the subtasks
 const subtasks = computed(() => {
   let ids = task?.SubTasks;
-  console.log("ids", ids);
+  // console.log("subtask ids", ids);
   return [];
 });
 

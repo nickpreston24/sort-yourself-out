@@ -1,7 +1,6 @@
 // https://v3.nuxtjs.org/docs/directory-structure/layouts/
 <template>
   <div class="h-full text-white bg-regal-800">
-    <atoms-heading />
     <slot />
     <organisms-sidebar />
     <footer class="text-tahiti-500">Help</footer>
@@ -11,10 +10,9 @@
   </div>
 </template>
 <script setup lang="ts">
-import { mode, collapsed } from "~~/components/organisms/sidebar/useSidebar";
+import { collapsed } from "~~/components/organisms/sidebar/useSidebar";
 import { onMounted } from "vue";
 import Toaster from "~~/components/atoms/Toaster.vue";
-import { notify } from "~~/components/atoms/useToaster";
 import { sleep } from "~~/helpers/timers";
 
 // function listener(event) {

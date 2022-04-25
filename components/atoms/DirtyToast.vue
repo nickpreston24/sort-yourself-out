@@ -2,9 +2,9 @@
 atm... // help?: https://github.com/acidjazz/tv-toast/blob/master/src/utils.js
 <template>
   <transition name="fade">
-    <div
+    <box
       v-if="active"
-      class="relative z-20 inline-block w-auto transition-opacity duration-1000 ease-in-out sm:w-64 md:w-128 lg:w-148 tranistion-delay-1000 bottom-100 left-1/2"
+      class="relative z-20 inline-block w-auto transition-opacity duration-1000 ease-in-out sm:w-48 md:w-64 lg:w-128 tranistion-delay-1000 bottom-100 left-1/2"
       :class="background"
     >
       <div class="flex flex-row justify-end gap-2">
@@ -32,7 +32,7 @@ atm... // help?: https://github.com/acidjazz/tv-toast/blob/master/src/utils.js
           />
         </div>
       </Stack>
-    </div>
+    </box>
   </transition>
 </template>
 

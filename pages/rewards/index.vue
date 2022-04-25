@@ -1,6 +1,6 @@
 <template>
   <NuxtLayout name="custom">
-    <organisms-header :model="filteredRewards" />
+    <organisms-search-header :model="filteredRewards" />
 
     <!-- <atoms-typography type="h1">Hello There!</atoms-typography> -->
     <div id="i-am-a-spacer" class="h-16 bg-transparent"></div>
@@ -52,7 +52,7 @@
               class="w-8 h-8"
               Stack
               stroke="rgba(34 211 238)"
-              @click="load(10)"
+              @click="load(50)"
             />
           </Row>
         </molecules-card>

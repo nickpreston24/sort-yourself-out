@@ -135,11 +135,16 @@ export const create = async (tableName = null, records = []) => {
   if (!records) throw Error(`record cannot be empty`);
   if (!tableName) throw Error(`tableName cannot be null or empty`);
 
-  // console.log("record", record);
   const data = {
     records:
       records?.length >= 0
-        ? records
+        ? records.map((r) => {
+            return {
+              fields: {
+                ...r,
+              },
+            };
+          })
         : [
             {
               // single record
@@ -147,6 +152,8 @@ export const create = async (tableName = null, records = []) => {
             },
           ],
   };
+
+  console.log("data", data);
 
   let url = `https://api.airtable.com/v0/${baseKey}/${tableName}`;
   let axiosConfig = {

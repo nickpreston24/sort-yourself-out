@@ -6,6 +6,7 @@
 * Fancy pattern for making Excel-like behavior: https://www.toptal.com/vue-js/on-demand-reactivity-vue-3
 */
 
+import { useLocalStorage } from "@vueuse/core";
 import { ref } from "vue";
 import { notifyError, notifySuccess } from "~~/components/atoms/useToaster";
 import {
@@ -17,13 +18,31 @@ import {
 } from "../airtable/airtable";
 
 const devmode = (() => import.meta.env.NODE_ENV !== "production")();
+const preferencesStore = useLocalStorage("preferences", {
+  showDates: false,
+  showTodaysTasks: false,
+  enableToasts: false,
+});
+
+// export const preferences = reactive({
+//   // ...preferencesStore.value,
+// });
+
+export const preferences = reactive([
+  computed(() => 5), // 5
+  computed(() => preferences[0].value * preferences[0].value), // 25
+  { squared: computed(() => preferences[1].value * preferences[1].value) }, // 625
+]);
+
+// export const stats = reactive({ totalTasks: () => tasks.value.length });
+
 export const editIndex = ref(-1); // time to do some sketchy shit. do daah, doo daaah. hope I get away with it, do-de-do-ah-eyy
 
 export const tasks = ref([]);
 export const loading = ref(true);
 export const error = ref(null);
 const toastsEnabled = ref(devmode);
-const debug = ref(devmode);
+const debug = reactive(devmode);
 export const rewards = ref([]);
 
 /** Filters */
@@ -44,9 +63,10 @@ const rewardFilters = [() => true];
 const offset = ref(0);
 
 export function useTasks(take = 10, pageSize = 10) {
-  // onMounted(async () => {
-  //   await load(maxRecords);
-  // });
+  onMounted(async () => {
+    console.log("preferencesStore.value", preferencesStore.value);
+    // preferences = { ...preferencesStore.value };
+  });
 
   const createTask = async (props) => {
     // TODO: Enforce 1 and only 1 Task to a Reward
@@ -54,21 +74,22 @@ export function useTasks(take = 10, pageSize = 10) {
 
     let now = new Date();
     // console.log("now", now);
-    let tomorrow = new Date(now);
+    const startDate = Date.parse(props?.Start);
+    let tomorrow = new Date(startDate || now);
     tomorrow.setDate(tomorrow.getDate() + 1);
 
-    let day = tomorrow.getDate();
-    let month = tomorrow.getMonth() + 1;
-    let year = tomorrow.getFullYear();
+    // let day = tomorrow.getDate();
+    // let month = tomorrow.getMonth() + 1;
+    // let year = tomorrow.getFullYear();
 
-    let fullDate = `${month}-${day}-${year}`;
-
+    // let fullDate = `${month}-${day}-${year}`;
+    console.log("props", props);
     let myTask = {
       ...props,
       //  Append the Date of a Task to the end of the name in ()
-      Name: `(${props.Name} - ${fullDate})`,
+      Name: `(${props.Name})`,
       //  Add the Start and End dates to a newly created task - default to today if null
-      Start: now,
+      Start: props?.Start || now,
       End: tomorrow,
       Status: "Todo",
     };
@@ -86,6 +107,40 @@ export function useTasks(take = 10, pageSize = 10) {
       .catch((err) => {
         console.log(err);
         error.value = err;
+      });
+  };
+
+  const bulkCreateTasks = async (parent = null, subTasks = []) => {
+    console.log("subTasks", subTasks);
+    return create("Tasks", subTasks)
+      .then((records) => {
+        console.log("records", records);
+        tasks.value.push(records);
+
+        notifySuccess(`Created ${records?.length} subtasks`);
+
+        const ids = records.map((r) => r.id);
+        console.log("subtask ids", ids);
+
+        parent.Subtasks = ids;
+
+        if (parent) {
+          create("Tasks", parent)
+            .then(() => {
+              notifySuccess("Created parent task");
+            })
+            .catch((err) => {
+              console.log(err);
+              error.value = err;
+              notifyError("Failed to create parent task");
+            });
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+        error.value = err;
+
+        notifyError("Failed to create subtasks");
       });
   };
 
@@ -383,6 +438,7 @@ export function useTasks(take = 10, pageSize = 10) {
     cloneTask,
     patchTask,
     deleteTask,
+    bulkCreateTasks,
 
     // rewards api
 
@@ -476,19 +532,32 @@ export const availableCredits = computed(() => {
   return allPoints.value || 0 - creditsUsed.value || 0;
 });
 
-export const percentageAcheived = computed(() => {
-  return -1;
+export const percentageRewardsAcheived = computed(() => {
+  return rewards.value.filter((rw) => rw.Concluded)?.length || 0;
 });
 
 export const todaysTasks = computed(() => {
-  // const menuItems = [{name:'Hamburger',expirationDate:'09-24-2019'},{name:'Pizza',expirationDate:'03-11-2019'},{name:'Sushi',expirationDate:'03-21-2019'},{name:'Chicken',expirationDate:'10-03-2019'},{name:'Steak',expirationDate:'05-27-2019'},{name:'Hot-Dog',expirationDate:'03-24-2019'}];
   const today = new Date();
   const filterByExpiration = (arr) =>
-    arr.filter(({ Created }) => new Date(Created.replace(/-/g, "/")) > today);
+    arr.filter(
+      ({ Created, Start }) =>
+        new Date(Created) > today || new Date(Start?.replace(/-/g, "/")) > today
+    );
+  console.log("tasks.value", tasks.value[0]);
   console.log("filtered (today)", filterByExpiration(tasks.value));
 
   return [];
 });
+
+export const stats = reactive([
+  // computed(() => 5),
+  // computed(() => stats[0].value * stats[0].value),
+  // { squared: computed(() => stats[1].value * stats[1].value) },
+  { totalTasks: computed(() => tasks?.value.length || 0) },
+  { filteredTasks: filteredTasks.value.length },
+  { todaysTasks: todaysTasks.value?.length },
+  { percentageRewardsAcheived: percentageRewardsAcheived.value },
+]);
 
 export const dailyEssentialsTemplate = {
   Name: "Daily Essentials",
@@ -499,7 +568,14 @@ export const dailyEssentialsTemplate = {
     { Name: "Dishes", Points: 1, Time: "18:45" },
     { Name: "Lunch", Points: 1, Time: "12:00" },
     { Name: "Dinner", Points: 1, Time: "18:00" },
+    {
+      Name: "Clean your room",
+      Notes: "... young man!",
+      Points: 1,
+      Time: "18:00",
+    },
     { Name: "Journal", Time: "22:00", Points: 2 },
+    { Name: "Create Next Perfect Day", Time: "22:30", Points: 1 },
   ],
 };
 

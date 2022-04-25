@@ -4,15 +4,32 @@
 
     <!-- TODO: 1. Searchbar for tasks filtering -->
     <organisms-header :model="filteredTasks" />
-    <Stack class="gap-4`">
-      <!-- <atoms-pomodoro class="justify-center w-1/2 ml-8" /> -->
 
-      <!-- <div id="i-am-a-spacer-2" class="h-8 bg-transparent"></div> -->
+    <!-- <div class="w-1/2">
+      <div
+        class="grid grid-rows-1 gap-4 m-4 desktop:grid-cols-4 sm:grid-cols-2 tablet:grid-cols-2 laptop:grid-cols-3 md:grid-cols-2 border-tahiti-500"
+        v-for="i in 10"
+        :key="i"
+      >
+        <div class="w-32 h-32 font-bold text-white border-2 bg-tahiti-500">
+          {{ i }}
+        </div>
+      </div>
+    </div> -->
 
-      <pre>filteredTasks.length? {{ filteredTasks.length }}</pre>
-      <pre>tasks.length? {{ tasks.length }}</pre>
-      <!-- <pre>tasks[0]? {{ tasks[0] }}</pre> -->
-      <pre>todaysTasks? {{ todaysTasks }}</pre>
+    <Stack class="gap-4">
+      <atoms-pomodoro class="justify-center w-1/2" />
+      <molecules-card v-show="showStats" class="rounded-sm bg-regal-700 p-xl">
+        <Row v-for="(item, index) in stats" :key="index">
+          <Row v-for="(value, key, subIndex) in item" :key="subIndex">
+            <atoms-typography type="h4"
+              >{{ key }}
+              <atoms-typography type="b">{{ value }}</atoms-typography>
+            </atoms-typography>
+          </Row>
+        </Row>
+      </molecules-card>
+
       <Row>
         <molecules-card class="justify-center ml-8 bg-regal-700">
           <!-- 
@@ -97,28 +114,21 @@
   </NuxtLayout>
 </template>
 <script lang="ts" setup>
-import { useTasks, filteredTasks, todaysTasks } from "~/hooks/useTasks";
+import { useTasks, filteredTasks, stats } from "~/hooks/useTasks";
 import { notify, notifyError } from "~/components/atoms/useToaster";
-import { Flex, Row, Stack, Right, Center } from "@mpreston17/flexies";
-import Typography from "~~/components/atoms/Typography.vue";
-import StarIcon from "~~/components/icons/StarIcon.vue";
-import PlusIcon from "~~/components/icons/PlusIcon.vue";
-import Card from "~~/components/molecules/Card.vue";
-import RewardsCard from "./RewardsCard.vue";
+import { Row, Stack } from "@mpreston17/flexies";
 import FormModal from "~~/components/organisms/FormModal.vue";
-import { useStorage } from "@vueuse/core";
 
 import { closeModal, showModal } from "~~/components/molecules/useModal";
 import TaskCard from "./TaskCard.vue";
 import { collapsed } from "~~/components/organisms/sidebar/useSidebar";
-import { sleep } from "~~/helpers/timers";
-import Heading from "~~/components/atoms/Heading.vue";
 
 const delay = 175;
 const maxTasks = ref(50);
 const pageSize = ref(25);
 const duration = maxTasks.value * delay;
 const timer = ref(duration);
+const showStats = ref(false);
 
 let timerId = setInterval(() => {
   timer.value -= delay;
@@ -152,6 +162,7 @@ const initialTask = {
   Notes: "",
   Status: "Todo",
   Points: 1,
+  Start: new Date(),
   // Frequency: null,
 };
 
@@ -183,14 +194,16 @@ const selectedTask = ref(-1);
 
 const reload = () => load(maxTasks.value);
 // const store = useStorage("tasks-store", { maxTasks: maxTasks.value });
+
 onMounted(() => {
   collapsed.value = true;
+
   // maxTasks.value = store.value?.maxTasks;
   // console.log("store.value", store.value);
   load(maxTasks.value);
 });
 
-// function saveMaxTasks() {
+// function saveSettings() {
 //   maxTasks.value = store.value?.maxTasks;
 //   console.log("store.value", store.value?.maxTasks);
 // }

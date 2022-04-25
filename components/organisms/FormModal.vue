@@ -8,7 +8,7 @@
         <label class="m-2">{{ key }}:</label>
         <input
           class="p-2 m-2 bg-white rounded-xl"
-          type="text"
+          :type="inputType(value)"
           v-bind:placeholder="key"
           v-model="props.model[key]"
         />
@@ -26,6 +26,7 @@
 import { Flex, Row, Stack, Right, Center } from "@mpreston17/flexies";
 import { closeModal, showModal } from "../molecules/useModal";
 import Modal from "../molecules/Modal.vue";
+import { isDate } from "~~/helpers";
 
 const props = defineProps({
   model: { default: {} },
@@ -37,6 +38,16 @@ const props = defineProps({
 onMounted(() => {
   console.log("props.model", props.model);
 });
+
+function inputType(value) {
+  console.log("value", value);
+  switch (value) {
+    case isDate(value):
+      return "date";
+    default:
+      return "text";
+  }
+}
 
 // console.log("showModal", showModal);
 

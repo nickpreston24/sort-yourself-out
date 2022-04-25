@@ -2,16 +2,14 @@
   <NuxtLayout name="custom">
     <Stack class="h-screen">
       <atoms-typography type="h1">Bulk Add Tasks</atoms-typography>
-      <!-- <pre>text? {{ text.split("\n") }}</pre> -->
-      <!-- <pre>state.value? {{ state.value }}</pre> -->
-      <!-- <pre>tabs? {{ text.split("\n").filter((t) => t.match(/^\t.*/)) }}</pre> -->
-      <atoms-button @click="onSubmit" tooltip="Save!">Save</atoms-button>
+      <input class="bg-regal-600 text-sunglo-600" v-model="parentTask.Name" />
       <textarea
-        class="w-5/6 m-10 font-medium h-5/6 bg-regal-600 text-tahiti-400"
+        class="w-5/6 m-10 font-medium h-3/6 bg-regal-600 text-tahiti-400"
         v-model="text"
         placeholder="Start typing a list, in outline format"
         @input="debouncedFn"
       ></textarea>
+      <atoms-button @click="onSubmit" tooltip="Save!">Save</atoms-button>
     </Stack>
   </NuxtLayout>
 </template>
@@ -20,22 +18,29 @@ import { useStorage, useDebounceFn } from "@vueuse/core";
 import { Center, Stack, Row, Right, Left, Flex } from "@mpreston17/flexies";
 import { notifySuccess } from "~~/components/atoms/useToaster";
 import { useTasks } from "~~/hooks/useTasks";
-const { createTask } = useTasks();
+const { bulkCreateTasks } = useTasks();
 
 const text = ref("");
+const now = new Date();
+const parentTask = ref({
+  Name: "",
+  Start: now,
+});
 
-const store = useStorage("my-store", { text });
+const store = useStorage("bulk-store", { text });
 
 const debouncedFn = useDebounceFn(() => {
   store.value = { text: text.value };
 }, 250);
 
 onMounted(() => {
-  // console.log("store", store.value);
   text.value = store.value?.text;
+  console.log("store.value", store.value);
+  parentTask.value.Name = store.value?.name;
 });
 
-function onSubmit() {
+async function onSubmit() {
+  const parent = parentTask.value;
   const lines = text.value.split("\n");
   // conts tabs = lines.filter((t) => !!t && t.match(/^[\s\t]+.*$/i));
 
@@ -46,14 +51,12 @@ function onSubmit() {
     return {
       Name: line,
       Points: 1,
+      Status: "Todo",
       // Start: now,
       // End: tomorrow,
     };
   });
 
-  // TODO: Change this from promise-based to using Airtable's support for the Creation of multiple records:
-
-  let promises = tasks.map((t) => createTask(t));
-  Promise.all(promises).then((records) => notifySuccess(records?.length));
+  bulkCreateTasks(parent, tasks);
 }
 </script>

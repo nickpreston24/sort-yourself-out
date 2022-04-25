@@ -1,9 +1,6 @@
 <template>
   <div :class="className">
     <slot></slot>
-
-    <!-- <pre class="text-tiny">size? {{ size }}</pre> -->
-    <!-- <pre class="text-tiny">className? {{ className }}</pre> -->
   </div>
 </template>
 
