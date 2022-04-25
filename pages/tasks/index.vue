@@ -92,7 +92,7 @@
 
     <lobster-spinner
       :show="loading"
-      :seconds="maxTasks / 10"
+      :seconds="maxTasks / pageSize / 10"
       id="overlay"
       class="fixed absolute top-0 bottom-0 left-0 right-0 z-10 w-64 h-64 m-auto"
     />
@@ -107,8 +107,8 @@ import { collapsed } from "~~/components/organisms/sidebar/useSidebar";
 import TaskStats from "./TaskStats.vue";
 
 const delay = 175;
-const maxTasks = ref(50);
-const pageSize = ref(50);
+const maxTasks = ref(100);
+const pageSize = ref(100);
 // const duration = maxTasks.value * delay;
 // const timer = ref(duration);
 const showStats = ref(false);

@@ -284,6 +284,7 @@ export function useTasks(take = 10, pageSize = 10) {
         // tasks.value = updated;
 
         let i = tasks.value.map((item) => item.id).indexOf(id);
+        console.log("i", i);
         tasks.value.splice(i, 1);
 
         notifySuccess("Task successfully deleted!");
@@ -505,6 +506,8 @@ export const filteredTasks = computed(() => {
       .filter((t) => t.Status !== "Done")
       // .sort((a, b) => a?.Start >= b?.Start)
       // .sort((a, b) => a?.End >= b?.End)
+      .sort((a, b) => a?.Name?.includes("Perfect Day"))
+      .sort((a, b) => a?.Points <= b?.Points)
       .sort((a, b) => a?.Created <= b?.Created)
   );
   // .sort((a, b) => a?.Subtasks?.length || 0 >= b?.Subtasks?.length || 0)
