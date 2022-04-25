@@ -109,7 +109,6 @@ export const patch = async (tableName = null, records = []) => {
     };
   });
 
-  console.log("records to patch :>> ", formattedRecords);
   const data = {
     records: formattedRecords,
   };

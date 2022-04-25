@@ -3,6 +3,7 @@
     <organisms-search-header :model="filteredRewards" />
 
     <!-- <atoms-typography type="h1">Hello There!</atoms-typography> -->
+
     <div id="i-am-a-spacer" class="h-16 bg-transparent"></div>
 
     <Stack class="gap-16">
@@ -10,52 +11,27 @@
 
       <!-- <pre>showModal? {{ showModal }}</pre> -->
 
-      <molecules-card class="justify-center w-1/2 bg-regal-700">
-        <div class="grid grid-cols-5 gap-2">
-          <atoms-typography type="p">
-            Credits Available:
-            {{ availableCredits }}
-          </atoms-typography>
+      <RewardStats />
 
-          <atoms-typography type="p">
-            All Points:
-            {{ allPoints }}
-          </atoms-typography>
-
-          <atoms-typography type="p">
-            Credits Used:
-            {{ creditsUsed }}
-          </atoms-typography>
-          <atoms-typography type="p">
-            Total Rewards: {{ rewards.length }}
-          </atoms-typography>
-
-          <!-- 
-<atoms-typography type="b">
-            Overall: {{  }} %
-          </atoms-typography> -->
-        </div>
-
-        <molecules-card class="justify-center m-4 ml-8 bg-regal-700">
-          <Row class="gap-2">
-            <router-link to="/rewards/add">
-              <icons-plus-icon
-                tooltip="Add a New Reward!"
-                class="w-8 h-8"
-                Stack
-                stroke="rgba(34 211 238)"
-                @click="showModal = true"
-              />
-            </router-link>
-
-            <icons-reload-icon
+      <molecules-card class="justify-center m-4 ml-8 bg-regal-700">
+        <Row class="gap-2">
+          <router-link to="/rewards/add">
+            <icons-plus-icon
+              tooltip="Add a New Reward!"
               class="w-8 h-8"
               Stack
               stroke="rgba(34 211 238)"
-              @click="load(50)"
+              @click="showModal = true"
             />
-          </Row>
-        </molecules-card>
+          </router-link>
+
+          <icons-reload-icon
+            class="w-8 h-8"
+            Stack
+            stroke="rgba(34 211 238)"
+            @click="load(50)"
+          />
+        </Row>
       </molecules-card>
     </Stack>
 
@@ -91,20 +67,11 @@
 </template>
 <script setup lang="ts">
 import { notify } from "~~/components/atoms/useToaster";
-import {
-  rewards,
-  useTasks,
-  loading,
-  error,
-  creditsUsed,
-  allPoints,
-  availableCredits,
-  filteredRewards,
-} from "~~/hooks/useTasks";
-import { Flex, Row, Stack, Right, Center } from "@mpreston17/flexies";
+import { useTasks, loading, error, filteredRewards } from "~~/hooks/useTasks";
+import { Row, Stack } from "@mpreston17/flexies";
 import { closeModal, showModal } from "~~/components/molecules/useModal";
 import RewardsCard from "../tasks/RewardsCard.vue";
-import Heading from "~~/components/atoms/Heading.vue";
+import RewardStats from "./RewardStats.vue";
 
 const { load } = useTasks(10);
 

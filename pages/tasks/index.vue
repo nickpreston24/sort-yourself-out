@@ -19,16 +19,8 @@
 
     <Stack class="gap-4">
       <atoms-pomodoro class="justify-center w-1/2" />
-      <molecules-card v-show="showStats" class="rounded-sm bg-regal-700 p-xl">
-        <Row v-for="(item, index) in stats" :key="index">
-          <Row v-for="(value, key, subIndex) in item" :key="subIndex">
-            <atoms-typography type="h4"
-              >{{ key }}
-              <atoms-typography type="b">{{ value }}</atoms-typography>
-            </atoms-typography>
-          </Row>
-        </Row>
-      </molecules-card>
+
+      <TaskStats />
 
       <Row>
         <molecules-card class="justify-center ml-8 bg-regal-700">
@@ -40,16 +32,17 @@
         TODO:  12. Show Tasks completeded today :)
         -->
 
-          <icons-plus-icon
-            tooltip="Add a New Task!"
-            class="w-8 h-8 m-4"
-            Stack
-            stroke="rgba(34 211 238)"
-            @click="showModal = true"
-          />
+          <router-link to="/tasks/add">
+            <icons-plus-icon
+              tooltip="Add a New Task!"
+              class="w-8 h-8 m-4"
+              Stack
+              stroke="rgba(34 211 238)"
+            />
+          </router-link>
 
           <icons-reload-icon
-            tooltip="Add a New Task!"
+            tooltip="Reload Tasks"
             class="w-8 h-8 m-4"
             Stack
             stroke="rgba(34 211 238)"
@@ -72,14 +65,6 @@
               stroke="rgba(34 211 238)"
             />
           </router-link>
-
-          <!-- <pre>maxTasks? {{ maxTasks }}</pre>
-          <select @select="saveMaxTasks">
-            <option disabled value="">Please select one</option>
-            <option>10</option>
-            <option>20</option>
-            <option>50</option>
-          </select> -->
         </molecules-card>
       </Row>
     </Stack>
@@ -110,18 +95,15 @@
       id="overlay"
       class="fixed absolute top-0 bottom-0 left-0 right-0 z-10 w-64 h-64 m-auto"
     />
-    <FormModal class="bg-white" :model="task" :onSubmit="onSubmit" title="New Task" />
   </NuxtLayout>
 </template>
 <script lang="ts" setup>
-import { useTasks, filteredTasks, stats } from "~/hooks/useTasks";
+import { useTasks, filteredTasks } from "~/hooks/useTasks";
 import { notify, notifyError } from "~/components/atoms/useToaster";
 import { Row, Stack } from "@mpreston17/flexies";
-import FormModal from "~~/components/organisms/FormModal.vue";
-
-import { closeModal, showModal } from "~~/components/molecules/useModal";
 import TaskCard from "./TaskCard.vue";
 import { collapsed } from "~~/components/organisms/sidebar/useSidebar";
+import TaskStats from "./TaskStats.vue";
 
 const delay = 175;
 const maxTasks = ref(50);
@@ -198,8 +180,6 @@ const reload = () => load(maxTasks.value);
 onMounted(() => {
   collapsed.value = true;
 
-  // maxTasks.value = store.value?.maxTasks;
-  // console.log("store.value", store.value);
   load(maxTasks.value);
 });
 

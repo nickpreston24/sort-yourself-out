@@ -16,12 +16,15 @@
       </ul>
 
       <atoms-button @click="submitReward"> Submit </atoms-button>
+      <router-link to="/rewards">
+        <atoms-button> Go Back </atoms-button>
+      </router-link>
     </Stack>
   </NuxtLayout>
 </template>
 <script setup>
 import { Center, Stack, Row, Right, Left, Flex } from "@mpreston17/flexies";
-import { useTasks } from "~~/hooks";
+import { useTasks, rewards } from "~~/hooks/useTasks";
 
 const now = new Date();
 const { createReward } = useTasks();

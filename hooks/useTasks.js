@@ -36,8 +36,6 @@ export const preferences = reactive([
 
 // export const stats = reactive({ totalTasks: () => tasks.value.length });
 
-export const editIndex = ref(-1); // time to do some sketchy shit. do daah, doo daaah. hope I get away with it, do-de-do-ah-eyy
-
 export const tasks = ref([]);
 export const loading = ref(true);
 export const error = ref(null);
@@ -68,13 +66,13 @@ export function useTasks(take = 10, pageSize = 10) {
     // preferences = { ...preferencesStore.value };
   });
 
-  const createTask = async (props) => {
+  const createTask = async (task, reward = null) => {
     // TODO: Enforce 1 and only 1 Task to a Reward
     // TODO: Make a Clone button for Tasks
-
+    console.log("reward", reward);
     let now = new Date();
     // console.log("now", now);
-    const startDate = Date.parse(props?.Start);
+    const startDate = Date.parse(task?.Start);
     let tomorrow = new Date(startDate || now);
     tomorrow.setDate(tomorrow.getDate() + 1);
 
@@ -83,13 +81,13 @@ export function useTasks(take = 10, pageSize = 10) {
     // let year = tomorrow.getFullYear();
 
     // let fullDate = `${month}-${day}-${year}`;
-    console.log("props", props);
+    console.log("props", task);
     let myTask = {
-      ...props,
+      ...task,
       //  Append the Date of a Task to the end of the name in ()
-      Name: `(${props.Name})`,
+      Name: `${task.Name}`,
       //  Add the Start and End dates to a newly created task - default to today if null
-      Start: props?.Start || now,
+      Start: task?.Start || now,
       End: tomorrow,
       Status: "Todo",
     };
@@ -98,11 +96,44 @@ export function useTasks(take = 10, pageSize = 10) {
 
     return create("Tasks", myTask)
       .then((records) => {
-        // console.log("response", records);
-        // const record = response.data?.records?.[0];
-        console.log("record", records);
-        tasks.value.push(records);
+        console.log("records after create", records);
+
+        const record = records?.[0];
+        console.log("record", record);
+        tasks.value.push(record);
         notifySuccess("Task created successfully!");
+
+        if (reward) {
+          // Update any assigned rewards:
+          // let newlyCashedIn = [].concat(...(reward["Cashed-In"] || [])); //.concat(record?.id);
+          const currentlyCashedIn = reward?.["Cashed-In"] || [];
+          console.log("currentlyCashedIn", currentlyCashedIn);
+          let newlyCashedIn = [...currentlyCashedIn, ...[record.id]];
+          // newlyCashedIn?.push(record.id);
+
+          console.log("newlyCashedIn", newlyCashedIn);
+          let updatedReward = {
+            // ...reward,
+            id: reward.id,
+            Name: reward?.Name,
+            Points: reward?.Points,
+            "Cashed-In": newlyCashedIn,
+          };
+
+          console.log("updatedReward", updatedReward);
+
+          patchReward(updatedReward).then((response) => {
+            // reward = { ...reward, ...updatedReward };
+            console.log("response", response);
+            let found = rewards.value.find((rw) => rw.id === response[0].id);
+            found = {
+              ...updatedReward,
+            };
+            console.log("found", found);
+
+            notifySuccess("Added task to Reward!");
+          });
+        }
       })
       .catch((err) => {
         console.log(err);
@@ -549,14 +580,17 @@ export const todaysTasks = computed(() => {
   return [];
 });
 
-export const stats = reactive([
-  // computed(() => 5),
-  // computed(() => stats[0].value * stats[0].value),
-  // { squared: computed(() => stats[1].value * stats[1].value) },
+export const taskStats = reactive([
   { totalTasks: computed(() => tasks?.value.length || 0) },
   { filteredTasks: filteredTasks.value.length },
   { todaysTasks: todaysTasks.value?.length },
-  { percentageRewardsAcheived: percentageRewardsAcheived.value },
+]);
+
+export const rewardStats = reactive([
+  { percentageRewardsAcheived },
+  { availableCredits },
+  { allPoints },
+  { creditsUsed },
 ]);
 
 export const dailyEssentialsTemplate = {
