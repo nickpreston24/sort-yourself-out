@@ -193,6 +193,7 @@
           >
             {{ sub }}
           </atoms-typography>
+          <pre> {{ index }}</pre>
         </Box>
       </template>
       <!-- <molecules-modal>

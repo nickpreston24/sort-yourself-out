@@ -3,7 +3,7 @@
     <div id="i-am-a-spacer" class="h-16 bg-transparent"></div>
 
     <!-- TODO: 1. Searchbar for tasks filtering -->
-    <organisms-header :model="filteredTasks" />
+    <organisms-header :model="tasks" />
 
     <!-- <div class="w-1/2">
       <div
@@ -46,7 +46,7 @@
             class="w-8 h-8 m-4"
             Stack
             stroke="rgba(34 211 238)"
-            @click="load(10)"
+            @click="reload"
           />
 
           <icons-copy-icon
@@ -81,11 +81,12 @@
               ? 'border-2 border-tahiti-400'
               : 'border-2 border-transparent'
           "
-          :active="index >= timer / delay"
+          active="true"
           :task="task"
           :index="index"
           @click="setSelectedTask(index)"
         />
+        <!-- :active="index >= timer / delay" -->
       </div>
     </Row>
 
@@ -98,7 +99,7 @@
   </NuxtLayout>
 </template>
 <script lang="ts" setup>
-import { useTasks, filteredTasks } from "~/hooks/useTasks";
+import { useTasks, filteredTasks, tasks } from "~/hooks/useTasks";
 import { notify, notifyError } from "~/components/atoms/useToaster";
 import { Row, Stack } from "@mpreston17/flexies";
 import TaskCard from "./TaskCard.vue";
@@ -107,22 +108,20 @@ import TaskStats from "./TaskStats.vue";
 
 const delay = 175;
 const maxTasks = ref(50);
-const pageSize = ref(25);
-const duration = maxTasks.value * delay;
-const timer = ref(duration);
+const pageSize = ref(50);
+// const duration = maxTasks.value * delay;
+// const timer = ref(duration);
 const showStats = ref(false);
 
-let timerId = setInterval(() => {
-  timer.value -= delay;
-}, delay);
+// let timerId = setInterval(() => {
+//   timer.value -= delay;
+// }, delay);
 
-setTimeout(() => {
-  clearInterval(timerId);
-}, duration + delay);
+// setTimeout(() => {
+//   clearInterval(timerId);
+// }, duration + delay);
 
 const {
-  tasks,
-  rewards,
   createTask,
   patchTask,
   deleteTask,
@@ -174,7 +173,10 @@ const currentModel = computed(() => {
 const selectedReward = ref(-1);
 const selectedTask = ref(-1);
 
-const reload = () => load(maxTasks.value);
+const reload = () => {
+  tasks.value.length = 0;
+  load(maxTasks.value);
+};
 // const store = useStorage("tasks-store", { maxTasks: maxTasks.value });
 
 onMounted(() => {
@@ -221,7 +223,7 @@ async function submitReward() {
     });
   }
 
-  closeModal();
+  // closeModal();
   notify("Reward Submitted!", "Success!");
 }
 
@@ -253,7 +255,7 @@ async function submitTask() {
   //   });
   // }
 
-  closeModal();
+  // closeModal();
   // clear();
   // Object.assign(task.value, initialTask);
 }
@@ -290,20 +292,20 @@ async function submitTask() {
 //   notify("Task Completed! :D", "Completed!");
 // }
 
-async function removeTask(index) {
-  let current = filteredTasks.value[index];
-  console.log("current", current);
-  deleteTask(current.id)
-    .then((response) => {
-      console.log("response", response);
-      notify("Successfully removed task", "Success!");
-      if (response.status === 200)
-        tasks.value = tasks.value.filter((x) => x.id !== current.id);
-    })
-    .then((_) => {
-      error.value = "";
-    });
-}
+// async function removeTask(index) {
+//   let current = filteredTasks.value[index];
+//   console.log("current", current);
+//   deleteTask(current.id)
+//     .then((response) => {
+//       console.log("response", response);
+//       notify("Successfully removed task", "Success!");
+//       if (response.status === 200)
+//         tasks.value = tasks.value.filter((x) => x.id !== current.id);
+//     })
+//     .then((_) => {
+//       error.value = "";
+//     });
+// }
 
 async function cashIn(index) {
   let updatedReward = rewards.value[selectedReward.value];

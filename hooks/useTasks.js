@@ -278,7 +278,14 @@ export function useTasks(take = 10, pageSize = 10) {
     return deleteRecord("Tasks", id)
       .then(() => {
         console.log("deleting task w/ id", id);
-        tasks.value = tasks.value.filter((t) => t.id !== id);
+        // const updated = tasks.value.filter((t) => t.id !== id);
+        // const updated = tasks.value.splice(tasks.value.indexOf(task), 1);
+        // console.log("updated", updated);
+        // tasks.value = updated;
+
+        let i = tasks.value.map((item) => item.id).indexOf(id);
+        tasks.value.splice(i, 1);
+
         notifySuccess("Task successfully deleted!");
       })
       .catch((err) => {
@@ -493,7 +500,13 @@ export default useTasks;
 
 export const filteredTasks = computed(() => {
   console.log("filtered tasks updates");
-  return tasks.value.filter((t) => t.Status !== "Done");
+  return (
+    tasks.value
+      .filter((t) => t.Status !== "Done")
+      // .sort((a, b) => a?.Start >= b?.Start)
+      // .sort((a, b) => a?.End >= b?.End)
+      .sort((a, b) => a?.Created <= b?.Created)
+  );
   // .sort((a, b) => a?.Subtasks?.length || 0 >= b?.Subtasks?.length || 0)
   // .sort(
   //   (a, b) => a?.Status < b?.Status || a?.Status?.length < b?.Status?.length // Alphabetically, then lenght of word
@@ -572,18 +585,19 @@ export const todaysTasks = computed(() => {
   const filterByExpiration = (arr) =>
     arr.filter(
       ({ Created, Start }) =>
-        new Date(Created) > today || new Date(Start?.replace(/-/g, "/")) > today
+        new Date(Created) >= today ||
+        new Date(Start?.replace(/-/g, "/")) >= today
     );
   console.log("tasks.value", tasks.value[0]);
   console.log("filtered (today)", filterByExpiration(tasks.value));
 
-  return [];
+  return filterByExpiration(tasks.value);
 });
 
 export const taskStats = reactive([
   { totalTasks: computed(() => tasks?.value.length || 0) },
-  { filteredTasks: filteredTasks.value.length },
-  { todaysTasks: todaysTasks.value?.length },
+  { filteredTasks: computed(() => filteredTasks.value.length) },
+  { todaysTasks: computed(() => todaysTasks.value?.length) },
 ]);
 
 export const rewardStats = reactive([

@@ -22,7 +22,7 @@
         <atoms-tooltip text="Click for Toast!">
           <atoms-button @click="makeToast">Button of Awesome</atoms-button>
           <atoms-button @click="clearToasts">Clear Toasts</atoms-button>
-       </atoms-tooltip>
+        </atoms-tooltip>
       </Box>
 
       <Box size="md" class="">
@@ -92,7 +92,7 @@
             <p class="!text-sunglo-300 text-tiny">
               Lorem ipsum dolor sit, amet consectetur adipisicing elit.
             </p>
-         </atoms-tooltip>
+          </atoms-tooltip>
 
           <atoms-tooltip
             background="bg-[rgb(6,250,11)]"
@@ -101,15 +101,25 @@
             <atoms-button @click="toggleDarkMode">{{
               darkMode ? "Light Mode" : "Dark Mode"
             }}</atoms-button>
-         </atoms-tooltip>
+          </atoms-tooltip>
         </Row>
       </Box>
 
-      <!-- TODO: Complains of CommonJS modlues or something -->
-      <!-- <div class="h-128">
-        <atoms-typography type="h4">Pomodoro Test</atoms-typography>
-        <Pomodoro />
-      </div> -->
+      <box>
+        <atoms-typography>Array Crud</atoms-typography>
+        <div class="grid grid-cols-2">
+          <div
+            v-for="(item, index) in array"
+            :key="index"
+            class="w-24 h-24 font-bold border-2 bg-tahiti-700"
+          >
+            {{ item }}
+          </div>
+        </div>
+
+        <atoms-button @click="updateArray">Change Pizza to Coffee</atoms-button>
+        <atoms-button @click="removeItem">Remove Salad</atoms-button>
+      </box>
     </div>
 
     <Row v-if="false" class="text-white">
@@ -240,7 +250,7 @@
 </template>
 <script setup lang="ts">
 import { ref } from "vue";
-import { Flex, Row, Stack, Right, Center } from "@mpreston17/flexies";;
+import { Flex, Row, Stack, Right, Center } from "@mpreston17/flexies";
 import { RNG } from "~~/helpers/random";
 import Typography from "~~/components/atoms/Typography.vue";
 import Pomodoro from "~~/components/atoms/Pomodoro.vue";
@@ -292,10 +302,27 @@ const html = computed(() => {
 });
 
 /** Toasts */
+const array = ref([
+  { id: 1, Name: "Donut" },
 
+  { id: 2, Name: "Pizza" },
+  { id: 3, Name: "Salad" },
+  { id: 4, Name: "Chikin" },
+]);
 const toastTitle = ref("Yer Eternal Reward");
 const toastText = ref("Oi! that stings!");
 const toastCount = computed(() => toastQ?.value?.length);
+
+function updateArray() {
+  let pizza = array.value.find((item) => item.Name === "Pizza");
+  pizza.Name = "Coffee";
+}
+
+function removeItem() {
+  let item = array.value.splice(2, 1);
+  console.log("item", item);
+}
+
 function makeToast() {
   // RNG.Int;
   const notifier = new Notifier()
