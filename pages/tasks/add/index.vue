@@ -57,6 +57,7 @@ const task = ref({
   Name: "",
   Points: 5,
   Notes: "",
+  Start: new Date(),
 });
 
 const availableRewards = computed(() => {

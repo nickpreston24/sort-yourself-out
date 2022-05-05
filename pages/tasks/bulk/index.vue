@@ -13,7 +13,12 @@
         placeholder="Start typing a list, in outline format"
         @input="debouncedFn"
       ></textarea>
-      <atoms-button @click="onSubmit" tooltip="Save!">Save</atoms-button>
+      <row>
+        <atoms-button @click="onSubmit" tooltip="Save!">Save</atoms-button>
+        <router-link to="/tasks">
+          <atoms-button tooltip="Go back!">Go Back</atoms-button>
+        </router-link>
+      </row>
     </Stack>
   </NuxtLayout>
 </template>

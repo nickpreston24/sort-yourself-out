@@ -8,7 +8,12 @@
 
 import { useLocalStorage } from "@vueuse/core";
 import { ref } from "vue";
-import { notifyError, notifySuccess } from "~~/components/atoms/useToaster";
+import {
+  notify,
+  notifyError,
+  notifySuccess,
+  notifyWarn,
+} from "~~/components/atoms/useToaster";
 import {
   getRecords,
   create,
@@ -62,7 +67,7 @@ const offset = ref(0);
 
 export function useTasks(take = 10, pageSize = 10) {
   onMounted(async () => {
-    console.log("preferencesStore.value", preferencesStore.value);
+    // console.log("preferencesStore.value", preferencesStore.value);
     // preferences = { ...preferencesStore.value };
   });
 
@@ -83,7 +88,7 @@ export function useTasks(take = 10, pageSize = 10) {
     // let fullDate = `${month}-${day}-${year}`;
     console.log("props", task);
     let myTask = {
-      ...task,
+      // ...task,
       //  Append the Date of a Task to the end of the name in ()
       Name: `${task.Name}`,
       //  Add the Start and End dates to a newly created task - default to today if null
@@ -426,19 +431,68 @@ export function useTasks(take = 10, pageSize = 10) {
     loading.value = false;
   }
 
-  // onMounted(async () => {
-  //   await load(maxRecords);
-  // });
-
-  // /** SCHEDULER FUNCTIONS */
+  /** SCHEDULER FUNCTIONS */
 
   async function assignTaskToReward(task, reward) {
-    // TODO:  When assigning a Task to a Reward, if the reward already has more points than available, throw an error and notify user
+    // When assigning a Task to a Reward, if the reward already has more points than available, throw an error and notify user
 
-    reward["Cashed-In"].push(task.id);
-    console.log("reward", reward);
-    await patchReward(reward);
-    // console.log("result of subtask assignment", result);
+    if (
+      reward.PercentEarned >= 100 ||
+      task.Points + reward.TotalCashedInPoints > reward.Points
+    ) {
+      notifyWarn(
+        "Whoa! This Reward can't hold that many points.  Try another."
+      );
+      return;
+    }
+
+    // If a task id already exists in other rewards, back out:
+
+    const taskId = task?.id;
+
+    // const foundTask = rewards.value.find((rw) =>
+    //   rw?.["Cashed-In"].find((ci) => ci.id === taskId)
+    // );
+
+    const foundTask = rewards.value.map((rw) =>
+      rw?.["Cashed-In"].includes(taskId)
+    );
+
+    if (foundTask) {
+      console.log("foundTask", foundTask);
+      notifyWarn("Found this task in another reward already, sorry.");
+      return;
+    }
+    console.log("task", task);
+    if (task && reward) {
+      // Update any assigned rewards:
+      const currentlyCashedIn = reward?.["Cashed-In"] || [];
+      debug && console.log("currentlyCashedIn", currentlyCashedIn);
+      let newlyCashedIn = [...currentlyCashedIn, ...[task.id]];
+
+      console.log("newlyCashedIn", newlyCashedIn);
+      let updatedReward = {
+        // ...reward,
+        id: reward.id,
+        Name: reward?.Name,
+        Points: reward?.Points,
+        "Cashed-In": newlyCashedIn,
+      };
+
+      console.log("updatedReward", updatedReward);
+
+      patchReward(updatedReward).then((response) => {
+        // reward = { ...reward, ...updatedReward };
+        console.log("response", response);
+        let found = rewards.value.find((rw) => rw.id === response[0].id);
+        found = {
+          ...updatedReward,
+        };
+        console.log("found", found);
+
+        notifySuccess("Added task to Reward!");
+      });
+    }
   }
 
   async function assignSubtaskToTask(subtask, task) {
@@ -585,16 +639,19 @@ export const percentageRewardsAcheived = computed(() => {
 
 export const todaysTasks = computed(() => {
   const today = new Date();
-  const filterByExpiration = (arr) =>
-    arr.filter(
-      ({ Created, Start }) =>
-        new Date(Created) >= today ||
-        new Date(Start?.replace(/-/g, "/")) >= today
-    );
-  console.log("tasks.value", tasks.value[0]);
-  console.log("filtered (today)", filterByExpiration(tasks.value));
+  const day = today.getDay();
 
-  return filterByExpiration(tasks.value);
+  return tasks.value.filter((t) => new Date(t?.Start).getDay() === day);
+  // const filterByExpiration = (arr) =>
+  //   arr.filter(
+  //     ({ Created, Start }) =>
+  //       new Date(Created) >= today ||
+  //       new Date(Start?.replace(/-/g, "/")) >= today
+  //   );
+  // console.log("tasks.value", tasks.value[0]);
+  // console.log("filtered (today)", filterByExpiration(tasks.value));
+
+  // return filterByExpiration(tasks.value);
 });
 
 export const taskStats = reactive([
@@ -608,6 +665,13 @@ export const rewardStats = reactive([
   { availableCredits },
   { allPoints },
   { creditsUsed },
+  {
+    alreadyCashed: computed(() => {
+      return rewards.value.map(
+        (rw) => rw?.["Cashed-In"] //.flatMap((r) => r?.["Cashed-In"]) //?.["Cashed-In"].includes(taskId)
+      );
+    }),
+  },
 ]);
 
 export const dailyEssentialsTemplate = {

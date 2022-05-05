@@ -1,21 +1,6 @@
 <template>
   <NuxtLayout name="custom">
-    <div id="i-am-a-spacer" class="h-16 bg-transparent"></div>
-
-    <!-- TODO: 1. Searchbar for tasks filtering -->
-    <organisms-header :model="tasks" />
-
-    <!-- <div class="w-1/2">
-      <div
-        class="grid grid-rows-1 gap-4 m-4 desktop:grid-cols-4 sm:grid-cols-2 tablet:grid-cols-2 laptop:grid-cols-3 md:grid-cols-2 border-tahiti-500"
-        v-for="i in 10"
-        :key="i"
-      >
-        <div class="w-32 h-32 font-bold text-white border-2 bg-tahiti-500">
-          {{ i }}
-        </div>
-      </div>
-    </div> -->
+    <organisms-search-header :items="filteredTasks" />
 
     <Stack class="gap-4">
       <atoms-pomodoro class="justify-center w-1/2" />

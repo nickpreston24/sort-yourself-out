@@ -5,7 +5,7 @@
         <Row v-for="(value, key) in reward" :key="value.id">
           <atoms-typography type="h4"
             >{{ key }}
-            <atoms-typography type="b">{{ value }}</atoms-typography>
+            <pre type="b">{{ value }}</pre>
           </atoms-typography>
         </Row>
       </div>

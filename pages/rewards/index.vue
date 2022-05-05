@@ -1,16 +1,8 @@
 <template>
   <NuxtLayout name="custom">
-    <organisms-search-header :model="filteredRewards" />
-
-    <!-- <atoms-typography type="h1">Hello There!</atoms-typography> -->
-
-    <div id="i-am-a-spacer" class="h-16 bg-transparent"></div>
+    <organisms-search-header :items="filteredRewards" />
 
     <Stack class="gap-16">
-      <!-- <atoms-pomodoro class="justify-center w-1/2 ml-8" /> -->
-
-      <!-- <pre>showModal? {{ showModal }}</pre> -->
-
       <RewardStats />
 
       <molecules-card class="justify-center m-4 ml-8 bg-regal-700">
@@ -29,7 +21,7 @@
             class="w-8 h-8"
             Stack
             stroke="rgba(34 211 238)"
-            @click="load(50)"
+            @click="reload"
           />
         </Row>
       </molecules-card>
@@ -62,12 +54,12 @@
 
     <!-- TODO: 8.  Fix the FormModal not working with Rewards
  -->
-    <FormModal class="bg-white" :model="reward" :onSubmit="onSubmit" title="New Reward" />
+    <!-- <FormModal class="bg-white" :model="reward" :onSubmit="onSubmit" title="New Reward" /> -->
   </NuxtLayout>
 </template>
 <script setup lang="ts">
 import { notify } from "~~/components/atoms/useToaster";
-import { useTasks, loading, error, filteredRewards } from "~~/hooks/useTasks";
+import { useTasks, loading, error, filteredRewards, rewards } from "~~/hooks/useTasks";
 import { Row, Stack } from "@mpreston17/flexies";
 import { closeModal, showModal } from "~~/components/molecules/useModal";
 import RewardsCard from "../tasks/RewardsCard.vue";
@@ -83,12 +75,13 @@ const initialReward = {
   Name: "",
   Points: 5,
   Notes: "",
-  // Prerequisites: [],
 };
 
 const selectedReward = ref(-1);
 const reward = ref({ ...initialReward });
 const { createReward } = useTasks();
+
+const reload = () => load(25);
 
 function setSelectedReward(index) {
   selectedReward.value = selectedReward.value !== index ? index : -1;

@@ -85,11 +85,11 @@
           <!-- <div v-if="task?.AssociatedRewards > 0"> -->
           <!-- <atoms-typography type="b">Rewards: {{ rewards?.length }}</atoms-typography> -->
 
-          <ul>
+          <!-- <ul>
             <div v-for="myReward in rewards" :key="myReward.id">
               {{ myReward.Name }} - {{ myReward.Points }}
             </div>
-          </ul>
+          </ul> -->
           <!-- </div> -->
         </Row>
       </Stack>
@@ -128,18 +128,6 @@
             stroke="rgba(34 211 238)"
             @click="submitNotes"
           />
-
-          <!-- 
-            TODO: 5. Simple select to assign a task to a reward   
-             TODO:    1. Try to detect collisions
-          -->
-          <icons-arrow-up
-            stroke="rgba(34 211 238)"
-            class="w-8 h-8"
-            tooltip="Cash In! $_$"
-            @click="cashIn(task, selectedReward)"
-          >
-          </icons-arrow-up>
 
           <icons-copy-icon
             stroke="rgba(34 211 238)"
@@ -195,6 +183,22 @@
           </atoms-typography>
           <pre> {{ index }}</pre>
         </Box>
+
+        <Stack>
+          <p v-if="selectedReward">Reward: {{ selectedReward?.Name }}</p>
+          <select
+            v-model="selectedReward"
+            v-if="availableRewards"
+            class="w-48 bg-regal-800 text-sunglo-400"
+            @change="onSelected"
+          >
+            <option disabled value="">Please select one</option>
+
+            <option v-for="reward in availableRewards" :value="reward" :key="reward.id">
+              {{ reward.Name }}
+            </option>
+          </select>
+        </Stack>
       </template>
       <!-- <molecules-modal>
         <template.header>
@@ -207,11 +211,10 @@
 </template>
 
 <script setup>
-import { Flex, Row, Stack, Right, Center } from "@mpreston17/flexies";
+import { Flex, Row, Stack } from "@mpreston17/flexies";
 import { useTasks } from "~~/hooks/useTasks";
-import Card from "~/components/molecules/Card.vue";
 import RadialProgressBar from "vue3-radial-progress";
-import { notify, notifySuccess } from "~~/components/atoms/useToaster";
+import { notify, notifyError } from "~~/components/atoms/useToaster";
 const props = defineProps({
   task: { type: Object },
   active: { default: false },
@@ -221,12 +224,26 @@ const props = defineProps({
 let { task } = props;
 let { id } = task;
 
-const { error, patchTask, cloneTask, deleteTask } = useTasks();
+const {
+  error,
+  patchTask,
+  cloneTask,
+  deleteTask,
+  rewards,
+  assignTaskToReward,
+} = useTasks();
 const maxPoints = 5;
 const editing = ref(false);
 const buttonsActive = ref(false);
 const showNotes = ref(false);
 const showSubtasks = ref(true);
+const selectedReward = ref(null);
+
+function onSelected() {
+  const reward = selectedReward.value;
+
+  assignTaskToReward(task, selectedReward?.value);
+}
 
 // const created = ref(task?.Created);
 // ?.toUTCString().slice(5, 16)
@@ -238,10 +255,16 @@ const completedSubtasks = computed(() => {
 
 // % completion of the points required for this Task
 const completedPoints = computed(() => {
+  return (
+    task?.SubTasks?.filter((st) => st.Status === "Done").reduce(
+      (count, st) => (count += st?.Points || 0),
+      0
+    ) || 0
+  );
   // return cashedIn.value
   //   .filter((t) => t.Status === "Done")
   //   .reduce((total, next) => total + next.Points, 0);
-  return 0;
+  // return 0;
 });
 
 // Gets the nested Points from all subtasks, recursively and adds them.
@@ -261,7 +284,7 @@ const subtasks = computed(() => {
   return [];
 });
 
-const rewards = computed(() => {
+const associatedRewards = computed(() => {
   return task.value?.AssociatedRewards;
 });
 
@@ -274,6 +297,14 @@ async function submitNotes() {
   console.log("records", records);
   patchTask(records);
 }
+
+const availableRewards = computed(() => {
+  const available = rewards.value.filter((rw) => rw.PercentEarned != 100);
+
+  // console.log("rewardIds", available);
+
+  return available;
+});
 
 const getNextStatus = (status = "") => {
   if (!status) return "Unknown";
@@ -321,10 +352,6 @@ function onMouseEnter() {
 function onMouseLeave() {
   buttonsActive.value = false;
   showNotes.value = false;
-}
-
-function cashIn(task, reward) {
-  notify("Not yet implemented!", "Sorry!", 5000, "warning");
 }
 </script>
 

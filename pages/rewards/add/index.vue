@@ -15,10 +15,12 @@
         </li>
       </ul>
 
-      <atoms-button @click="submitReward"> Submit </atoms-button>
-      <router-link to="/rewards">
-        <atoms-button> Go Back </atoms-button>
-      </router-link>
+      <row>
+        <atoms-button @click="submitReward"> Submit </atoms-button>
+        <router-link to="/rewards">
+          <atoms-button> Go Back </atoms-button>
+        </router-link>
+      </row>
     </Stack>
   </NuxtLayout>
 </template>
@@ -33,8 +35,7 @@ const reward = ref({
   Name: "",
   Points: 5,
   Notes: "",
-  //   Points: 0,
-  //   "Cashed-In": [],
+  Start: new Date(),
 });
 
 async function submitReward() {

@@ -42,7 +42,17 @@
           type="text"
           placeholder="Search"
           v-model="searchText"
+          @keydown="onKeydown"
         />
+
+        <span class="absolute inset-y-0 right-0 flex items-center ml-2 pl-2xl">
+          <icons-cross-icon
+            stroke="rgb(6 182 212)"
+            fill="#fff"
+            class="w-4"
+            @click="searchText = ''"
+          />
+        </span>
 
         <ul class="text-sunglo-500">
           <li v-for="(result, index) in fuzzyResults.slice(0, 5)" :key="index">
@@ -209,7 +219,7 @@ import { ref, computed } from "vue";
 import { collapsed, hidden } from "./sidebar/useSidebar";
 import { darkMode, toggleDarkMode, paragraph } from "~~/hooks/useTheme";
 import fuzzysort from "fuzzysort";
-import { rewards } from "~~/hooks/useTasks";
+// import { rewards } from "~~/hooks/useTasks";
 const dropdownOpen = ref(false);
 const notificationOpen = ref(false);
 
@@ -220,12 +230,18 @@ const searchbar = computed(() => {
 
 const searchText = ref("");
 
+const props = defineProps({
+  items: { default: [] },
+});
+
+console.log("props.items", props.items);
+
 const targets = computed(() => {
-  return rewards.value?.map((reward) => {
+  return props.items?.map((item) => {
     return {
-      Name: reward?.Name,
-      Notes: reward?.Notes,
-      Points: reward?.Points,
+      Name: item?.Name,
+      Notes: item?.Notes,
+      Points: item?.Points,
     };
   });
 });
@@ -248,8 +264,14 @@ const fuzzyResults = computed(() => {
     fuzzysort.highlight(bestResult?.[0]);
     fuzzysort.highlight(bestResult?.[1]);
   }
-  console.log("results", results);
+  // console.log("results", results);
   // bestResult.obj.title
   return results.map((r) => r?.obj);
 });
+
+function onKeydown(e) {
+  // console.log("e", e);
+
+  if (e.Code === "Escape" || e.keyCode === 27) searchText.value = "";
+}
 </script>
