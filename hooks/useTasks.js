@@ -554,22 +554,22 @@ export default useTasks;
 /* Public Computed values */
 
 export const filteredTasks = computed(() => {
-  console.log("filtered tasks updates");
-  return (
-    tasks.value
-      .filter((t) => t.Status !== "Done")
-      // .sort((a, b) => a?.Start >= b?.Start)
-      // .sort((a, b) => a?.End >= b?.End)
-      .sort((a, b) => a?.Name?.includes("Perfect Day"))
-      .sort((a, b) => a?.Points <= b?.Points)
-      .sort((a, b) => a?.Created <= b?.Created)
-  );
-  // .sort((a, b) => a?.Subtasks?.length || 0 >= b?.Subtasks?.length || 0)
-  // .sort(
-  //   (a, b) => a?.Status < b?.Status || a?.Status?.length < b?.Status?.length // Alphabetically, then lenght of word
-  // )
-  // .slice(0, take);
-  //.filter((t) => t.Status !== "Done");
+  // console.log("filtered tasks", tasks.value.length);
+  return tasks?.value?.length > 0
+    ? tasks.value
+        .filter((t) => t.Status !== "Done")
+        //// .sort((a, b) => a?.Start >= b?.Start)
+        //// .sort((a, b) => a?.End >= b?.End)
+        .sort((a, b) => a?.Name?.includes("Perfect Day"))
+        .sort((a, b) => a?.Points <= b?.Points)
+        .sort((a, b) => a?.Created <= b?.Created)
+    : [];
+  //// .sort((a, b) => a?.Subtasks?.length || 0 >= b?.Subtasks?.length || 0)
+  //// .sort(
+  ////   (a, b) => a?.Status < b?.Status || a?.Status?.length < b?.Status?.length // //Alphabetically, then lenght of word
+  //// )
+  //// .slice(0, take);
+  ////.filter((t) => t.Status !== "Done");
 });
 
 export const filteredRewards = computed(() => {
@@ -593,20 +593,20 @@ export const allPoints = computed(() => {
       : 0;
   return naiveAllPoints;
 
-  let allPoints = tasks.value
-    .filter((task) => task?.Status?.toString() === "Done")
-    .reduce((total, task) => {
-      console.log("task", task);
-      let subTasks = task?.Subtasks || []; // TODO: Only ids come back, so you're going to have to sift through tasks.values to find matches, then you can tally points.
-      if (subTasks?.length > 0) console.log("subTasks", subTasks);
-      let subTotal = subTasks
-        .filter((t) => t.Points)
-        .reduce((total, next) => (total += next), 0);
+  // let allPoints = tasks.value
+  //   .filter((task) => task?.Status?.toString() === "Done")
+  //   .reduce((total, task) => {
+  //     console.log("task", task);
+  //     let subTasks = task?.Subtasks || []; // TODO: Only ids come back, so you're going to have to sift through tasks.values to find matches, then you can tally points.
+  //     if (subTasks?.length > 0) console.log("subTasks", subTasks);
+  //     let subTotal = subTasks
+  //       .filter((t) => t.Points)
+  //       .reduce((total, next) => (total += next), 0);
 
-      total += subTotal;
-    }, 0);
-  console.log("allPoints", allPoints);
-  return allPoints || -1;
+  //     total += subTotal;
+  //   }, 0);
+  // console.log("allPoints", allPoints);
+  // return allPoints || -1;
 });
 
 export const creditsUsed = computed(() => {
@@ -655,7 +655,7 @@ export const todaysTasks = computed(() => {
 });
 
 export const taskStats = reactive([
-  { totalTasks: computed(() => tasks?.value.length || 0) },
+  { totalTasks: computed(() => filteredTasks.length || 0) },
   { filteredTasks: computed(() => filteredTasks.value.length) },
   { todaysTasks: computed(() => todaysTasks.value?.length) },
 ]);
