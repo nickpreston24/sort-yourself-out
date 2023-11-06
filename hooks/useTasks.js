@@ -668,7 +668,7 @@ export const rewardStats = reactive([
   {
     alreadyCashed: computed(() => {
       return rewards.value.map(
-        (rw) => rw?.["Cashed-In"] //.flatMap((r) => r?.["Cashed-In"]) //?.["Cashed-In"].includes(taskId)
+        (reward) => reward?.["Cashed-In"] //.flatMap((r) => r?.["Cashed-In"]) //?.["Cashed-In"].includes(taskId)
       );
     }),
   },

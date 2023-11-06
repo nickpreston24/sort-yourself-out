@@ -13,7 +13,7 @@ export default defineNuxtConfig({
     },
   },
   css: ["~/assets/css/tailwind.css"],
-  title: "Hail Lobster!",
+  title: "Sort Yourself Out!",
   //https://reactgo.com/nuxt-change-favicon/
   // head: {
   //   title: process.env.npm_package_name || "",
